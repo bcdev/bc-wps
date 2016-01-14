@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>calvalus-wps-impl</artifactId>
+    <artifactId>mock-wps-impl</artifactId>
 
     <dependencies>
         <dependency>

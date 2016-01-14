@@ -1,9 +1,11 @@
 package com.bc.wps;
 
+import com.bc.wps.api.IServiceProvider;
 import com.bc.wps.exceptions.InvalidRequestException;
 import com.bc.wps.exceptions.WpsInvalidParameterValueException;
 import com.bc.wps.exceptions.WpsMissingParameterValueException;
 import com.bc.wps.responses.ExceptionResponse;
+import com.bc.wps.serviceloader.SpiLoader;
 import com.bc.wps.utilities.JaxbHelper;
 import com.bc.wps.utilities.WpsLogger;
 import com.bcs.wps.elements.CodeType;
@@ -26,6 +28,7 @@ import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,7 +55,7 @@ public class WpsService {
                                 @QueryParam("JobId") String jobId,
                                 @Context HttpServletRequest servletRequest) {
 
-        WpsServiceProvider wpsServiceProvider = getWpsServiceProvider(applicationName, servletRequest);
+        IServiceProvider wpsServiceProvider = SpiLoader.getWpsServiceProvider(applicationName);
 
         String exceptionXml = performUrlParameterValidation(service, requestType);
         if (StringUtils.isNotBlank(exceptionXml)) {
@@ -62,21 +65,21 @@ public class WpsService {
         switch (requestType) {
         case "GetCapabilities":
 //            return wpsServiceProvider.getCapabilities();
-            return "get capabilities response";
+            return wpsServiceProvider.getCapabilities();
         case "DescribeProcess":
 //            String describeProcessExceptionXml = performDescribeProcessParameterValidation(processId, version);
 //            if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
 //                return describeProcessExceptionXml;
 //            }
 //            return wpsServiceProvider.describeProcess(processId);
-            return "describe process response";
+            return wpsServiceProvider.describeProcess();
         case "GetStatus":
 //            if (StringUtils.isBlank(jobId)) {
 //                StringWriter stringWriter = getMissingParameterXmlWriter("JobId");
 //                return stringWriter.toString();
 //            }
 //            return wpsServiceProvider.getStatus(jobId);
-            return "get status response";
+            return wpsServiceProvider.getStatus();
         default:
 //            StringWriter stringWriter = getInvalidParameterXmlWriter("Request");
 //            return stringWriter.toString();
@@ -91,7 +94,7 @@ public class WpsService {
     public String postExecuteService(@PathParam("application") String applicationName,
                                      String request,
                                      @Context HttpServletRequest servletRequest) {
-//        WpsServiceProvider wpsServiceProvider = getWpsServiceProvider(applicationName, servletRequest);
+        IServiceProvider wpsServiceProvider = SpiLoader.getWpsServiceProvider(applicationName);
 //        Execute execute = getExecute(request);
 //
 //        String exceptionXml = performXmlParameterValidation(execute);
@@ -102,14 +105,10 @@ public class WpsService {
 //        String processorId = execute.getIdentifier().getValue();
 //
 //        return wpsServiceProvider.doExecute(execute, processorId);
-        return "execute response";
+        return wpsServiceProvider.doExecute();
     }
 
-    private WpsServiceProvider getWpsServiceProvider(String applicationName, HttpServletRequest servletRequest) {
-        ServletRequestWrapper servletRequestWrapper = new ServletRequestWrapper(servletRequest);
-        WpsServiceFactory wpsServiceFactory = new WpsServiceFactory(servletRequestWrapper);
-        return wpsServiceFactory.getWpsService(applicationName);
-    }
+
 
     private String performDescribeProcessParameterValidation(String processorId, String version) {
         if (StringUtils.isBlank(version)) {
