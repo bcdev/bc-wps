@@ -12,6 +12,8 @@
         <module>bc-wps-impl</module>
         <module>bc-wps-api</module>
         <module>calvalus-wps-impl</module>
+        <module>wps-element</module>
+        <module>bc-wps-commons</module>
     </modules>
 
     <name>BC WPS</name>
