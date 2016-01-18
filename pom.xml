@@ -11,7 +11,6 @@
     <modules>
         <module>bc-wps-impl</module>
         <module>bc-wps-api</module>
-        <module>wps-element</module>
         <module>bc-wps-commons</module>
         <module>mock-wps-impl</module>
     </modules>
@@ -20,6 +19,8 @@
     <description>BC WPS root module</description>
 
     <properties>
+        <powermockito.version>1.5.6</powermockito.version>
+        <bc-wps.version>1.0-SNAPSHOT</bc-wps.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

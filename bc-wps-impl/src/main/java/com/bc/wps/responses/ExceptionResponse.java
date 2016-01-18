@@ -1,8 +1,8 @@
 package com.bc.wps.responses;
 
 
-import com.bcs.wps.elements.ExceptionReport;
-import com.bcs.wps.elements.ExceptionType;
+import com.bc.wps.api.schema.ExceptionReport;
+import com.bc.wps.api.schema.ExceptionType;
 
 /**
  * @author hans

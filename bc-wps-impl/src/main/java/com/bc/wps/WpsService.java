@@ -1,6 +1,17 @@
 package com.bc.wps;
 
-import com.bc.wps.api.IServiceProvider;
+import com.bc.wps.api.WpsRequestContext;
+import com.bc.wps.api.WpsServerContext;
+import com.bc.wps.api.WpsServiceException;
+import com.bc.wps.api.WpsServiceInstance;
+import com.bc.wps.api.schema.Capabilities;
+import com.bc.wps.api.schema.CodeType;
+import com.bc.wps.api.schema.ExceptionReport;
+import com.bc.wps.api.schema.Execute;
+import com.bc.wps.api.schema.ExecuteResponse;
+import com.bc.wps.api.schema.ObjectFactory;
+import com.bc.wps.api.schema.ProcessDescriptionType;
+import com.bc.wps.api.schema.ProcessDescriptions;
 import com.bc.wps.exceptions.InvalidRequestException;
 import com.bc.wps.exceptions.WpsInvalidParameterValueException;
 import com.bc.wps.exceptions.WpsMissingParameterValueException;
@@ -8,10 +19,6 @@ import com.bc.wps.responses.ExceptionResponse;
 import com.bc.wps.serviceloader.SpiLoader;
 import com.bc.wps.utilities.JaxbHelper;
 import com.bc.wps.utilities.WpsLogger;
-import com.bcs.wps.elements.CodeType;
-import com.bcs.wps.elements.ExceptionReport;
-import com.bcs.wps.elements.Execute;
-import com.bcs.wps.elements.ObjectFactory;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,13 +34,18 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This is the entry point of all the WPS Requests. WPS Parameters check are also performed here.
+ * This is the entry point to the WPS server. Several actions are performed here:
+ * <ul>
+ *     <li>Mapping of service instance</li>
+ *     <li>Parameter validity check</li>
+ *     <li>Marshalling and Unmarshalling</li>
+ *     <li>Exception handling</li>
+ * </ul>
  *
  * @author hans
  */
@@ -55,35 +67,45 @@ public class WpsService {
                                 @QueryParam("JobId") String jobId,
                                 @Context HttpServletRequest servletRequest) {
 
-        IServiceProvider wpsServiceProvider = SpiLoader.getWpsServiceProvider(applicationName);
+        WpsRequestContext requestContext = new WpsRequestContextImpl(servletRequest);
+        WpsServerContext serverContext = requestContext.getServerContext();
+        WpsServiceInstance wpsServiceProvider = SpiLoader.getWpsServiceProvider(serverContext, applicationName);
 
         String exceptionXml = performUrlParameterValidation(service, requestType);
         if (StringUtils.isNotBlank(exceptionXml)) {
             return exceptionXml;
         }
 
-        switch (requestType) {
-        case "GetCapabilities":
-//            return wpsServiceProvider.getCapabilities();
-            return wpsServiceProvider.getCapabilities();
-        case "DescribeProcess":
-//            String describeProcessExceptionXml = performDescribeProcessParameterValidation(processId, version);
-//            if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
-//                return describeProcessExceptionXml;
-//            }
-//            return wpsServiceProvider.describeProcess(processId);
-            return wpsServiceProvider.describeProcess();
-        case "GetStatus":
-//            if (StringUtils.isBlank(jobId)) {
-//                StringWriter stringWriter = getMissingParameterXmlWriter("JobId");
-//                return stringWriter.toString();
-//            }
-//            return wpsServiceProvider.getStatus(jobId);
-            return wpsServiceProvider.getStatus();
-        default:
-//            StringWriter stringWriter = getInvalidParameterXmlWriter("Request");
-//            return stringWriter.toString();
-            return "invalid request";
+        try {
+            switch (requestType) {
+            case "GetCapabilities":
+                Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
+                return JaxbHelper.marshal(capabilities);
+            case "DescribeProcess":
+                String describeProcessExceptionXml = performDescribeProcessParameterValidation(processId, version);
+                if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
+                    return describeProcessExceptionXml;
+                }
+                List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(requestContext, processId);
+                ProcessDescriptions processDescriptions = constructProcessDescriptionXml(processDescriptionTypes);
+                return JaxbHelper.marshal(processDescriptions);
+            case "GetStatus":
+                if (StringUtils.isBlank(jobId)) {
+                    return getMissingParameterXmlWriter("JobId");
+                }
+                ExecuteResponse executeResponse = wpsServiceProvider.getStatus(requestContext, jobId);
+                return JaxbHelper.marshal(executeResponse);
+            default:
+                return getInvalidParameterXmlWriter("Request");
+            }
+        } catch (WpsServiceException exception) {
+            LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
+            //TODO construct the error message
+            return "exception message";
+        } catch (JAXBException exception) {
+            LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
+            //TODO construct the error message
+            return "exception message";
         }
     }
 
@@ -94,46 +116,49 @@ public class WpsService {
     public String postExecuteService(@PathParam("application") String applicationName,
                                      String request,
                                      @Context HttpServletRequest servletRequest) {
-        IServiceProvider wpsServiceProvider = SpiLoader.getWpsServiceProvider(applicationName);
-//        Execute execute = getExecute(request);
-//
-//        String exceptionXml = performXmlParameterValidation(execute);
-//        if (StringUtils.isNotBlank(exceptionXml)) {
-//            return exceptionXml;
-//        }
-//
-//        String processorId = execute.getIdentifier().getValue();
-//
-//        return wpsServiceProvider.doExecute(execute, processorId);
-        return wpsServiceProvider.doExecute();
+        WpsRequestContext requestContext = new WpsRequestContextImpl(servletRequest);
+        WpsServerContext serverContext = requestContext.getServerContext();
+        WpsServiceInstance wpsServiceProvider = SpiLoader.getWpsServiceProvider(serverContext, applicationName);
+        Execute execute = getExecute(request);
+
+        String exceptionXml = performXmlParameterValidation(execute);
+        if (StringUtils.isNotBlank(exceptionXml)) {
+            return exceptionXml;
+        }
+
+        try {
+            ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
+            return JaxbHelper.marshal(executeResponse);
+        } catch (WpsServiceException exception) {
+            LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
+            //TODO construct the error message
+            return "exception message";
+        } catch (JAXBException exception) {
+            LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
+            //TODO construct the error message
+            return "exception message";
+        }
     }
-
-
 
     private String performDescribeProcessParameterValidation(String processorId, String version) {
         if (StringUtils.isBlank(version)) {
-            StringWriter stringWriter = getMissingParameterXmlWriter("Version");
-            return stringWriter.toString();
+            return getMissingParameterXmlWriter("Version");
         }
         if (StringUtils.isBlank(processorId)) {
-            StringWriter stringWriter = getMissingParameterXmlWriter("Identifier");
-            return stringWriter.toString();
+            return getMissingParameterXmlWriter("Identifier");
         }
         return null;
     }
 
     private String performUrlParameterValidation(String service, String requestType) {
         if (StringUtils.isBlank(service)) {
-            StringWriter stringWriter = getMissingParameterXmlWriter("Service");
-            return stringWriter.toString();
+            return getMissingParameterXmlWriter("Service");
         }
         if (StringUtils.isBlank(requestType)) {
-            StringWriter stringWriter = getMissingParameterXmlWriter("Request");
-            return stringWriter.toString();
+            return getMissingParameterXmlWriter("Request");
         }
         if (!service.equals("WPS")) {
-            StringWriter stringWriter = getInvalidParameterXmlWriter(service);
-            return stringWriter.toString();
+            return getInvalidParameterXmlWriter(service);
         }
         return "";
     }
@@ -144,31 +169,26 @@ public class WpsService {
         CodeType identifier = execute.getIdentifier();
 
         if (StringUtils.isBlank(service)) {
-            StringWriter stringWriter = getMissingParameterXmlWriter("Service");
-            return stringWriter.toString();
+            return getMissingParameterXmlWriter("Service");
         }
         if (!"WPS".equals(service)) {
-            StringWriter stringWriter = getInvalidParameterXmlWriter(service);
-            return stringWriter.toString();
+            return getInvalidParameterXmlWriter(service);
         }
 
         if (StringUtils.isBlank(version)) {
-            StringWriter stringWriter = getMissingParameterXmlWriter("Version");
-            return stringWriter.toString();
+            return getMissingParameterXmlWriter("Version");
         }
 
         if (identifier == null || StringUtils.isBlank(identifier.getValue())) {
-            StringWriter stringWriter = getMissingParameterXmlWriter("Identifier");
-            return stringWriter.toString();
+            return getMissingParameterXmlWriter("Identifier");
         }
         return "";
     }
 
     private Execute getExecute(String request) {
         InputStream requestInputStream = new ByteArrayInputStream(request.getBytes());
-        JaxbHelper jaxbHelper = new JaxbHelper();
         try {
-            return (Execute) jaxbHelper.unmarshal(requestInputStream, new ObjectFactory());
+            return (Execute) JaxbHelper.unmarshal(requestInputStream, new ObjectFactory());
         } catch (ClassCastException exception) {
             throw new InvalidRequestException("Invalid Execute request. Please see the WPS 1.0.0 guideline for the right Execute request structure.",
                                               exception);
@@ -179,28 +199,43 @@ public class WpsService {
         }
     }
 
-    private StringWriter getMissingParameterXmlWriter(String missingParameter) {
+    private String getMissingParameterXmlWriter(String missingParameter) {
         WpsMissingParameterValueException exception = new WpsMissingParameterValueException(missingParameter);
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         ExceptionReport exceptionReport = exceptionResponse.getMissingParameterExceptionResponse(exception, missingParameter);
-        return getExceptionStringWriter(exceptionReport);
+        return getExceptionString(exceptionReport);
     }
 
-    private StringWriter getInvalidParameterXmlWriter(String invalidParameter) {
+    private String getInvalidParameterXmlWriter(String invalidParameter) {
         WpsInvalidParameterValueException exception = new WpsInvalidParameterValueException(invalidParameter);
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         ExceptionReport exceptionReport = exceptionResponse.getInvalidParameterExceptionResponse(exception, invalidParameter);
-        return getExceptionStringWriter(exceptionReport);
+        return getExceptionString(exceptionReport);
     }
 
-    private StringWriter getExceptionStringWriter(ExceptionReport exceptionReport) {
-        JaxbHelper jaxbHelper = new JaxbHelper();
-        StringWriter stringWriter = new StringWriter();
+    private String getExceptionString(ExceptionReport exceptionReport) {
+        String exceptionString = "";
         try {
-            jaxbHelper.marshal(exceptionReport, stringWriter);
+            exceptionString = JaxbHelper.marshal(exceptionReport);
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshal the WPS exception.", exception);
         }
-        return stringWriter;
+        return exceptionString;
+    }
+
+    private ProcessDescriptions constructProcessDescriptionXml(List<ProcessDescriptionType> processes) {
+        ProcessDescriptions processDescriptions = createBasicProcessDescriptions();
+        for (ProcessDescriptionType process : processes) {
+            processDescriptions.getProcessDescription().add(process);
+        }
+        return processDescriptions;
+    }
+
+    private ProcessDescriptions createBasicProcessDescriptions() {
+        ProcessDescriptions processDescriptions = new ProcessDescriptions();
+        processDescriptions.setService("WPS");
+        processDescriptions.setVersion("1.0.0");
+        processDescriptions.setLang("en");
+        return processDescriptions;
     }
 }

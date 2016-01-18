@@ -14,9 +14,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <powermockito.version>1.5.6</powermockito.version>
         <jersey.version>1.18</jersey.version>
-        <bc-wps.version>1.0-SNAPSHOT</bc-wps.version>
     </properties>
 
     <dependencies>
@@ -27,12 +25,12 @@
         </dependency>
         <dependency>
             <groupId>com.bc.wps</groupId>
-            <artifactId>wps-element</artifactId>
+            <artifactId>bc-wps-commons</artifactId>
             <version>${bc-wps.version}</version>
         </dependency>
         <dependency>
             <groupId>com.bc.wps</groupId>
-            <artifactId>bc-wps-commons</artifactId>
+            <artifactId>mock-wps-impl</artifactId>
             <version>${bc-wps.version}</version>
         </dependency>
         <dependency>
@@ -61,6 +59,33 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
+
+        <!-- Test frameworks -->
+        <dependency>
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>${powermockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

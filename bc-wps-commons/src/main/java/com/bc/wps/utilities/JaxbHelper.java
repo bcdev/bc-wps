@@ -5,6 +5,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 
 /**
@@ -12,15 +13,16 @@ import java.io.Writer;
  */
 public class JaxbHelper {
 
-    public Writer marshal(Object object, Writer writer) throws JAXBException {
+    public static String marshal(Object object) throws JAXBException {
+        StringWriter stringWriter = new StringWriter();
         JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(object, writer);
-        return writer;
+        jaxbMarshaller.marshal(object, stringWriter);
+        return stringWriter.toString();
     }
 
-    public Object unmarshal(InputStream inputStream, Object objectFactory) throws JAXBException {
+    public static Object unmarshal(InputStream inputStream, Object objectFactory) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(objectFactory.getClass());
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         return jaxbUnmarshaller.unmarshal(inputStream);

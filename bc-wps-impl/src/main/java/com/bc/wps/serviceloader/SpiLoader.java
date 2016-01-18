@@ -1,12 +1,10 @@
 package com.bc.wps.serviceloader;
 
-import com.bc.wps.DefaultProvider;
-import com.bc.wps.api.IServiceProvider;
-import com.bc.wps.exceptions.WpsRuntimeException;
-import com.bc.wps.spi.IBcWpsSpi;
+import com.bc.wps.DefaultInstance;
+import com.bc.wps.api.WpsServerContext;
+import com.bc.wps.api.WpsServiceInstance;
+import com.bc.wps.api.WpsServiceProvider;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ServiceLoader;
 
 /**
@@ -14,22 +12,13 @@ import java.util.ServiceLoader;
  */
 public class SpiLoader {
 
-    public static IServiceProvider getWpsServiceProvider(String applicationName) {
-        List<IServiceProvider> serviceProviderList = SpiLoader.loadServices();
-        for (IServiceProvider serviceProvider : serviceProviderList) {
-            if (serviceProvider.getApplicationName().equalsIgnoreCase(applicationName)) {
-                return serviceProvider;
+    public static WpsServiceInstance getWpsServiceProvider(WpsServerContext ctx, String applicationName) {
+        ServiceLoader<WpsServiceProvider> availableProviders = ServiceLoader.load(WpsServiceProvider.class);
+        for (WpsServiceProvider wpsProvider : availableProviders) {
+            if (wpsProvider.getId().equalsIgnoreCase(applicationName)) {
+                return wpsProvider.createServiceInstance(ctx);
             }
         }
-        return new DefaultProvider();
-    }
-
-    private static List<IServiceProvider> loadServices() {
-        ServiceLoader<IBcWpsSpi> availableProviders = ServiceLoader.load(IBcWpsSpi.class);
-        ArrayList<IServiceProvider> wpsProviderList = new ArrayList<>();
-        for (IBcWpsSpi wpsProvider : availableProviders) {
-            wpsProviderList.add(wpsProvider.create());
-        }
-        return wpsProviderList;
+        return new DefaultInstance();
     }
 }
