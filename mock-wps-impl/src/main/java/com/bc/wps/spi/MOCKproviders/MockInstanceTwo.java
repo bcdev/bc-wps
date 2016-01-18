@@ -54,7 +54,7 @@ public class MockInstanceTwo implements WpsServiceInstance {
     }
 
     @Override
-    public List<ProcessDescriptionType> describeProcess(WpsRequestContext context, String processorId) throws WpsServiceException {
+    public List<ProcessDescriptionType> describeProcess(WpsRequestContext context, String processId) throws WpsServiceException {
         List<ProcessDescriptionType> processes = new ArrayList<>();
         processes.add(getMockProcess("Process1"));
         processes.add(getMockProcess("Process2"));
