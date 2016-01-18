@@ -1,8 +1,8 @@
 package com.bc.wps.api;
 
-import com.bc.wps.api.WpsServiceInstance;
-
 /**
+ * This is the interface for the WPS server. Implement this for a new WPS server.
+ *
  * @author hans
  */
 public interface WpsServiceProvider {
@@ -15,12 +15,17 @@ public interface WpsServiceProvider {
     /**
      * @return the human-readable name of this service.
      */
-    //String getName();
+    String getName();
 
     /**
      * @return the human-readable description of this service.
      */
-    //String getDescription();
+    String getDescription();
 
-    WpsServiceInstance createServiceInstance(WpsServerContext ctx);
+    /**
+     * @param context Server context
+     *
+     * @return WpsServiceInstance
+     */
+    WpsServiceInstance createServiceInstance(WpsServerContext context);
 }

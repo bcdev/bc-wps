@@ -1,7 +1,6 @@
 package com.bc.wps.api.utils;
 
 
-
 import com.bc.wps.api.schema.AllowedValues;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.DomainMetadataType;

@@ -41,10 +41,10 @@ import java.util.logging.Logger;
 /**
  * This is the entry point to the WPS server. Several actions are performed here:
  * <ul>
- *     <li>Mapping of service instance</li>
- *     <li>Parameter validity check</li>
- *     <li>Marshalling and Unmarshalling</li>
- *     <li>Exception handling</li>
+ * <li>Mapping of service instance</li>
+ * <li>Parameter validity check</li>
+ * <li>Marshalling and Unmarshalling</li>
+ * <li>Exception handling</li>
  * </ul>
  *
  * @author hans

@@ -6,13 +6,19 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.io.Writer;
 
 /**
+ * This is a helper class to do Jaxb marshalling or unmarshalling.
+ *
  * @author hans
  */
 public class JaxbHelper {
 
+    /**
+     * @param object The object to be marshaled.
+     * @return XML representation of the object in String format.
+     * @throws JAXBException
+     */
     public static String marshal(Object object) throws JAXBException {
         StringWriter stringWriter = new StringWriter();
         JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
@@ -22,6 +28,13 @@ public class JaxbHelper {
         return stringWriter.toString();
     }
 
+    /**
+     *
+     * @param inputStream The stream that contains the XML.
+     * @param objectFactory A factory that can produce classes to be recognized by the JAXBContext.
+     * @return un-marshaled object.
+     * @throws JAXBException
+     */
     public static Object unmarshal(InputStream inputStream, Object objectFactory) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(objectFactory.getClass());
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();

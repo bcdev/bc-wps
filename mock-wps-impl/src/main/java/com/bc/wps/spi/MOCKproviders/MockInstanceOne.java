@@ -16,22 +16,22 @@ import java.util.List;
 public class MockInstanceOne implements WpsServiceInstance {
 
     @Override
-    public Capabilities getCapabilities(WpsRequestContext ctx) throws WpsServiceException {
+    public Capabilities getCapabilities(WpsRequestContext context) throws WpsServiceException {
         return null;
     }
 
     @Override
-    public List<ProcessDescriptionType> describeProcess(WpsRequestContext ctx, String processorId) throws WpsServiceException {
+    public List<ProcessDescriptionType> describeProcess(WpsRequestContext context, String processId) throws WpsServiceException {
         return null;
     }
 
     @Override
-    public ExecuteResponse doExecute(WpsRequestContext ctx, Execute executeRequest) throws WpsServiceException {
+    public ExecuteResponse doExecute(WpsRequestContext context, Execute executeRequest) throws WpsServiceException {
         return null;
     }
 
     @Override
-    public ExecuteResponse getStatus(WpsRequestContext ctx, String jobId) throws WpsServiceException {
+    public ExecuteResponse getStatus(WpsRequestContext context, String jobId) throws WpsServiceException {
         return null;
     }
 

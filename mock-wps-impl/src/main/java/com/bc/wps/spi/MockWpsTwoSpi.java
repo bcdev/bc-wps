@@ -16,7 +16,17 @@ public class MockWpsTwoSpi implements WpsServiceProvider {
     }
 
     @Override
-    public WpsServiceInstance createServiceInstance(WpsServerContext ctx) {
+    public String getName() {
+        return "Mock WPS provider implementation";
+    }
+
+    @Override
+    public String getDescription() {
+        return "This is a mock WPS provider implementation. ";
+    }
+
+    @Override
+    public WpsServiceInstance createServiceInstance(WpsServerContext context) {
         return new MockInstanceTwo();
     }
 }

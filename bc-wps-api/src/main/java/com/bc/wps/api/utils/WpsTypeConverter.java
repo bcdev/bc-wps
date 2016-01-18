@@ -2,9 +2,7 @@ package com.bc.wps.api.utils;
 
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.LanguageStringType;
-import com.bc.wps.api.schema.LanguagesType;
 import com.bc.wps.api.schema.OnlineResourceType;
-import com.bc.wps.api.schema.TelephoneType;
 
 /**
  * @author hans

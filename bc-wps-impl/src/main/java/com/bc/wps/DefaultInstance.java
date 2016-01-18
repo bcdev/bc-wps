@@ -21,7 +21,7 @@ public class DefaultInstance implements WpsServiceInstance {
     }
 
     @Override
-    public List<ProcessDescriptionType> describeProcess(WpsRequestContext context, String processorId) {
+    public List<ProcessDescriptionType> describeProcess(WpsRequestContext context, String processId) {
         return new ArrayList<>();
     }
 
