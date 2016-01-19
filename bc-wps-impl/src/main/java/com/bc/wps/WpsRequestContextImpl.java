@@ -2,6 +2,7 @@ package com.bc.wps;
 
 import com.bc.wps.api.WpsRequestContext;
 import com.bc.wps.api.WpsServerContext;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,9 +16,11 @@ public class WpsRequestContextImpl implements WpsRequestContext {
     public WpsRequestContextImpl(HttpServletRequest servletRequest) {
         this.servletRequest = servletRequest;
     }
+
     @Override
     public String getUserName() {
-        return servletRequest.getUserPrincipal().getName();
+        String userName = servletRequest.getUserPrincipal().getName();
+        return StringUtils.isBlank(userName) ? "" : userName;
     }
 
     @Override

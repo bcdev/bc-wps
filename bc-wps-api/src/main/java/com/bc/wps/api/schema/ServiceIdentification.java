@@ -52,14 +52,14 @@ public class ServiceIdentification
     extends DescriptionType
 {
 
-    @XmlElement(name = "ServiceType", required = true)
+    @XmlElement(name = "ServiceType", required = true, namespace = "http://www.opengis.net/ows/1.1")
     protected CodeType serviceType;
-    @XmlElement(name = "ServiceTypeVersion", required = true)
+    @XmlElement(name = "ServiceTypeVersion", required = true, namespace = "http://www.opengis.net/ows/1.1")
     protected List<String> serviceTypeVersion;
     @XmlElement(name = "Profile")
     @XmlSchemaType(name = "anyURI")
     protected List<String> profile;
-    @XmlElement(name = "Fees")
+    @XmlElement(name = "Fees", namespace = "http://www.opengis.net/ows/1.1")
     protected String fees;
     @XmlElement(name = "AccessConstraints")
     protected List<String> accessConstraints;

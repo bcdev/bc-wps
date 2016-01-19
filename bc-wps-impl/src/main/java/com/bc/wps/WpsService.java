@@ -158,7 +158,7 @@ public class WpsService {
             return getMissingParameterXmlWriter("Request");
         }
         if (!service.equals("WPS")) {
-            return getInvalidParameterXmlWriter(service);
+            return getInvalidParameterXmlWriter("Service");
         }
         return "";
     }

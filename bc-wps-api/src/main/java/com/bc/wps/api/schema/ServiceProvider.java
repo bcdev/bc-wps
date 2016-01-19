@@ -43,11 +43,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ServiceProvider")
 public class ServiceProvider {
 
-    @XmlElement(name = "ProviderName", required = true)
+    @XmlElement(name = "ProviderName", required = true, namespace = "http://www.w3.org/2001/XMLSchema")
     protected String providerName;
-    @XmlElement(name = "ProviderSite")
+    @XmlElement(name = "ProviderSite", namespace = "http://www.opengis.net/ows/1.1")
     protected OnlineResourceType providerSite;
-    @XmlElement(name = "ServiceContact", required = true)
+    @XmlElement(name = "ServiceContact", required = true, namespace = "http://www.opengis.net/ows/1.1")
     protected ResponsiblePartySubsetType serviceContact;
 
     /**
