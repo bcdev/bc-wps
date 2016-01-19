@@ -6,6 +6,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.logging.Level;
 
 /**
  * This is a helper class to do Jaxb marshalling or unmarshalling.
@@ -16,7 +17,9 @@ public class JaxbHelper {
 
     /**
      * @param object The object to be marshaled.
+     *
      * @return XML representation of the object in String format.
+     *
      * @throws JAXBException
      */
     public static String marshal(Object object) throws JAXBException {
@@ -29,10 +32,11 @@ public class JaxbHelper {
     }
 
     /**
-     *
-     * @param inputStream The stream that contains the XML.
+     * @param inputStream   The stream that contains the XML.
      * @param objectFactory A factory that can produce classes to be recognized by the JAXBContext.
+     *
      * @return un-marshaled object.
+     *
      * @throws JAXBException
      */
     public static Object unmarshal(InputStream inputStream, Object objectFactory) throws JAXBException {

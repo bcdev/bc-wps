@@ -28,7 +28,7 @@ public class NullPointerExceptionMapper implements ExceptionMapper<NullPointerEx
         LOG.log(Level.SEVERE, "A NullPointerException has been caught.", exception);
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         String exceptionString = getExceptionString(exceptionResponse.
-                    getGeneralExceptionWithCustomMessageResponse("A value is missing" +
+                    getGeneralExceptionWithExceptionCauseMessage("A value is missing" +
                                                                  (StringUtils.isNotBlank(exception.getMessage()) ? " : " + exception.getMessage() : ""),
                                                                  exception.getCause()));
         return Response.serverError()
@@ -41,16 +41,8 @@ public class NullPointerExceptionMapper implements ExceptionMapper<NullPointerEx
             return JaxbHelper.marshal(exceptionReport);
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshal the WPS Exception.", exception);
-            return getDefaultWpsJaxbExceptionResponse();
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            return exceptionResponse.getJaxbExceptionResponse();
         }
-    }
-
-    private String getDefaultWpsJaxbExceptionResponse() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-               "<ExceptionReport version=\"version\" xml:lang=\"Lang\">\n" +
-               "    <Exception exceptionCode=\"NoApplicableCode\">\n" +
-               "        <ExceptionText>Unable to generate the exception XML : JAXB Exception.</ExceptionText>\n" +
-               "    </Exception>\n" +
-               "</ExceptionReport>\n";
     }
 }

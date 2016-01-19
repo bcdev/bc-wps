@@ -1,10 +1,10 @@
 package com.bc.wps.exceptionmapper;
 
 
+import com.bc.wps.api.schema.ExceptionReport;
 import com.bc.wps.responses.ExceptionResponse;
 import com.bc.wps.utilities.JaxbHelper;
 import com.bc.wps.utilities.WpsLogger;
-import com.bc.wps.api.schema.ExceptionReport;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -27,7 +27,7 @@ public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalAr
     public Response toResponse(IllegalArgumentException exception) {
         LOG.log(Level.SEVERE, "An IllegalArgumentException has been caught.", exception);
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        String exceptionString = getExceptionString(exceptionResponse.getGeneralExceptionResponse(exception));
+        String exceptionString = getExceptionString(exceptionResponse.getExceptionResponse(exception));
         return Response.serverError()
                     .entity(exceptionString)
                     .build();
@@ -38,16 +38,8 @@ public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalAr
             return JaxbHelper.marshal(exceptionReport);
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshal the WPS Exception.", exception);
-            return getDefaultWpsJaxbExceptionResponse();
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            return exceptionResponse.getJaxbExceptionResponse();
         }
-    }
-
-    private String getDefaultWpsJaxbExceptionResponse() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-               "<ExceptionReport version=\"version\" xml:lang=\"Lang\">\n" +
-               "    <Exception exceptionCode=\"NoApplicableCode\">\n" +
-               "        <ExceptionText>Unable to generate the exception XML : JAXB Exception.</ExceptionText>\n" +
-               "    </Exception>\n" +
-               "</ExceptionReport>\n";
     }
 }

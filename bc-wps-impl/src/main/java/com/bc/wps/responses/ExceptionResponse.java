@@ -9,34 +9,18 @@ import com.bc.wps.api.schema.ExceptionType;
  */
 public class ExceptionResponse {
 
-    public ExceptionReport getGeneralExceptionWithCustomMessageResponse(String errorMessage, Throwable cause) {
+    public ExceptionReport getGeneralExceptionWithExceptionCauseMessage(String errorMessage, Throwable cause) {
         return getGeneralExceptionReport(errorMessage, cause);
     }
 
-    private ExceptionReport getGeneralExceptionReport(String errorMessage, Throwable cause) {
-        ExceptionReport exceptionReport = new ExceptionReport();
-        ExceptionType exceptionResponse = new ExceptionType();
-        if (cause != null) {
-            exceptionResponse.getExceptionText().add(errorMessage + " : " + cause.getMessage());
-        } else {
-            exceptionResponse.getExceptionText().add(errorMessage);
-        }
-        exceptionResponse.setExceptionCode("NoApplicableCode");
-
-        exceptionReport.getException().add(exceptionResponse);
-        exceptionReport.setLang("Lang");
-        exceptionReport.setVersion("version");
-        return exceptionReport;
-    }
-
-    public ExceptionReport getGeneralExceptionResponse(Exception exception) {
+    public ExceptionReport getExceptionResponse(Exception exception) {
         return getGeneralExceptionReport(exception.getMessage(), exception.getCause());
     }
 
-    public ExceptionReport getMissingParameterExceptionResponse(Exception exception, String missingParameter) {
+    public ExceptionReport getMissingParameterExceptionResponse(String exceptionMessage, String missingParameter) {
         ExceptionReport exceptionReport = new ExceptionReport();
         ExceptionType exceptionResponse = new ExceptionType();
-        exceptionResponse.getExceptionText().add(exception.getMessage());
+        exceptionResponse.getExceptionText().add(exceptionMessage);
         exceptionResponse.setExceptionCode("MissingParameterValue");
         exceptionResponse.setLocator(missingParameter);
 
@@ -47,10 +31,10 @@ public class ExceptionResponse {
         return exceptionReport;
     }
 
-    public ExceptionReport getInvalidParameterExceptionResponse(Exception exception, String invalidParameter) {
+    public ExceptionReport getInvalidParameterExceptionResponse(String exceptionMessage, String invalidParameter) {
         ExceptionReport exceptionReport = new ExceptionReport();
         ExceptionType exceptionResponse = new ExceptionType();
-        exceptionResponse.getExceptionText().add(exception.getMessage());
+        exceptionResponse.getExceptionText().add(exceptionMessage);
         exceptionResponse.setExceptionCode("InvalidParameterValue");
         exceptionResponse.setLocator(invalidParameter);
 
@@ -58,6 +42,31 @@ public class ExceptionResponse {
         exceptionReport.setLang("Lang");
         exceptionReport.setVersion("version");
 
+        return exceptionReport;
+    }
+
+    public String getJaxbExceptionResponse(){
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+               "<ExceptionReport version=\"version\" xml:lang=\"Lang\">\n" +
+               "    <Exception exceptionCode=\"NoApplicableCode\">\n" +
+               "        <ExceptionText>Unable to generate the exception XML : JAXB Exception.</ExceptionText>\n" +
+               "    </Exception>\n" +
+               "</ExceptionReport>\n";
+    }
+
+    private ExceptionReport getGeneralExceptionReport(String exceptionMessage, Throwable cause) {
+        ExceptionReport exceptionReport = new ExceptionReport();
+        ExceptionType exceptionResponse = new ExceptionType();
+        if (cause != null) {
+            exceptionResponse.getExceptionText().add(exceptionMessage + " : " + cause.getMessage());
+        } else {
+            exceptionResponse.getExceptionText().add(exceptionMessage);
+        }
+        exceptionResponse.setExceptionCode("NoApplicableCode");
+
+        exceptionReport.getException().add(exceptionResponse);
+        exceptionReport.setLang("Lang");
+        exceptionReport.setVersion("version");
         return exceptionReport;
     }
 

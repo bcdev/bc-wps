@@ -13,8 +13,6 @@ import com.bc.wps.api.schema.ObjectFactory;
 import com.bc.wps.api.schema.ProcessDescriptionType;
 import com.bc.wps.api.schema.ProcessDescriptions;
 import com.bc.wps.exceptions.InvalidRequestException;
-import com.bc.wps.exceptions.WpsInvalidParameterValueException;
-import com.bc.wps.exceptions.WpsMissingParameterValueException;
 import com.bc.wps.responses.ExceptionResponse;
 import com.bc.wps.serviceloader.SpiLoader;
 import com.bc.wps.utilities.JaxbHelper;
@@ -100,12 +98,13 @@ public class WpsService {
             }
         } catch (WpsServiceException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
-            //TODO construct the error message
-            return "exception message";
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            ExceptionReport exceptionReport = exceptionResponse.getExceptionResponse(exception);
+            return getExceptionString(exceptionReport);
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
-            //TODO construct the error message
-            return "exception message";
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            return exceptionResponse.getJaxbExceptionResponse();
         }
     }
 
@@ -131,12 +130,13 @@ public class WpsService {
             return JaxbHelper.marshal(executeResponse);
         } catch (WpsServiceException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
-            //TODO construct the error message
-            return "exception message";
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            ExceptionReport exceptionReport = exceptionResponse.getExceptionResponse(exception);
+            return getExceptionString(exceptionReport);
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
-            //TODO construct the error message
-            return "exception message";
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            return exceptionResponse.getJaxbExceptionResponse();
         }
     }
 
@@ -190,37 +190,39 @@ public class WpsService {
         try {
             return (Execute) JaxbHelper.unmarshal(requestInputStream, new ObjectFactory());
         } catch (ClassCastException exception) {
-            throw new InvalidRequestException("Invalid Execute request. Please see the WPS 1.0.0 guideline for the right Execute request structure.",
+            throw new InvalidRequestException("Invalid Execute request. Please see the WPS 1.0.0 guideline " +
+                                              "for the right Execute request structure.",
                                               exception);
         } catch (JAXBException exception) {
-            throw new InvalidRequestException("Invalid Execute request. "
-                                              + (exception.getMessage() != null ? exception.getMessage() : exception.getCause().getMessage()),
-                                              exception);
+            throw new InvalidRequestException(
+                        "Invalid Execute request. "
+                        + (exception.getMessage() != null ? exception.getMessage() : exception.getCause().getMessage()),
+                        exception);
         }
     }
 
     private String getMissingParameterXmlWriter(String missingParameter) {
-        WpsMissingParameterValueException exception = new WpsMissingParameterValueException(missingParameter);
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        ExceptionReport exceptionReport = exceptionResponse.getMissingParameterExceptionResponse(exception, missingParameter);
+        ExceptionReport exceptionReport = exceptionResponse.getMissingParameterExceptionResponse(
+                    "Missing parameter value", missingParameter);
         return getExceptionString(exceptionReport);
     }
 
     private String getInvalidParameterXmlWriter(String invalidParameter) {
-        WpsInvalidParameterValueException exception = new WpsInvalidParameterValueException(invalidParameter);
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        ExceptionReport exceptionReport = exceptionResponse.getInvalidParameterExceptionResponse(exception, invalidParameter);
+        ExceptionReport exceptionReport = exceptionResponse.getInvalidParameterExceptionResponse(
+                    "Invalid value of parameter '" + invalidParameter + "'", invalidParameter);
         return getExceptionString(exceptionReport);
     }
 
     private String getExceptionString(ExceptionReport exceptionReport) {
-        String exceptionString = "";
         try {
-            exceptionString = JaxbHelper.marshal(exceptionReport);
+            return JaxbHelper.marshal(exceptionReport);
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshal the WPS exception.", exception);
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            return exceptionResponse.getJaxbExceptionResponse();
         }
-        return exceptionString;
     }
 
     private ProcessDescriptions constructProcessDescriptionXml(List<ProcessDescriptionType> processes) {

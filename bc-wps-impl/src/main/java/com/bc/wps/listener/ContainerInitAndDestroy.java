@@ -14,7 +14,7 @@ public class ContainerInitAndDestroy implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         System.out.println("*****************************************");
-        System.out.println("****** Starting calwps application ******");
+        System.out.println("********* Starting BC WPS server ********");
         System.out.println("*****************************************");
     }
 
