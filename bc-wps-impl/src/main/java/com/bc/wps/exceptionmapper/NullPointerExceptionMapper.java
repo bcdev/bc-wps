@@ -1,6 +1,5 @@
 package com.bc.wps.exceptionmapper;
 
-import com.bc.wps.api.schema.ExceptionReport;
 import com.bc.wps.responses.ExceptionResponse;
 import com.bc.wps.utilities.JaxbHelper;
 import com.bc.wps.utilities.WpsLogger;
@@ -27,22 +26,19 @@ public class NullPointerExceptionMapper implements ExceptionMapper<NullPointerEx
     public Response toResponse(NullPointerException exception) {
         LOG.log(Level.SEVERE, "A NullPointerException has been caught.", exception);
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        String exceptionString = getExceptionString(exceptionResponse.
-                    getGeneralExceptionWithExceptionCauseMessage("A value is missing" +
-                                                                 (StringUtils.isNotBlank(exception.getMessage()) ? " : " + exception.getMessage() : ""),
-                                                                 exception.getCause()));
+        String exceptionString;
+        try {
+            exceptionString = JaxbHelper.marshal(exceptionResponse.
+                        getGeneralExceptionWithExceptionCauseMessage("A value is missing" +
+                                                                     (StringUtils.isNotBlank(exception.getMessage()) ? " : " + exception.getMessage() : ""),
+                                                                     exception.getCause()));
+        } catch (JAXBException jaxbException) {
+            LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
+            ExceptionResponse jaxbExceptionResponse = new ExceptionResponse();
+            exceptionString = jaxbExceptionResponse.getJaxbExceptionResponse();
+        }
         return Response.serverError()
                     .entity(exceptionString)
                     .build();
-    }
-
-    private String getExceptionString(ExceptionReport exceptionReport) {
-        try {
-            return JaxbHelper.marshal(exceptionReport);
-        } catch (JAXBException exception) {
-            LOG.log(Level.SEVERE, "Unable to marshal the WPS Exception.", exception);
-            ExceptionResponse exceptionResponse = new ExceptionResponse();
-            return exceptionResponse.getJaxbExceptionResponse();
-        }
     }
 }

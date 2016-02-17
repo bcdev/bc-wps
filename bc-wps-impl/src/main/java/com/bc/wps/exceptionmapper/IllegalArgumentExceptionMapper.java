@@ -1,7 +1,6 @@
 package com.bc.wps.exceptionmapper;
 
 
-import com.bc.wps.api.schema.ExceptionReport;
 import com.bc.wps.responses.ExceptionResponse;
 import com.bc.wps.utilities.JaxbHelper;
 import com.bc.wps.utilities.WpsLogger;
@@ -27,19 +26,16 @@ public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalAr
     public Response toResponse(IllegalArgumentException exception) {
         LOG.log(Level.SEVERE, "An IllegalArgumentException has been caught.", exception);
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        String exceptionString = getExceptionString(exceptionResponse.getExceptionResponse(exception));
+        String exceptionString;
+        try {
+            exceptionString = JaxbHelper.marshal(exceptionResponse.getExceptionResponse(exception));
+        } catch (JAXBException jaxbException) {
+            LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
+            ExceptionResponse jaxbExceptionResponse = new ExceptionResponse();
+            exceptionString = jaxbExceptionResponse.getJaxbExceptionResponse();
+        }
         return Response.serverError()
                     .entity(exceptionString)
                     .build();
-    }
-
-    private String getExceptionString(ExceptionReport exceptionReport) {
-        try {
-            return JaxbHelper.marshal(exceptionReport);
-        } catch (JAXBException exception) {
-            LOG.log(Level.SEVERE, "Unable to marshal the WPS Exception.", exception);
-            ExceptionResponse exceptionResponse = new ExceptionResponse();
-            return exceptionResponse.getJaxbExceptionResponse();
-        }
     }
 }

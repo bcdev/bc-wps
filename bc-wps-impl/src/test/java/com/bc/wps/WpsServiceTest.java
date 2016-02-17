@@ -25,6 +25,9 @@ public class WpsServiceTest {
     @Before
     public void setUp() throws Exception {
         mockServletRequest = mock(HttpServletRequest.class);
+        Principal mockUserPrincipal = mock(Principal.class);
+        when(mockUserPrincipal.getName()).thenReturn("mockName");
+        when(mockServletRequest.getUserPrincipal()).thenReturn(mockUserPrincipal);
         wpsService = new WpsService();
     }
 
