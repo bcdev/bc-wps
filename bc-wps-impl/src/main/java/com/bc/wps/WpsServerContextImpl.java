@@ -15,6 +15,7 @@ public class WpsServerContextImpl implements WpsServerContext {
         this.servletRequest = servletRequest;
     }
 
+    @Override
     public String getRequestUrl() {
         return servletRequest.getRequestURL().toString();
     }
