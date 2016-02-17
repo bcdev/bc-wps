@@ -117,7 +117,7 @@ public class WpsServiceTest {
 
     @Test
     public void canReturnExceptionGetCapabilitiesWithInvalidService() throws Exception {
-        String wpsResponse = wpsService.getWpsService("calvalus", "invalidService", "GetCapabilities", "", "", "", "", "", mockServletRequest);
+        String wpsResponse = wpsService.getWpsService("mock2", "invalidService", "GetCapabilities", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -129,7 +129,7 @@ public class WpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenDescribeProcessWithNoProcessId() throws Exception {
-        String wpsResponse = wpsService.getWpsService("calvalus", "WPS", "DescribeProcess", "", "", "", "1.0.0", "", mockServletRequest);
+        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "", "", "", "1.0.0", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -141,7 +141,7 @@ public class WpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenDescribeProcessWithNoVersionNumber() throws Exception {
-        String wpsResponse = wpsService.getWpsService("calvalus", "WPS", "DescribeProcess", "", "", "bundle~name~version", "", "", mockServletRequest);
+        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "", "", "bundle~name~version", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -153,7 +153,7 @@ public class WpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenGetStatusWithoutJobId() throws Exception {
-        String wpsResponse = wpsService.getWpsService("calvalus", "WPS", "GetStatus", "", "", "", "", "", mockServletRequest);
+        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "GetStatus", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -165,7 +165,7 @@ public class WpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenNoServiceParameter() throws Exception {
-        String wpsResponse = wpsService.getWpsService("calvalus", "", "", "", "", "", "", "", mockServletRequest);
+        String wpsResponse = wpsService.getWpsService("mock2", "", "", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -177,7 +177,7 @@ public class WpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenNoRequestTypeParameter() throws Exception {
-        String wpsResponse = wpsService.getWpsService("calvalus", "WPS", "", "", "", "", "", "", mockServletRequest);
+        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -199,7 +199,7 @@ public class WpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenRequestIsUnknown() throws Exception {
-        String wpsResponse = wpsService.getWpsService("calvalus", "WPS", "InvalidService", "", "", "", "", "", mockServletRequest);
+        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "InvalidService", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -227,15 +227,15 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.postExecuteService("mock2", getExecuteRequestWithoutServiceAndVersion(), mockServletRequest);
 
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExecuteResponse statusLocation=\"null/mockUserName\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"));
+                                               "<wps:ExecuteResponse statusLocation=\"null/mockUserName\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"));
         assertThat(wpsResponse, containsString("        <wps:ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</wps:ProcessAccepted>\n" +
-                                        "    </wps:Status>\n" +
-                                        "</wps:ExecuteResponse>\n"));
+                                               "    </wps:Status>\n" +
+                                               "</wps:ExecuteResponse>\n"));
     }
 
     @Test
     public void canReturnExceptionWhenNoProcessorId() throws Exception {
-        String wpsResponse = wpsService.postExecuteService("calvalus", getExecuteRequestWithoutIdentifier(), mockServletRequest);
+        String wpsResponse = wpsService.postExecuteService("mock2", getExecuteRequestWithoutIdentifier(), mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -250,7 +250,7 @@ public class WpsServiceTest {
         thrown.expect(InvalidRequestException.class);
         thrown.expectMessage("Invalid Execute request. Content is not allowed in prolog.");
 
-        wpsService.postExecuteService("calvalus", "requestXml", mockServletRequest);
+        wpsService.postExecuteService("mock2", "requestXml", mockServletRequest);
     }
 
     @Test
@@ -270,7 +270,7 @@ public class WpsServiceTest {
                              "<{http://www.opengis.net/wps/1.0.0}ValuesReference>,<{http://www.opengis.net/wps/1.0.0}WSDL>," +
                              "<{http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd}parameters>");
 
-        wpsService.postExecuteService("calvalus", getUnknownXmlRequest(), mockServletRequest);
+        wpsService.postExecuteService("mock2", getUnknownXmlRequest(), mockServletRequest);
     }
 
     @Test
@@ -299,7 +299,7 @@ public class WpsServiceTest {
                              "<{http://www.opengis.net/wps/1.0.0}WSDL>," +
                              "<{http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd}parameters>");
 
-        wpsService.postExecuteService("calvalus", getInvalidExecuteRequest(), mockServletRequest);
+        wpsService.postExecuteService("mock2", getInvalidExecuteRequest(), mockServletRequest);
     }
 
     private String getInvalidExecuteRequest() {

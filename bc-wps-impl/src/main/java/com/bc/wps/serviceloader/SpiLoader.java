@@ -1,9 +1,9 @@
 package com.bc.wps.serviceloader;
 
-import com.bc.wps.DefaultInstance;
 import com.bc.wps.api.WpsServerContext;
 import com.bc.wps.api.WpsServiceInstance;
 import com.bc.wps.api.WpsServiceProvider;
+import com.bc.wps.exceptions.WpsRuntimeException;
 
 import java.util.ServiceLoader;
 
@@ -13,9 +13,10 @@ import java.util.ServiceLoader;
 public class SpiLoader {
 
     /**
-     * @param context WpsServerContext is used for creating service instance
+     * @param context         WpsServerContext is used for creating service instance
      * @param applicationName To select which service instance to be returned.
-     * @return the selected service instance. When not available, a default instance is returned.
+     *
+     * @return the selected service instance. When not available, a WpsRuntimeException is thrown.
      */
     public static WpsServiceInstance getWpsServiceProvider(WpsServerContext context, String applicationName) {
         ServiceLoader<WpsServiceProvider> availableProviders = ServiceLoader.load(WpsServiceProvider.class);
@@ -24,6 +25,6 @@ public class SpiLoader {
                 return wpsProvider.createServiceInstance(context);
             }
         }
-        return new DefaultInstance();
+        throw new WpsRuntimeException("Application '" + applicationName + "' not found.");
     }
 }

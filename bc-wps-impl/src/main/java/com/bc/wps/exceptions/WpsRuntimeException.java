@@ -9,4 +9,8 @@ public class WpsRuntimeException extends RuntimeException {
         super(message, cause);
     }
 
+    public WpsRuntimeException(String message) {
+        super(message);
+    }
+
 }

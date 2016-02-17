@@ -4,6 +4,7 @@ import com.bc.wps.exceptions.WpsRuntimeException;
 import com.bc.wps.responses.ExceptionResponse;
 import com.bc.wps.utilities.JaxbHelper;
 import com.bc.wps.utilities.WpsLogger;
+import com.sun.org.apache.xerces.internal.util.Status;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -34,7 +35,7 @@ public class WpsRuntimeExceptionMapper implements ExceptionMapper<WpsRuntimeExce
             ExceptionResponse jaxbExceptionResponse = new ExceptionResponse();
             exceptionString = jaxbExceptionResponse.getJaxbExceptionResponse();
         }
-        return Response.serverError()
+        return Response.status(Response.Status.SERVICE_UNAVAILABLE)
                     .entity(exceptionString)
                     .build();
     }
