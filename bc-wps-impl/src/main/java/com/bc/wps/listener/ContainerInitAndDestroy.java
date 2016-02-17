@@ -21,7 +21,7 @@ public class ContainerInitAndDestroy implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         System.out.println("********************************************");
-        System.out.println("******Stopping StatusObserver thread *******");
+        System.out.println("********* Stopping BC WPS server ***********");
         System.out.println("********************************************");
     }
 }
