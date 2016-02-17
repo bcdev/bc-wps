@@ -17,12 +17,12 @@ public class MockWpsOneSpi implements WpsServiceProvider {
 
     @Override
     public String getName() {
-        return "Unimplemented mock WPS";
+        return "Mock WPS provider implementation that throws exceptions";
     }
 
     @Override
     public String getDescription() {
-        return "This is still work in progress";
+        return "This is a mock implementation that returns exception in each operation.";
     }
 
     @Override
