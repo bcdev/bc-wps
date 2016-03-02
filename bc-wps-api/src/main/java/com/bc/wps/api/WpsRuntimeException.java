@@ -1,4 +1,4 @@
-package com.bc.wps.exceptions;
+package com.bc.wps.api;
 
 /**
  * @author hans
