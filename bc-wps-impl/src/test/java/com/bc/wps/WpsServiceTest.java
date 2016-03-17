@@ -35,8 +35,7 @@ public class WpsServiceTest {
     public void canGetCapabilitiesFromMockInstanceWithValidRequest() throws Exception {
         String response = wpsService.getWpsService("mock2", "WPS", "GetCapabilities", "", "", "", "", "", mockServletRequest);
 
-        assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                     "<wps:Capabilities service=\"WPS\" xml:lang=\"en\" version=\"1.0.0\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+        assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<wps:Capabilities service=\"WPS\" xml:lang=\"en\" version=\"1.0.0\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                      "    <ows:ServiceIdentification>\n" +
                                      "        <ows:Title>A mock WPS server</ows:Title>\n" +
                                      "        <ows:Abstract>A mock WPS server to be used as a reference for any WPS implementations.</ows:Abstract>\n" +
@@ -49,22 +48,22 @@ public class WpsServiceTest {
                                      "        <xs:ProviderName>Fantasy World</xs:ProviderName>\n" +
                                      "        <ows:ProviderSite xlink:href=\"http://fantasy-world.com\"/>\n" +
                                      "        <ows:ServiceContact>\n" +
-                                     "            <wps:IndividualName>John Doe</wps:IndividualName>\n" +
-                                     "            <wps:PositionName>System Administrator</wps:PositionName>\n" +
-                                     "            <wps:ContactInfo>\n" +
-                                     "                <wps:Phone>\n" +
+                                     "            <ows:IndividualName>John Doe</ows:IndividualName>\n" +
+                                     "            <ows:PositionName>System Administrator</ows:PositionName>\n" +
+                                     "            <ows:ContactInfo>\n" +
+                                     "                <ows:Phone>\n" +
                                      "                    <wps:Voice>+49 12345 6789</wps:Voice>\n" +
                                      "                    <wps:Facsimile>+49 98765 4321</wps:Facsimile>\n" +
-                                     "                </wps:Phone>\n" +
-                                     "                <wps:Address>\n" +
-                                     "                    <wps:DeliveryPoint>Room 1, Building A, Fantasy Avenue</wps:DeliveryPoint>\n" +
-                                     "                    <wps:City>Fantasyville</wps:City>\n" +
-                                     "                    <wps:AdministrativeArea>FF</wps:AdministrativeArea>\n" +
-                                     "                    <wps:PostalCode>1234</wps:PostalCode>\n" +
-                                     "                    <wps:Country>Kingdom of Fantasy</wps:Country>\n" +
-                                     "                    <wps:ElectronicMailAddress>admin@fantasy-world.com</wps:ElectronicMailAddress>\n" +
-                                     "                </wps:Address>\n" +
-                                     "            </wps:ContactInfo>\n" +
+                                     "                </ows:Phone>\n" +
+                                     "                <ows:Address>\n" +
+                                     "                    <xs:DeliveryPoint>Room 1, Building A, Fantasy Avenue</xs:DeliveryPoint>\n" +
+                                     "                    <xs:City>Fantasyville</xs:City>\n" +
+                                     "                    <xs:AdministrativeArea>FF</xs:AdministrativeArea>\n" +
+                                     "                    <xs:PostalCode>1234</xs:PostalCode>\n" +
+                                     "                    <xs:Country>Kingdom of Fantasy</xs:Country>\n" +
+                                     "                    <xs:ElectronicMailAddress>admin@fantasy-world.com</xs:ElectronicMailAddress>\n" +
+                                     "                </ows:Address>\n" +
+                                     "            </ows:ContactInfo>\n" +
                                      "        </ows:ServiceContact>\n" +
                                      "    </ows:ServiceProvider>\n" +
                                      "    <ows:OperationsMetadata>\n" +

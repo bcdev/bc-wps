@@ -46,10 +46,10 @@ public class ComplexDataDescriptionType {
 
     @XmlElement(name = "MimeType", namespace = "http://www.opengis.net/ows/1.1", required = true)
     protected String mimeType;
-    @XmlElement(name = "Encoding", namespace = "")
+    @XmlElement(name = "Encoding", namespace = "http://www.w3.org/2001/XMLSchema")
     @XmlSchemaType(name = "anyURI")
     protected String encoding;
-    @XmlElement(name = "Schema", namespace = "")
+    @XmlElement(name = "Schema", namespace = "http://www.w3.org/2001/XMLSchema")
     @XmlSchemaType(name = "anyURI")
     protected String schema;
 

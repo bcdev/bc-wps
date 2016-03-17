@@ -51,17 +51,17 @@ import java.util.List;
 })
 public class AddressType {
 
-    @XmlElement(name = "DeliveryPoint")
+    @XmlElement(name = "DeliveryPoint", namespace = "http://www.w3.org/2001/XMLSchema")
     protected List<String> deliveryPoint;
-    @XmlElement(name = "City")
+    @XmlElement(name = "City", namespace = "http://www.w3.org/2001/XMLSchema")
     protected String city;
-    @XmlElement(name = "AdministrativeArea")
+    @XmlElement(name = "AdministrativeArea", namespace = "http://www.w3.org/2001/XMLSchema")
     protected String administrativeArea;
-    @XmlElement(name = "PostalCode")
+    @XmlElement(name = "PostalCode", namespace = "http://www.w3.org/2001/XMLSchema")
     protected String postalCode;
-    @XmlElement(name = "Country")
+    @XmlElement(name = "Country", namespace = "http://www.w3.org/2001/XMLSchema")
     protected String country;
-    @XmlElement(name = "ElectronicMailAddress")
+    @XmlElement(name = "ElectronicMailAddress", namespace = "http://www.w3.org/2001/XMLSchema")
     protected List<String> electronicMailAddress;
 
     /**

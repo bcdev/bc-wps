@@ -45,13 +45,13 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ResponsiblePartySubsetType {
 
-    @XmlElement(name = "IndividualName")
+    @XmlElement(name = "IndividualName", namespace = "http://www.opengis.net/ows/1.1")
     protected String individualName;
-    @XmlElement(name = "PositionName")
+    @XmlElement(name = "PositionName", namespace = "http://www.opengis.net/ows/1.1")
     protected String positionName;
-    @XmlElement(name = "ContactInfo")
+    @XmlElement(name = "ContactInfo", namespace = "http://www.opengis.net/ows/1.1")
     protected ContactType contactInfo;
-    @XmlElement(name = "Role")
+    @XmlElement(name = "Role", namespace = "http://www.opengis.net/ows/1.1")
     protected CodeType role;
 
     /**

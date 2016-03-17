@@ -47,15 +47,15 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ContactType {
 
-    @XmlElement(name = "Phone")
+    @XmlElement(name = "Phone", namespace = "http://www.opengis.net/ows/1.1")
     protected TelephoneType phone;
-    @XmlElement(name = "Address")
+    @XmlElement(name = "Address", namespace = "http://www.opengis.net/ows/1.1")
     protected AddressType address;
-    @XmlElement(name = "OnlineResource")
+    @XmlElement(name = "OnlineResource", namespace = "http://www.opengis.net/ows/1.1")
     protected OnlineResourceType onlineResource;
-    @XmlElement(name = "HoursOfService")
+    @XmlElement(name = "HoursOfService", namespace = "http://www.w3.org/2001/XMLSchema")
     protected String hoursOfService;
-    @XmlElement(name = "ContactInstructions")
+    @XmlElement(name = "ContactInstructions", namespace = "http://www.w3.org/2001/XMLSchema")
     protected String contactInstructions;
 
     /**
