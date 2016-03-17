@@ -29,4 +29,8 @@ public class WpsServletContainer extends ServletContainer {
         }
         super.destroy();
     }
+
+    public static List<ServletContextListener> getListeners() {
+        return listeners;
+    }
 }
