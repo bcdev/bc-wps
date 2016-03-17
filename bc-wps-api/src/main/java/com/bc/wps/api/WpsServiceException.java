@@ -11,4 +11,8 @@ public class WpsServiceException extends Exception {
         super(message, cause);
     }
 
+    public WpsServiceException(Throwable cause) {
+        super(cause);
+    }
+
 }
