@@ -6,7 +6,7 @@
 //
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://www.opengis.net/wps/1.0.0",
-            elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
+            elementFormDefault = XmlNsForm.UNQUALIFIED,
             xmlns={@XmlNs(prefix="wps", namespaceURI="http://www.opengis.net/wps/1.0.0"),
                    @XmlNs(prefix="ows", namespaceURI="http://www.opengis.net/ows/1.1"),
                    @XmlNs(prefix="ns1", namespaceURI="http://www.w3.org/2001/XMLSchema"),
@@ -16,3 +16,4 @@
 package com.bc.wps.api.schema;
 
 import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;

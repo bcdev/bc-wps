@@ -68,9 +68,9 @@ public class ProcessDescriptionType
     extends ProcessBriefType
 {
 
-    @XmlElement(name = "DataInputs", namespace = "http://www.opengis.net/wps/1.0.0")
+    @XmlElement(name = "DataInputs")
     protected DataInputs dataInputs;
-    @XmlElement(name = "ProcessOutputs", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
+    @XmlElement(name = "ProcessOutputs", required = true)
     protected ProcessOutputs processOutputs;
     @XmlAttribute(name = "storeSupported")
     protected Boolean storeSupported;
@@ -207,7 +207,7 @@ public class ProcessDescriptionType
     })
     public static class DataInputs {
 
-        @XmlElement(name = "Input", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
+        @XmlElement(name = "Input", required = true)
         protected List<InputDescriptionType> input;
 
         /**
@@ -267,7 +267,7 @@ public class ProcessDescriptionType
     })
     public static class ProcessOutputs {
 
-        @XmlElement(name = "Output", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
+        @XmlElement(name = "Output", required = true)
         protected List<OutputDescriptionType> output;
 
         /**

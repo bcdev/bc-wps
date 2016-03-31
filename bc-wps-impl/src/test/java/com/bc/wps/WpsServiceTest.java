@@ -52,8 +52,8 @@ public class WpsServiceTest {
                                      "            <ows:PositionName>System Administrator</ows:PositionName>\n" +
                                      "            <ows:ContactInfo>\n" +
                                      "                <ows:Phone>\n" +
-                                     "                    <wps:Voice>+49 12345 6789</wps:Voice>\n" +
-                                     "                    <wps:Facsimile>+49 98765 4321</wps:Facsimile>\n" +
+                                     "                    <Voice>+49 12345 6789</Voice>\n" +
+                                     "                    <Facsimile>+49 98765 4321</Facsimile>\n" +
                                      "                </ows:Phone>\n" +
                                      "                <ows:Address>\n" +
                                      "                    <xs:DeliveryPoint>Room 1, Building A, Fantasy Avenue</xs:DeliveryPoint>\n" +
@@ -96,21 +96,21 @@ public class WpsServiceTest {
                                      "            </ows:DCP>\n" +
                                      "        </ows:Operation>\n" +
                                      "    </ows:OperationsMetadata>\n" +
-                                     "    <wps:ProcessOfferings>\n" +
-                                     "        <wps:Process wps:processVersion=\"0.1\">\n" +
+                                     "    <ProcessOfferings>\n" +
+                                     "        <Process wps:processVersion=\"0.1\">\n" +
                                      "            <ows:Identifier>process1</ows:Identifier>\n" +
                                      "            <ows:Abstract>This is a mock process from mock provider 2</ows:Abstract>\n" +
-                                     "        </wps:Process>\n" +
-                                     "    </wps:ProcessOfferings>\n" +
-                                     "    <wps:Languages>\n" +
-                                     "        <wps:Default>\n" +
+                                     "        </Process>\n" +
+                                     "    </ProcessOfferings>\n" +
+                                     "    <Languages>\n" +
+                                     "        <Default>\n" +
                                      "            <ows:Language>EN</ows:Language>\n" +
-                                     "        </wps:Default>\n" +
-                                     "        <wps:Supported>\n" +
+                                     "        </Default>\n" +
+                                     "        <Supported>\n" +
                                      "            <ows:Language>EN</ows:Language>\n" +
                                      "            <ows:Language>DE</ows:Language>\n" +
-                                     "        </wps:Supported>\n" +
-                                     "    </wps:Languages>\n" +
+                                     "        </Supported>\n" +
+                                     "    </Languages>\n" +
                                      "</wps:Capabilities>\n"));
     }
 
@@ -120,9 +120,9 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                                        "    <wps:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Service\">\n" +
-                                        "        <wps:ExceptionText>Invalid value of parameter 'Service'</wps:ExceptionText>\n" +
-                                        "    </wps:Exception>\n" +
+                                        "    <Exception exceptionCode=\"InvalidParameterValue\" locator=\"Service\">\n" +
+                                        "        <ExceptionText>Invalid value of parameter 'Service'</ExceptionText>\n" +
+                                        "    </Exception>\n" +
                                         "</wps:ExceptionReport>\n"));
     }
 
@@ -132,9 +132,9 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                                        "    <wps:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
-                                        "        <wps:ExceptionText>Missing parameter value</wps:ExceptionText>\n" +
-                                        "    </wps:Exception>\n" +
+                                        "    <Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
+                                        "        <ExceptionText>Missing parameter value</ExceptionText>\n" +
+                                        "    </Exception>\n" +
                                         "</wps:ExceptionReport>\n"));
     }
 
@@ -144,9 +144,9 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                                        "    <wps:Exception exceptionCode=\"MissingParameterValue\" locator=\"Version\">\n" +
-                                        "        <wps:ExceptionText>Missing parameter value</wps:ExceptionText>\n" +
-                                        "    </wps:Exception>\n" +
+                                        "    <Exception exceptionCode=\"MissingParameterValue\" locator=\"Version\">\n" +
+                                        "        <ExceptionText>Missing parameter value</ExceptionText>\n" +
+                                        "    </Exception>\n" +
                                         "</wps:ExceptionReport>\n"));
     }
 
@@ -156,9 +156,9 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                                        "    <wps:Exception exceptionCode=\"MissingParameterValue\" locator=\"JobId\">\n" +
-                                        "        <wps:ExceptionText>Missing parameter value</wps:ExceptionText>\n" +
-                                        "    </wps:Exception>\n" +
+                                        "    <Exception exceptionCode=\"MissingParameterValue\" locator=\"JobId\">\n" +
+                                        "        <ExceptionText>Missing parameter value</ExceptionText>\n" +
+                                        "    </Exception>\n" +
                                         "</wps:ExceptionReport>\n"));
     }
 
@@ -168,9 +168,9 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                                        "    <wps:Exception exceptionCode=\"MissingParameterValue\" locator=\"Service\">\n" +
-                                        "        <wps:ExceptionText>Missing parameter value</wps:ExceptionText>\n" +
-                                        "    </wps:Exception>\n" +
+                                        "    <Exception exceptionCode=\"MissingParameterValue\" locator=\"Service\">\n" +
+                                        "        <ExceptionText>Missing parameter value</ExceptionText>\n" +
+                                        "    </Exception>\n" +
                                         "</wps:ExceptionReport>\n"));
     }
 
@@ -180,9 +180,9 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                                        "    <wps:Exception exceptionCode=\"MissingParameterValue\" locator=\"Request\">\n" +
-                                        "        <wps:ExceptionText>Missing parameter value</wps:ExceptionText>\n" +
-                                        "    </wps:Exception>\n" +
+                                        "    <Exception exceptionCode=\"MissingParameterValue\" locator=\"Request\">\n" +
+                                        "        <ExceptionText>Missing parameter value</ExceptionText>\n" +
+                                        "    </Exception>\n" +
                                         "</wps:ExceptionReport>\n"));
     }
 
@@ -192,8 +192,8 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                                "<wps:ExecuteResponse xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"));
-        assertThat(wpsResponse, containsString("        <wps:ProcessStarted percentCompleted=\"65\">RUNNING</wps:ProcessStarted>\n" +
-                                               "    </wps:Status>\n</wps:ExecuteResponse>\n"));
+        assertThat(wpsResponse, containsString("        <ProcessStarted percentCompleted=\"65\">RUNNING</ProcessStarted>\n" +
+                                               "    </Status>\n</wps:ExecuteResponse>\n"));
     }
 
     @Test
@@ -202,9 +202,9 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                                        "    <wps:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Request\">\n" +
-                                        "        <wps:ExceptionText>Invalid value of parameter 'Request'</wps:ExceptionText>\n" +
-                                        "    </wps:Exception>\n" +
+                                        "    <Exception exceptionCode=\"InvalidParameterValue\" locator=\"Request\">\n" +
+                                        "        <ExceptionText>Invalid value of parameter 'Request'</ExceptionText>\n" +
+                                        "    </Exception>\n" +
                                         "</wps:ExceptionReport>\n"));
     }
 
@@ -215,8 +215,8 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                                "<wps:ExecuteResponse statusLocation=\"null/mockUserName\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"));
-        assertThat(wpsResponse, containsString("        <wps:ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</wps:ProcessAccepted>\n" +
-                                               "    </wps:Status>\n" +
+        assertThat(wpsResponse, containsString("        <ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</ProcessAccepted>\n" +
+                                               "    </Status>\n" +
                                                "</wps:ExecuteResponse>\n"));
     }
 
@@ -227,8 +227,8 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                                "<wps:ExecuteResponse statusLocation=\"null/mockUserName\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"));
-        assertThat(wpsResponse, containsString("        <wps:ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</wps:ProcessAccepted>\n" +
-                                               "    </wps:Status>\n" +
+        assertThat(wpsResponse, containsString("        <ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</ProcessAccepted>\n" +
+                                               "    </Status>\n" +
                                                "</wps:ExecuteResponse>\n"));
     }
 
@@ -238,9 +238,9 @@ public class WpsServiceTest {
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                         "<wps:ExceptionReport version=\"version\" xml:lang=\"Lang\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                                        "    <wps:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
-                                        "        <wps:ExceptionText>Missing parameter value</wps:ExceptionText>\n" +
-                                        "    </wps:Exception>\n" +
+                                        "    <Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
+                                        "        <ExceptionText>Missing parameter value</ExceptionText>\n" +
+                                        "    </Exception>\n" +
                                         "</wps:ExceptionReport>\n"));
     }
 

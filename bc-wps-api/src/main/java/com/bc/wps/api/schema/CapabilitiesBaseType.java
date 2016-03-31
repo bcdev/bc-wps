@@ -51,11 +51,11 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class CapabilitiesBaseType {
 
-    @XmlElement(name = "ServiceIdentification")
+    @XmlElement(name = "ServiceIdentification", namespace = "http://www.opengis.net/ows/1.1")
     protected ServiceIdentification serviceIdentification;
-    @XmlElement(name = "ServiceProvider")
+    @XmlElement(name = "ServiceProvider", namespace = "http://www.opengis.net/ows/1.1")
     protected ServiceProvider serviceProvider;
-    @XmlElement(name = "OperationsMetadata")
+    @XmlElement(name = "OperationsMetadata", namespace = "http://www.opengis.net/ows/1.1")
     protected OperationsMetadata operationsMetadata;
     @XmlAttribute(name = "version", required = true)
     protected String version;
