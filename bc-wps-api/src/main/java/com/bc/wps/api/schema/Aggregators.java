@@ -16,7 +16,7 @@ import java.util.List;
 })
 public class Aggregators {
 
-    @XmlElement(name = "aggregator", nillable = false, required = true)
+    @XmlElement(name = "aggregator", namespace = "http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd", nillable = false, required = true)
     protected List<AggregatorConfig> aggregator;
 
     public List<AggregatorConfig> getAggregator() {
