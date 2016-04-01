@@ -41,7 +41,7 @@ import java.util.List;
 })
 public class ComplexDataCombinationsType {
 
-    @XmlElement(name = "Format", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
+    @XmlElement(name = "Format", required = true)
     protected List<ComplexDataDescriptionType> format;
 
     /**

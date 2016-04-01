@@ -54,9 +54,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "Languages")
 public class Languages {
 
-    @XmlElement(name = "Default", required = true)
+    @XmlElement(name = "Default", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected Default _default;
-    @XmlElement(name = "Supported", required = true)
+    @XmlElement(name = "Supported", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected LanguagesType supported;
 
     /**

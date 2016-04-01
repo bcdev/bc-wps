@@ -41,7 +41,7 @@ import java.util.List;
 @XmlRootElement(name = "ProcessOfferings")
 public class ProcessOfferings {
 
-    @XmlElement(name = "Process", required = true)
+    @XmlElement(name = "Process", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected List<ProcessBriefType> process;
 
     /**

@@ -62,11 +62,11 @@ public class Capabilities
         this.lang = "en";
     }
 
-    @XmlElement(name = "ProcessOfferings", required = true)
+    @XmlElement(name = "ProcessOfferings", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected ProcessOfferings processOfferings;
-    @XmlElement(name = "Languages", required = true)
+    @XmlElement(name = "Languages", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected Languages languages;
-    @XmlElement(name = "WSDL")
+    @XmlElement(name = "WSDL", namespace = "http://www.opengis.net/wps/1.0.0")
     protected WSDL wsdl;
     @XmlAttribute(name = "service", required = true)
     @XmlSchemaType(name = "anySimpleType")

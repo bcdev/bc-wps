@@ -51,7 +51,7 @@ public class LiteralInputType
     protected AnyValue anyValue;
     @XmlElement(name = "ValuesReference", namespace = "")
     protected ValuesReferenceType valuesReference;
-    @XmlElement(name = "DefaultValue", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "DefaultValue")
     protected String defaultValue;
 
     /**

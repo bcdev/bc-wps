@@ -1,5 +1,6 @@
 package com.bc.wps.spi.mockproviders;
 
+import static com.bc.wps.api.schema.ProcessDescriptionType.*;
 import static com.bc.wps.api.utils.WpsTypeConverter.str2CodeType;
 import static com.bc.wps.api.utils.WpsTypeConverter.str2LanguageStringType;
 import static com.bc.wps.api.utils.WpsTypeConverter.str2OnlineResourceType;
@@ -8,10 +9,12 @@ import com.bc.wps.api.WpsRequestContext;
 import com.bc.wps.api.WpsServiceException;
 import com.bc.wps.api.WpsServiceInstance;
 import com.bc.wps.api.schema.AddressType;
+import com.bc.wps.api.schema.AnyValue;
 import com.bc.wps.api.schema.Capabilities;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.ContactType;
 import com.bc.wps.api.schema.DCP;
+import com.bc.wps.api.schema.DomainMetadataType;
 import com.bc.wps.api.schema.Execute;
 import com.bc.wps.api.schema.ExecuteResponse;
 import com.bc.wps.api.schema.HTTP;
@@ -20,8 +23,12 @@ import com.bc.wps.api.schema.LanguageStringType;
 import com.bc.wps.api.schema.Languages;
 import com.bc.wps.api.schema.Languages.Default;
 import com.bc.wps.api.schema.LanguagesType;
+import com.bc.wps.api.schema.LiteralInputType;
+import com.bc.wps.api.schema.LiteralOutputType;
 import com.bc.wps.api.schema.Operation;
 import com.bc.wps.api.schema.OperationsMetadata;
+import com.bc.wps.api.schema.OutputDataType;
+import com.bc.wps.api.schema.OutputDescriptionType;
 import com.bc.wps.api.schema.ProcessBriefType;
 import com.bc.wps.api.schema.ProcessDescriptionType;
 import com.bc.wps.api.schema.ProcessOfferings;
@@ -33,10 +40,13 @@ import com.bc.wps.api.schema.ServiceProvider;
 import com.bc.wps.api.schema.StatusType;
 import com.bc.wps.api.schema.TelephoneType;
 import com.bc.wps.api.utils.CapabilitiesBuilder;
+import com.bc.wps.api.utils.InputDescriptionTypeBuilder;
+import com.bc.wps.api.utils.WpsTypeConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -216,8 +226,8 @@ public class MockInstanceTwo implements WpsServiceInstance {
         mockServiceIdentification.setTitle(str2LanguageStringType("A mock WPS server"));
         mockServiceIdentification.setAbstract(str2LanguageStringType("A mock WPS server to be used as a reference for any WPS implementations."));
         mockServiceIdentification.setServiceType(str2CodeType("WPS"));
-        mockServiceIdentification.getServiceTypeVersion().add("0.1");
-        mockServiceIdentification.getServiceTypeVersion().add("1.0");
+        mockServiceIdentification.getServiceTypeVersion().add("1.0.0");
+        mockServiceIdentification.getServiceTypeVersion().add("2.0.0");
         mockServiceIdentification.setFees("gratis");
         return mockServiceIdentification;
     }
@@ -225,12 +235,9 @@ public class MockInstanceTwo implements WpsServiceInstance {
     private ProcessOfferings getMockProcessOfferings() {
         ProcessOfferings processOfferings = new ProcessOfferings();
         ProcessBriefType process = new ProcessBriefType();
-        CodeType processId = new CodeType();
-        processId.setValue("process1");
-        process.setIdentifier(processId);
-        LanguageStringType processAbstract = new LanguageStringType();
-        processAbstract.setValue("This is a mock process from mock provider 2");
-        process.setAbstract(processAbstract);
+        process.setIdentifier(WpsTypeConverter.str2CodeType("process1"));
+        process.setTitle(WpsTypeConverter.str2LanguageStringType("Process 1"));
+        process.setAbstract(WpsTypeConverter.str2LanguageStringType("This is a mock process from mock provider 2"));
         process.setProcessVersion("0.1");
         processOfferings.getProcess().add(process);
         return processOfferings;
@@ -238,26 +245,42 @@ public class MockInstanceTwo implements WpsServiceInstance {
 
     private ProcessDescriptionType getMockProcess(String processName) {
         ProcessDescriptionType process = new ProcessDescriptionType();
-        LanguageStringType title = new LanguageStringType();
-        title.setValue(processName);
-        process.setTitle(title);
+        process.setProcessVersion("1.0");
 
-        LanguageStringType abstractValue = new LanguageStringType();
-        abstractValue.setValue("Description");
-        process.setAbstract(abstractValue);
+        process.setIdentifier(WpsTypeConverter.str2CodeType(processName));
+        process.setTitle(WpsTypeConverter.str2LanguageStringType(processName));
+        process.setAbstract(WpsTypeConverter.str2LanguageStringType("Description"));
 
-        ProcessDescriptionType.DataInputs dataInputs = new ProcessDescriptionType.DataInputs();
-        InputDescriptionType input = new InputDescriptionType();
-        CodeType input1 = new CodeType();
-        input1.setValue("input1");
-        input.setIdentifier(input1);
-
-        LanguageStringType inputAbstract = new LanguageStringType();
-        inputAbstract.setValue("input description");
-        input.setAbstract(inputAbstract);
+        DataInputs dataInputs = new DataInputs();
+        InputDescriptionType input = InputDescriptionTypeBuilder.create()
+                    .withIdentifier("input1")
+                    .withTitle("input title")
+                    .withAbstract("input description")
+                    .withDataType("String")
+                    .withDefaultValue("default")
+                    .build();
 
         dataInputs.getInput().add(input);
         process.setDataInputs(dataInputs);
+
+        ProcessOutputs processOutputs = new ProcessOutputs();
+        OutputDescriptionType processOutput = new OutputDescriptionType();
+        processOutput.setIdentifier(WpsTypeConverter.str2CodeType("output1"));
+        processOutput.setTitle(WpsTypeConverter.str2LanguageStringType("Output 1"));
+        processOutput.setAbstract(WpsTypeConverter.str2LanguageStringType("This is output 1"));
+        LiteralOutputType literalOutputType = new LiteralOutputType();
+        DomainMetadataType outputDataType = getDomainMetadataType();
+        literalOutputType.setDataType(outputDataType);
+        processOutput.setLiteralOutput(literalOutputType);
+        processOutputs.getOutput().add(processOutput);
+        process.setProcessOutputs(processOutputs);
         return process;
+    }
+
+    private DomainMetadataType getDomainMetadataType() {
+        DomainMetadataType dataType = new DomainMetadataType();
+        dataType.setValue("data type");
+        dataType.setReference("data type reference");
+        return dataType;
     }
 }

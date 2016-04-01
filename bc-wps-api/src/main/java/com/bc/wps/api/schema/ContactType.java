@@ -53,9 +53,9 @@ public class ContactType {
     protected AddressType address;
     @XmlElement(name = "OnlineResource", namespace = "http://www.opengis.net/ows/1.1")
     protected OnlineResourceType onlineResource;
-    @XmlElement(name = "HoursOfService", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "HoursOfService", namespace = "http://www.opengis.net/ows/1.1")
     protected String hoursOfService;
-    @XmlElement(name = "ContactInstructions", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "ContactInstructions", namespace = "http://www.opengis.net/ows/1.1")
     protected String contactInstructions;
 
     /**

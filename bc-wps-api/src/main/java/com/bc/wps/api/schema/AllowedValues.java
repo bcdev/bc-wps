@@ -44,8 +44,8 @@ import java.util.List;
 public class AllowedValues {
 
     @XmlElements({
-        @XmlElement(name = "Value", type = ValueType.class),
-        @XmlElement(name = "Range", type = RangeType.class)
+        @XmlElement(name = "Value", namespace = "http://www.opengis.net/ows/1.1", type = ValueType.class),
+        @XmlElement(name = "Range", namespace = "http://www.opengis.net/ows/1.1", type = RangeType.class)
     })
     protected List<Object> valueOrRange;
 

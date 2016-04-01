@@ -43,9 +43,9 @@ import java.util.List;
 })
 public class TelephoneType {
 
-    @XmlElement(name = "Voice")
+    @XmlElement(name = "Voice", namespace = "http://www.opengis.net/ows/1.1")
     protected List<String> voice;
-    @XmlElement(name = "Facsimile")
+    @XmlElement(name = "Facsimile", namespace = "http://www.opengis.net/ows/1.1")
     protected List<String> facsimile;
 
     /**

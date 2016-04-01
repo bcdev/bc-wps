@@ -79,7 +79,8 @@ public class WpsService {
             switch (requestType) {
             case "GetCapabilities":
                 Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
-                return JaxbHelper.marshal(capabilities);
+                return JaxbHelper.marshalWithSchemaLocation(capabilities, "http://www.opengis.net/wps/1.0.0 " +
+                                                                          "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd");
             case "DescribeProcess":
                 String describeProcessExceptionXml = performDescribeProcessParameterValidation(processId, version);
                 if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
@@ -87,13 +88,15 @@ public class WpsService {
                 }
                 List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(requestContext, processId);
                 ProcessDescriptions processDescriptions = constructProcessDescriptionXml(processDescriptionTypes);
-                return JaxbHelper.marshal(processDescriptions);
+                return JaxbHelper.marshalWithSchemaLocation(processDescriptions, "http://www.opengis.net/wps/1.0.0 " +
+                                                                                 "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd");
             case "GetStatus":
                 if (StringUtils.isBlank(jobId)) {
                     return getMissingParameterXmlWriter("JobId");
                 }
                 ExecuteResponse executeResponse = wpsServiceProvider.getStatus(requestContext, jobId);
-                return JaxbHelper.marshal(executeResponse);
+                return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
+                                                                             "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
             default:
                 return getInvalidParameterXmlWriter("Request");
             }

@@ -2,12 +2,14 @@ package com.bc.wps.api.utils;
 
 
 import com.bc.wps.api.schema.AllowedValues;
+import com.bc.wps.api.schema.AnyValue;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.DomainMetadataType;
 import com.bc.wps.api.schema.InputDescriptionType;
 import com.bc.wps.api.schema.LanguageStringType;
 import com.bc.wps.api.schema.LiteralInputType;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -19,12 +21,16 @@ public class InputDescriptionTypeBuilder {
     private LanguageStringType title;
     private LanguageStringType abstractValue;
     private LiteralInputType literalInputType;
+    private BigInteger minOccurs;
+    private BigInteger maxOccurs;
 
     private InputDescriptionTypeBuilder() {
         this.identifier = new CodeType();
         this.title = new LanguageStringType();
         this.abstractValue = new LanguageStringType();
         this.literalInputType = new LiteralInputType();
+        this.minOccurs = BigInteger.ZERO;
+        this.maxOccurs = BigInteger.ONE;
     }
 
     public static InputDescriptionTypeBuilder create() {
@@ -45,13 +51,23 @@ public class InputDescriptionTypeBuilder {
         return this;
     }
 
-
     public InputDescriptionTypeBuilder withAbstract(String abstractText) {
         this.abstractValue.setValue(abstractText);
         return this;
     }
 
+    public InputDescriptionTypeBuilder setMinOccurs(BigInteger minOccurs) {
+        this.minOccurs = minOccurs;
+        return this;
+    }
+
+    public InputDescriptionTypeBuilder setMaxOccurs(BigInteger maxOccurs) {
+        this.maxOccurs = maxOccurs;
+        return this;
+    }
+
     public InputDescriptionTypeBuilder withDefaultValue(String defaultValue) {
+        this.literalInputType.setAnyValue(new AnyValue());
         this.literalInputType.setDefaultValue(defaultValue);
         return this;
     }
@@ -60,6 +76,8 @@ public class InputDescriptionTypeBuilder {
         DomainMetadataType dataTypeValue = new DomainMetadataType();
         dataTypeValue.setValue(dataType);
         this.literalInputType.setDataType(dataTypeValue);
+        this.literalInputType.setAnyValue(new AnyValue());
+        this.literalInputType.setDefaultValue("");
         return this;
     }
 
@@ -86,5 +104,13 @@ public class InputDescriptionTypeBuilder {
 
     public LiteralInputType getLiteralInputType() {
         return literalInputType;
+    }
+
+    public BigInteger getMinOccurs() {
+        return minOccurs;
+    }
+
+    public BigInteger getMaxOccurs() {
+        return maxOccurs;
     }
 }

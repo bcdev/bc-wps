@@ -51,17 +51,17 @@ import java.util.List;
 })
 public class AddressType {
 
-    @XmlElement(name = "DeliveryPoint", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "DeliveryPoint", namespace = "http://www.opengis.net/ows/1.1")
     protected List<String> deliveryPoint;
-    @XmlElement(name = "City", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "City", namespace = "http://www.opengis.net/ows/1.1")
     protected String city;
-    @XmlElement(name = "AdministrativeArea", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "AdministrativeArea", namespace = "http://www.opengis.net/ows/1.1")
     protected String administrativeArea;
-    @XmlElement(name = "PostalCode", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "PostalCode", namespace = "http://www.opengis.net/ows/1.1")
     protected String postalCode;
-    @XmlElement(name = "Country", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "Country", namespace = "http://www.opengis.net/ows/1.1")
     protected String country;
-    @XmlElement(name = "ElectronicMailAddress", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "ElectronicMailAddress", namespace = "http://www.opengis.net/ows/1.1")
     protected List<String> electronicMailAddress;
 
     /**

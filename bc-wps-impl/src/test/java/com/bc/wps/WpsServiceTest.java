@@ -35,33 +35,41 @@ public class WpsServiceTest {
     public void canGetCapabilitiesFromMockInstanceWithValidRequest() throws Exception {
         String response = wpsService.getWpsService("mock2", "WPS", "GetCapabilities", "", "", "", "", "", mockServletRequest);
 
-        assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<wps:Capabilities service=\"WPS\" xml:lang=\"en\" version=\"1.0.0\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+        assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                                     "<wps:Capabilities service=\"WPS\" xml:lang=\"en\" version=\"1.0.0\" " +
+                                     "xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd\" " +
+                                     "xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" " +
+                                     "xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
+                                     "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
+                                     "xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" " +
+                                     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+                                     "xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                      "    <ows:ServiceIdentification>\n" +
                                      "        <ows:Title>A mock WPS server</ows:Title>\n" +
                                      "        <ows:Abstract>A mock WPS server to be used as a reference for any WPS implementations.</ows:Abstract>\n" +
                                      "        <ows:ServiceType>WPS</ows:ServiceType>\n" +
-                                     "        <ows:ServiceTypeVersion>0.1</ows:ServiceTypeVersion>\n" +
-                                     "        <ows:ServiceTypeVersion>1.0</ows:ServiceTypeVersion>\n" +
+                                     "        <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>\n" +
+                                     "        <ows:ServiceTypeVersion>2.0.0</ows:ServiceTypeVersion>\n" +
                                      "        <ows:Fees>gratis</ows:Fees>\n" +
                                      "    </ows:ServiceIdentification>\n" +
                                      "    <ows:ServiceProvider>\n" +
-                                     "        <xs:ProviderName>Fantasy World</xs:ProviderName>\n" +
+                                     "        <ows:ProviderName>Fantasy World</ows:ProviderName>\n" +
                                      "        <ows:ProviderSite xlink:href=\"http://fantasy-world.com\"/>\n" +
                                      "        <ows:ServiceContact>\n" +
                                      "            <ows:IndividualName>John Doe</ows:IndividualName>\n" +
                                      "            <ows:PositionName>System Administrator</ows:PositionName>\n" +
                                      "            <ows:ContactInfo>\n" +
                                      "                <ows:Phone>\n" +
-                                     "                    <Voice>+49 12345 6789</Voice>\n" +
-                                     "                    <Facsimile>+49 98765 4321</Facsimile>\n" +
+                                     "                    <ows:Voice>+49 12345 6789</ows:Voice>\n" +
+                                     "                    <ows:Facsimile>+49 98765 4321</ows:Facsimile>\n" +
                                      "                </ows:Phone>\n" +
                                      "                <ows:Address>\n" +
-                                     "                    <xs:DeliveryPoint>Room 1, Building A, Fantasy Avenue</xs:DeliveryPoint>\n" +
-                                     "                    <xs:City>Fantasyville</xs:City>\n" +
-                                     "                    <xs:AdministrativeArea>FF</xs:AdministrativeArea>\n" +
-                                     "                    <xs:PostalCode>1234</xs:PostalCode>\n" +
-                                     "                    <xs:Country>Kingdom of Fantasy</xs:Country>\n" +
-                                     "                    <xs:ElectronicMailAddress>admin@fantasy-world.com</xs:ElectronicMailAddress>\n" +
+                                     "                    <ows:DeliveryPoint>Room 1, Building A, Fantasy Avenue</ows:DeliveryPoint>\n" +
+                                     "                    <ows:City>Fantasyville</ows:City>\n" +
+                                     "                    <ows:AdministrativeArea>FF</ows:AdministrativeArea>\n" +
+                                     "                    <ows:PostalCode>1234</ows:PostalCode>\n" +
+                                     "                    <ows:Country>Kingdom of Fantasy</ows:Country>\n" +
+                                     "                    <ows:ElectronicMailAddress>admin@fantasy-world.com</ows:ElectronicMailAddress>\n" +
                                      "                </ows:Address>\n" +
                                      "            </ows:ContactInfo>\n" +
                                      "        </ows:ServiceContact>\n" +
@@ -96,22 +104,92 @@ public class WpsServiceTest {
                                      "            </ows:DCP>\n" +
                                      "        </ows:Operation>\n" +
                                      "    </ows:OperationsMetadata>\n" +
-                                     "    <ProcessOfferings>\n" +
-                                     "        <Process wps:processVersion=\"0.1\">\n" +
+                                     "    <wps:ProcessOfferings>\n" +
+                                     "        <wps:Process wps:processVersion=\"0.1\">\n" +
                                      "            <ows:Identifier>process1</ows:Identifier>\n" +
+                                     "            <ows:Title>Process 1</ows:Title>\n" +
                                      "            <ows:Abstract>This is a mock process from mock provider 2</ows:Abstract>\n" +
-                                     "        </Process>\n" +
-                                     "    </ProcessOfferings>\n" +
-                                     "    <Languages>\n" +
-                                     "        <Default>\n" +
+                                     "        </wps:Process>\n" +
+                                     "    </wps:ProcessOfferings>\n" +
+                                     "    <wps:Languages>\n" +
+                                     "        <wps:Default>\n" +
                                      "            <ows:Language>EN</ows:Language>\n" +
-                                     "        </Default>\n" +
-                                     "        <Supported>\n" +
+                                     "        </wps:Default>\n" +
+                                     "        <wps:Supported>\n" +
                                      "            <ows:Language>EN</ows:Language>\n" +
                                      "            <ows:Language>DE</ows:Language>\n" +
-                                     "        </Supported>\n" +
-                                     "    </Languages>\n" +
+                                     "        </wps:Supported>\n" +
+                                     "    </wps:Languages>\n" +
                                      "</wps:Capabilities>\n"));
+    }
+
+    @Test
+    public void canDescribeProcessWithValidRequest() throws Exception {
+        String response = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "1.0.0", "en", "all", "1.0.0", "", mockServletRequest);
+
+        assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                                     "<wps:ProcessDescriptions service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" " +
+                                     "xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd\" " +
+                                     "xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" " +
+                                     "xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
+                                     "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
+                                     "xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" " +
+                                     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+                                     "xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                     "    <ProcessDescription wps:processVersion=\"1.0\">\n" +
+                                     "        <ows:Identifier>Process1</ows:Identifier>\n" +
+                                     "        <ows:Title>Process1</ows:Title>\n" +
+                                     "        <ows:Abstract>Description</ows:Abstract>\n" +
+                                     "        <DataInputs>\n" +
+                                     "            <Input minOccurs=\"0\" maxOccurs=\"1\">\n" +
+                                     "                <ows:Identifier>input1</ows:Identifier>\n" +
+                                     "                <ows:Title>input title</ows:Title>\n" +
+                                     "                <LiteralData>\n" +
+                                     "                    <ows:DataType>String</ows:DataType>\n" +
+                                     "                    <ows:AnyValue/>\n" +
+                                     "                    <DefaultValue>default</DefaultValue>\n" +
+                                     "                </LiteralData>\n" +
+                                     "            </Input>\n" +
+                                     "        </DataInputs>\n" +
+                                     "        <ProcessOutputs>\n" +
+                                     "            <Output>\n" +
+                                     "                <ows:Identifier>output1</ows:Identifier>\n" +
+                                     "                <ows:Title>Output 1</ows:Title>\n" +
+                                     "                <ows:Abstract>This is output 1</ows:Abstract>\n" +
+                                     "                <LiteralOutput>\n" +
+                                     "                    <ows:DataType ows:reference=\"data type reference\">data type</ows:DataType>\n" +
+                                     "                </LiteralOutput>\n" +
+                                     "            </Output>\n" +
+                                     "        </ProcessOutputs>\n" +
+                                     "    </ProcessDescription>\n" +
+                                     "    <ProcessDescription wps:processVersion=\"1.0\">\n" +
+                                     "        <ows:Identifier>Process2</ows:Identifier>\n" +
+                                     "        <ows:Title>Process2</ows:Title>\n" +
+                                     "        <ows:Abstract>Description</ows:Abstract>\n" +
+                                     "        <DataInputs>\n" +
+                                     "            <Input minOccurs=\"0\" maxOccurs=\"1\">\n" +
+                                     "                <ows:Identifier>input1</ows:Identifier>\n" +
+                                     "                <ows:Title>input title</ows:Title>\n" +
+                                     "                <LiteralData>\n" +
+                                     "                    <ows:DataType>String</ows:DataType>\n" +
+                                     "                    <ows:AnyValue/>\n" +
+                                     "                    <DefaultValue>default</DefaultValue>\n" +
+                                     "                </LiteralData>\n" +
+                                     "            </Input>\n" +
+                                     "        </DataInputs>\n" +
+                                     "        <ProcessOutputs>\n" +
+                                     "            <Output>\n" +
+                                     "                <ows:Identifier>output1</ows:Identifier>\n" +
+                                     "                <ows:Title>Output 1</ows:Title>\n" +
+                                     "                <ows:Abstract>This is output 1</ows:Abstract>\n" +
+                                     "                <LiteralOutput>\n" +
+                                     "                    <ows:DataType ows:reference=\"data type reference\">data type</ows:DataType>\n" +
+                                     "                </LiteralOutput>\n" +
+                                     "            </Output>\n" +
+                                     "        </ProcessOutputs>\n" +
+                                     "    </ProcessDescription>\n" +
+                                     "</wps:ProcessDescriptions>\n"));
+
     }
 
     @Test
@@ -191,7 +269,7 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "GetStatus", "", "", "", "", "dummyJobId", mockServletRequest);
 
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                               "<wps:ExecuteResponse xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"));
+                                                "<wps:ExecuteResponse xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"));
         assertThat(wpsResponse, containsString("        <ProcessStarted percentCompleted=\"65\">RUNNING</ProcessStarted>\n" +
                                                "    </Status>\n</wps:ExecuteResponse>\n"));
     }

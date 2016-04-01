@@ -54,6 +54,8 @@ public class InputDescriptionType
         this.identifier = builder.getIdentifier();
         this.title = builder.getTitle();
         this.literalData = builder.getLiteralInputType();
+        this.minOccurs = builder.getMinOccurs();
+        this.maxOccurs = builder.getMaxOccurs();
     }
 
     public InputDescriptionType() {
