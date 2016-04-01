@@ -8,6 +8,28 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <description>Calvalus WPS</description>
 
     <servlet>
+        <servlet-name>stagingServlet</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>listings</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>readonly</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>readmeFile</param-name>
+            <param-value>/staging/directory-listing-readme.txt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>contextXsltFile</param-name>
+            <param-value>/staging/directory-listing.xsl</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
         <servlet-name>Calvalus WPS</servlet-name>
         <servlet-class>
             com.bc.wps.utilities.WpsServletContainer
@@ -28,6 +50,11 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <url-pattern>/wps/*</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>stagingServlet</servlet-name>
+        <url-pattern>/staging/*</url-pattern>
+    </servlet-mapping>
+
     <security-role>
         <description>This is the group that consists of external users with access to Calvalus WPS.</description>
         <role-name>calwps</role-name>
@@ -42,6 +69,8 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <web-resource-collection>
             <web-resource-name>Calvalus HTTP</web-resource-name>
             <url-pattern>/wps/*</url-pattern>
+            <url-pattern>/staging</url-pattern>
+            <url-pattern>/staging/*</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
