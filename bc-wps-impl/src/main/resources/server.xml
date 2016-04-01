@@ -120,7 +120,7 @@
                resourceName="UserDatabase"/>
       </Realm-->
 	  
-	  <Realm className="org.apache.catalina.realm.MemoryRealm" digest="SHA" />
+	  <Realm className="org.apache.catalina.realm.MemoryRealm" digest="MD5" />
       </Realm>      
 
         <Realm   className="org.apache.catalina.realm.JNDIRealm"
