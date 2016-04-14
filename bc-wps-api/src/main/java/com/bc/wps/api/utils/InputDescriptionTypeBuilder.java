@@ -38,6 +38,9 @@ public class InputDescriptionTypeBuilder {
     }
 
     public InputDescriptionType build() {
+        if(this.literalInputType.getAllowedValues() == null){
+            this.literalInputType.setAnyValue(new AnyValue());
+        }
         return new InputDescriptionType(this);
     }
 
@@ -67,7 +70,6 @@ public class InputDescriptionTypeBuilder {
     }
 
     public InputDescriptionTypeBuilder withDefaultValue(String defaultValue) {
-        this.literalInputType.setAnyValue(new AnyValue());
         this.literalInputType.setDefaultValue(defaultValue);
         return this;
     }
@@ -76,14 +78,12 @@ public class InputDescriptionTypeBuilder {
         DomainMetadataType dataTypeValue = new DomainMetadataType();
         dataTypeValue.setValue(dataType);
         this.literalInputType.setDataType(dataTypeValue);
-        this.literalInputType.setAnyValue(new AnyValue());
-        this.literalInputType.setDefaultValue("");
         return this;
     }
 
-    public InputDescriptionTypeBuilder withAllowedValues(List<String> allowedValuesList) {
+    public InputDescriptionTypeBuilder withAllowedValues(List<Object> allowedValuesList) {
         AllowedValues allowedValues = new AllowedValues();
-        for (String allowedValue : allowedValuesList) {
+        for (Object allowedValue : allowedValuesList) {
             allowedValues.getValueOrRange().add(allowedValue);
         }
         this.literalInputType.setAllowedValues(allowedValues);

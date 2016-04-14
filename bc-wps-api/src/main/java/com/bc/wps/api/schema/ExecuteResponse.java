@@ -65,15 +65,15 @@ public class ExecuteResponse
     extends ResponseBaseType
 {
 
-    @XmlElement(name = "Process", required = true)
+    @XmlElement(name = "Process", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected ProcessBriefType process;
-    @XmlElement(name = "Status", required = true)
+    @XmlElement(name = "Status", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected StatusType status;
-    @XmlElement(name = "DataInputs")
+    @XmlElement(name = "DataInputs", namespace = "http://www.opengis.net/wps/1.0.0")
     protected DataInputsType dataInputs;
-    @XmlElement(name = "OutputDefinitions")
+    @XmlElement(name = "OutputDefinitions", namespace = "http://www.opengis.net/wps/1.0.0")
     protected OutputDefinitionsType outputDefinitions;
-    @XmlElement(name = "ProcessOutputs")
+    @XmlElement(name = "ProcessOutputs", namespace = "http://www.opengis.net/wps/1.0.0")
     protected ProcessOutputs processOutputs;
     @XmlAttribute(name = "serviceInstance", required = true)
     @XmlSchemaType(name = "anyURI")
@@ -276,7 +276,7 @@ public class ExecuteResponse
     })
     public static class ProcessOutputs {
 
-        @XmlElement(name = "Output", required = true)
+        @XmlElement(name = "Output", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
         protected List<OutputDataType> output;
 
         /**

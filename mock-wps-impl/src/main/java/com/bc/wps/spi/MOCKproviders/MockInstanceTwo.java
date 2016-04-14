@@ -12,6 +12,9 @@ import com.bc.wps.api.schema.AddressType;
 import com.bc.wps.api.schema.AnyValue;
 import com.bc.wps.api.schema.Capabilities;
 import com.bc.wps.api.schema.CodeType;
+import com.bc.wps.api.schema.ComplexDataCombinationType;
+import com.bc.wps.api.schema.ComplexDataCombinationsType;
+import com.bc.wps.api.schema.ComplexDataDescriptionType;
 import com.bc.wps.api.schema.ContactType;
 import com.bc.wps.api.schema.DCP;
 import com.bc.wps.api.schema.DomainMetadataType;
@@ -38,7 +41,9 @@ import com.bc.wps.api.schema.ResponsiblePartySubsetType;
 import com.bc.wps.api.schema.ServiceIdentification;
 import com.bc.wps.api.schema.ServiceProvider;
 import com.bc.wps.api.schema.StatusType;
+import com.bc.wps.api.schema.SupportedComplexDataInputType;
 import com.bc.wps.api.schema.TelephoneType;
+import com.bc.wps.api.schema.ValueType;
 import com.bc.wps.api.utils.CapabilitiesBuilder;
 import com.bc.wps.api.utils.InputDescriptionTypeBuilder;
 import com.bc.wps.api.utils.WpsTypeConverter;
@@ -96,16 +101,32 @@ public class MockInstanceTwo implements WpsServiceInstance {
         startedStatus.setProcessStarted(processStarted);
         startedStatus.setCreationTime(getXmlGregorianCalendar());
         startedResponse.setStatus(startedStatus);
+        startedResponse.setServiceInstance("http://companyUrl/serviceName?");
+        startedResponse.setService("WPS");
+        startedResponse.setVersion("1.0.0");
+        startedResponse.setLang("en");
         return startedResponse;
     }
 
     private ExecuteResponse getMockAcceptedResponse(WpsRequestContext context, String processId) throws WpsServiceException {
         ExecuteResponse mockAcceptedResponse = new ExecuteResponse();
+
+        ProcessBriefType process = new ProcessBriefType();
+        process.setProcessVersion("1.0");
+        process.setIdentifier(str2CodeType("process1"));
+        process.setTitle(str2LanguageStringType("Process 1"));
+        process.setAbstract(str2LanguageStringType("Process 1 description"));
+        mockAcceptedResponse.setProcess(process);
+
         StatusType acceptedStatus = new StatusType();
         acceptedStatus.setProcessAccepted("The request has been accepted. The job is being handled by processor '" + processId + "'.");
         acceptedStatus.setCreationTime(getXmlGregorianCalendar());
         mockAcceptedResponse.setStatus(acceptedStatus);
         mockAcceptedResponse.setStatusLocation(context.getServerContext().getHostAddress() + "/" + context.getUserName());
+        mockAcceptedResponse.setServiceInstance("http://companyUrl/serviceName?");
+        mockAcceptedResponse.setService("WPS");
+        mockAcceptedResponse.setVersion("1.0.0");
+        mockAcceptedResponse.setLang("en");
         return mockAcceptedResponse;
     }
 
@@ -252,15 +273,32 @@ public class MockInstanceTwo implements WpsServiceInstance {
         process.setAbstract(WpsTypeConverter.str2LanguageStringType("Description"));
 
         DataInputs dataInputs = new DataInputs();
+        List<Object> allowedValues = new ArrayList<>();
+        ValueType valueType = new ValueType();
+        valueType.setValue("allowedValue");
+        allowedValues.add(valueType);
+        allowedValues.add(valueType);
         InputDescriptionType input = InputDescriptionTypeBuilder.create()
                     .withIdentifier("input1")
                     .withTitle("input title")
                     .withAbstract("input description")
                     .withDataType("String")
                     .withDefaultValue("default")
+                    .withAllowedValues(allowedValues)
                     .build();
-
         dataInputs.getInput().add(input);
+
+        InputDescriptionType inputWithoutAllowedValues = InputDescriptionTypeBuilder.create()
+                    .withIdentifier("input2")
+                    .withTitle("input without allowed values")
+                    .withAbstract("input without allowed values description")
+                    .withDataType("String")
+                    .build();
+        dataInputs.getInput().add(inputWithoutAllowedValues);
+
+        InputDescriptionType complexInput = getComplexInputTypeWithSchema("schema.xsd");
+        dataInputs.getInput().add(complexInput);
+
         process.setDataInputs(dataInputs);
 
         ProcessOutputs processOutputs = new ProcessOutputs();
@@ -282,5 +320,29 @@ public class MockInstanceTwo implements WpsServiceInstance {
         dataType.setValue("data type");
         dataType.setReference("data type reference");
         return dataType;
+    }
+
+    private InputDescriptionType getComplexInputTypeWithSchema(String schemaUrl) {
+        InputDescriptionType l3ParametersComplexType = new InputDescriptionType();
+
+        l3ParametersComplexType.setMinOccurs(BigInteger.ZERO);
+        l3ParametersComplexType.setMaxOccurs(BigInteger.ONE);
+        l3ParametersComplexType.setIdentifier(str2CodeType("complex.parameter"));
+        l3ParametersComplexType.setTitle(str2LanguageStringType("An example of complex parameter"));
+        l3ParametersComplexType.setAbstract(str2LanguageStringType("Description for the parameter"));
+
+        SupportedComplexDataInputType l3Parameters = new SupportedComplexDataInputType();
+        ComplexDataCombinationType complexDataCombinationType = new ComplexDataCombinationType();
+        ComplexDataDescriptionType complexDataDescriptionType = new ComplexDataDescriptionType();
+        complexDataDescriptionType.setMimeType("application/xml");
+        complexDataDescriptionType.setSchema(schemaUrl);
+        complexDataCombinationType.setFormat(complexDataDescriptionType);
+        l3Parameters.setDefault(complexDataCombinationType);
+
+        ComplexDataCombinationsType complexDataCombinationsType = new ComplexDataCombinationsType();
+        complexDataCombinationsType.getFormat().add(complexDataDescriptionType);
+        l3Parameters.setSupported(complexDataCombinationsType);
+        l3ParametersComplexType.setComplexData(l3Parameters);
+        return l3ParametersComplexType;
     }
 }

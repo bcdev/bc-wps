@@ -131,7 +131,8 @@ public class WpsService {
 
         try {
             ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
-            return JaxbHelper.marshal(executeResponse);
+            return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
+                                                                         "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
         } catch (WpsServiceException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();

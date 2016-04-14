@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<wps:ExecuteResponse serviceInstance="http://www.brockmann-consult.de/bc-wps/wps/calvalus?" service="WPS" version="1.0.0" xml:lang="en" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <wps:Process wps:processVersion="1.0">
+        <ows:Identifier>urbantep-subsetting~1.0~Subset</ows:Identifier>
+        <ows:Title>urbantep-subsetting~1.0~Subset</ows:Title>
+    </wps:Process>
+    <wps:Status creationTime="2016-04-14T10:13:24.337+02:00">
+        <wps:ProcessStarted percentCompleted="50">RUNNING</wps:ProcessStarted>
+    </wps:Status>
+</wps:ExecuteResponse>

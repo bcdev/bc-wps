@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<wps:ExecuteResponse serviceInstance="http://www.brockmann-consult.de/bc-wps/wps/calvalus?" statusLocation="http://bc-wps:9080/bc-wps/wps/calvalus?Service=WPS&amp;Request=GetStatus&amp;JobId=20160414101128_L2Plus_845352a868dd5" service="WPS" version="1.0.0" xml:lang="en" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd" xmlns:bc="http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <wps:Process wps:processVersion="1.0">
+        <ows:Identifier>urbantep-subsetting~1.0~Subset</ows:Identifier>
+        <ows:Title>urbantep-subsetting~1.0~Subset</ows:Title>
+    </wps:Process>
+    <wps:Status creationTime="2016-04-14T10:11:30.361+02:00">
+        <wps:ProcessAccepted>The request has been accepted. The status of the process can be found in the URL.</wps:ProcessAccepted>
+    </wps:Status>
+</wps:ExecuteResponse>

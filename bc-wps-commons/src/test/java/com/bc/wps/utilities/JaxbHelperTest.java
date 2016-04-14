@@ -63,18 +63,18 @@ public class JaxbHelperTest {
     private String getMalformedAcceptedResponseXmlString() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                "<wps:ExecuteResponseXXX statusLocation=\"http://calvalustomcat:9080/calwps/wps?Service=WPS&amp;Request=GetStatus&amp;JobId=20150915093239_L3_14292f372703fc\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-               "    <Status creationTime=\"2015-09-15T09:32:42.225+02:00\">\n" +
-               "        <ProcessAccepted>The request has been accepted. The status of the process can be found in the URL.</ProcessAccepted>\n" +
-               "    </Status>\n" +
+               "    <wps:Status creationTime=\"2015-09-15T09:32:42.225+02:00\">\n" +
+               "        <wps:ProcessAccepted>The request has been accepted. The status of the process can be found in the URL.</wps:ProcessAccepted>\n" +
+               "    </wps:Status>\n" +
                "</wps:ExecuteResponseXXX>";
     }
 
     private String getMockAcceptedResponseXmlString() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                "<wps:ExecuteResponse statusLocation=\"http://calvalustomcat:9080/calwps/wps?Service=WPS&amp;Request=GetStatus&amp;JobId=20150915093239_L3_14292f372703fc\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-               "    <Status creationTime=\"2015-09-15T09:32:42.225+02:00\">\n" +
-               "        <ProcessAccepted>The request has been accepted. The status of the process can be found in the URL.</ProcessAccepted>\n" +
-               "    </Status>\n" +
+               "    <wps:Status creationTime=\"2015-09-15T09:32:42.225+02:00\">\n" +
+               "        <wps:ProcessAccepted>The request has been accepted. The status of the process can be found in the URL.</wps:ProcessAccepted>\n" +
+               "    </wps:Status>\n" +
                "</wps:ExecuteResponse>";
     }
 

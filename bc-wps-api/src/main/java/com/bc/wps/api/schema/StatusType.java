@@ -51,15 +51,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 })
 public class StatusType {
 
-    @XmlElement(name = "ProcessAccepted")
+    @XmlElement(name = "ProcessAccepted", namespace = "http://www.opengis.net/wps/1.0.0")
     protected String processAccepted;
-    @XmlElement(name = "ProcessStarted")
+    @XmlElement(name = "ProcessStarted", namespace = "http://www.opengis.net/wps/1.0.0")
     protected ProcessStartedType processStarted;
-    @XmlElement(name = "ProcessPaused")
+    @XmlElement(name = "ProcessPaused", namespace = "http://www.opengis.net/wps/1.0.0")
     protected ProcessStartedType processPaused;
-    @XmlElement(name = "ProcessSucceeded")
+    @XmlElement(name = "ProcessSucceeded", namespace = "http://www.opengis.net/wps/1.0.0")
     protected String processSucceeded;
-    @XmlElement(name = "ProcessFailed")
+    @XmlElement(name = "ProcessFailed", namespace = "http://www.opengis.net/wps/1.0.0")
     protected ProcessFailedType processFailed;
     @XmlAttribute(name = "creationTime", required = true)
     @XmlSchemaType(name = "dateTime")

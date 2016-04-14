@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import com.bc.wps.exceptions.InvalidRequestException;
+import com.bc.wps.utilities.XmlValidator;
 import org.junit.*;
 import org.junit.rules.*;
 
@@ -35,6 +36,7 @@ public class WpsServiceTest {
     public void canGetCapabilitiesFromMockInstanceWithValidRequest() throws Exception {
         String response = wpsService.getWpsService("mock2", "WPS", "GetCapabilities", "", "", "", "", "", mockServletRequest);
 
+        XmlValidator.validateString(response);
         assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                                      "<wps:Capabilities service=\"WPS\" xml:lang=\"en\" version=\"1.0.0\" " +
                                      "xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd\" " +
@@ -127,9 +129,10 @@ public class WpsServiceTest {
     public void canDescribeProcessWithValidRequest() throws Exception {
         String response = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "1.0.0", "en", "all", "1.0.0", "", mockServletRequest);
 
+        XmlValidator.validateString(response);
         assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                     "<wps:ProcessDescriptions service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" " +
-                                     "xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd\" " +
+                                     "<wps:ProcessDescriptions service=\"WPS\" version=\"1.0.0\" " +
+                                     "xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd\" " +
                                      "xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" " +
                                      "xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
                                      "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
@@ -144,11 +147,43 @@ public class WpsServiceTest {
                                      "            <Input minOccurs=\"0\" maxOccurs=\"1\">\n" +
                                      "                <ows:Identifier>input1</ows:Identifier>\n" +
                                      "                <ows:Title>input title</ows:Title>\n" +
+                                     "                <ows:Abstract>input description</ows:Abstract>\n" +
+                                     "                <LiteralData>\n" +
+                                     "                    <ows:DataType>String</ows:DataType>\n" +
+                                     "                    <ows:AllowedValues>\n" +
+                                     "                        <ows:Value>allowedValue</ows:Value>\n" +
+                                     "                        <ows:Value>allowedValue</ows:Value>\n" +
+                                     "                    </ows:AllowedValues>\n" +
+                                     "                    <DefaultValue>default</DefaultValue>\n" +
+                                     "                </LiteralData>\n" +
+                                     "            </Input>\n" +
+                                     "            <Input minOccurs=\"0\" maxOccurs=\"1\">\n" +
+                                     "                <ows:Identifier>input2</ows:Identifier>\n" +
+                                     "                <ows:Title>input without allowed values</ows:Title>\n" +
+                                     "                <ows:Abstract>input without allowed values description</ows:Abstract>\n" +
                                      "                <LiteralData>\n" +
                                      "                    <ows:DataType>String</ows:DataType>\n" +
                                      "                    <ows:AnyValue/>\n" +
-                                     "                    <DefaultValue>default</DefaultValue>\n" +
                                      "                </LiteralData>\n" +
+                                     "            </Input>\n" +
+                                     "            <Input minOccurs=\"0\" maxOccurs=\"1\">\n" +
+                                     "                <ows:Identifier>complex.parameter</ows:Identifier>\n" +
+                                     "                <ows:Title>An example of complex parameter</ows:Title>\n" +
+                                     "                <ows:Abstract>Description for the parameter</ows:Abstract>\n" +
+                                     "                <ComplexData>\n" +
+                                     "                    <Default>\n" +
+                                     "                        <Format>\n" +
+                                     "                            <MimeType>application/xml</MimeType>\n" +
+                                     "                            <Schema>schema.xsd</Schema>\n" +
+                                     "                        </Format>\n" +
+                                     "                    </Default>\n" +
+                                     "                    <Supported>\n" +
+                                     "                        <Format>\n" +
+                                     "                            <MimeType>application/xml</MimeType>\n" +
+                                     "                            <Schema>schema.xsd</Schema>\n" +
+                                     "                        </Format>\n" +
+                                     "                    </Supported>\n" +
+                                     "                </ComplexData>\n" +
                                      "            </Input>\n" +
                                      "        </DataInputs>\n" +
                                      "        <ProcessOutputs>\n" +
@@ -170,11 +205,43 @@ public class WpsServiceTest {
                                      "            <Input minOccurs=\"0\" maxOccurs=\"1\">\n" +
                                      "                <ows:Identifier>input1</ows:Identifier>\n" +
                                      "                <ows:Title>input title</ows:Title>\n" +
+                                     "                <ows:Abstract>input description</ows:Abstract>\n" +
+                                     "                <LiteralData>\n" +
+                                     "                    <ows:DataType>String</ows:DataType>\n" +
+                                     "                    <ows:AllowedValues>\n" +
+                                     "                        <ows:Value>allowedValue</ows:Value>\n" +
+                                     "                        <ows:Value>allowedValue</ows:Value>\n" +
+                                     "                    </ows:AllowedValues>\n" +
+                                     "                    <DefaultValue>default</DefaultValue>\n" +
+                                     "                </LiteralData>\n" +
+                                     "            </Input>\n" +
+                                     "            <Input minOccurs=\"0\" maxOccurs=\"1\">\n" +
+                                     "                <ows:Identifier>input2</ows:Identifier>\n" +
+                                     "                <ows:Title>input without allowed values</ows:Title>\n" +
+                                     "                <ows:Abstract>input without allowed values description</ows:Abstract>\n" +
                                      "                <LiteralData>\n" +
                                      "                    <ows:DataType>String</ows:DataType>\n" +
                                      "                    <ows:AnyValue/>\n" +
-                                     "                    <DefaultValue>default</DefaultValue>\n" +
                                      "                </LiteralData>\n" +
+                                     "            </Input>\n" +
+                                     "            <Input minOccurs=\"0\" maxOccurs=\"1\">\n" +
+                                     "                <ows:Identifier>complex.parameter</ows:Identifier>\n" +
+                                     "                <ows:Title>An example of complex parameter</ows:Title>\n" +
+                                     "                <ows:Abstract>Description for the parameter</ows:Abstract>\n" +
+                                     "                <ComplexData>\n" +
+                                     "                    <Default>\n" +
+                                     "                        <Format>\n" +
+                                     "                            <MimeType>application/xml</MimeType>\n" +
+                                     "                            <Schema>schema.xsd</Schema>\n" +
+                                     "                        </Format>\n" +
+                                     "                    </Default>\n" +
+                                     "                    <Supported>\n" +
+                                     "                        <Format>\n" +
+                                     "                            <MimeType>application/xml</MimeType>\n" +
+                                     "                            <Schema>schema.xsd</Schema>\n" +
+                                     "                        </Format>\n" +
+                                     "                    </Supported>\n" +
+                                     "                </ComplexData>\n" +
                                      "            </Input>\n" +
                                      "        </DataInputs>\n" +
                                      "        <ProcessOutputs>\n" +
@@ -269,9 +336,10 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "GetStatus", "", "", "", "", "dummyJobId", mockServletRequest);
 
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                                "<wps:ExecuteResponse xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"));
-        assertThat(wpsResponse, containsString("        <ProcessStarted percentCompleted=\"65\">RUNNING</ProcessStarted>\n" +
-                                               "    </Status>\n</wps:ExecuteResponse>\n"));
+                                               "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"));
+        assertThat(wpsResponse, containsString("        <wps:ProcessStarted percentCompleted=\"65\">RUNNING</wps:ProcessStarted>\n" +
+                                               "    </wps:Status>\n" +
+                                               "</wps:ExecuteResponse>\n"));
     }
 
     @Test
@@ -291,10 +359,16 @@ public class WpsServiceTest {
         configureMockUser();
         String wpsResponse = wpsService.postExecuteService("mock2", getValidExecuteRequest(), mockServletRequest);
 
+        XmlValidator.validateString(wpsResponse);
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                               "<wps:ExecuteResponse statusLocation=\"null/mockUserName\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"));
-        assertThat(wpsResponse, containsString("        <ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</ProcessAccepted>\n" +
-                                               "    </Status>\n" +
+                                               "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" statusLocation=\"null/mockUserName\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                               "    <wps:Process wps:processVersion=\"1.0\">\n" +
+                                               "        <ows:Identifier>process1</ows:Identifier>\n" +
+                                               "        <ows:Title>Process 1</ows:Title>\n" +
+                                               "        <ows:Abstract>Process 1 description</ows:Abstract>\n" +
+                                               "    </wps:Process>"));
+        assertThat(wpsResponse, containsString("        <wps:ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</wps:ProcessAccepted>\n" +
+                                               "    </wps:Status>\n" +
                                                "</wps:ExecuteResponse>\n"));
     }
 
@@ -304,9 +378,21 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.postExecuteService("mock2", getExecuteRequestWithoutServiceAndVersion(), mockServletRequest);
 
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                               "<wps:ExecuteResponse statusLocation=\"null/mockUserName\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"));
-        assertThat(wpsResponse, containsString("        <ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</ProcessAccepted>\n" +
-                                               "    </Status>\n" +
+                                               "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" statusLocation=\"null/mockUserName\" service=\"WPS\" version=\"1.0.0\" " +
+                                               "xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" " +
+                                               "xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" " +
+                                               "xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
+                                               "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
+                                               "xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" " +
+                                               "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+                                               "xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                               "    <wps:Process wps:processVersion=\"1.0\">\n" +
+                                               "        <ows:Identifier>process1</ows:Identifier>\n" +
+                                               "        <ows:Title>Process 1</ows:Title>\n" +
+                                               "        <ows:Abstract>Process 1 description</ows:Abstract>\n" +
+                                               "    </wps:Process>"));
+        assertThat(wpsResponse, containsString("        <wps:ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</wps:ProcessAccepted>\n" +
+                                               "    </wps:Status>\n" +
                                                "</wps:ExecuteResponse>\n"));
     }
 

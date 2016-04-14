@@ -44,12 +44,12 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ComplexDataDescriptionType {
 
-    @XmlElement(name = "MimeType", namespace = "http://www.opengis.net/ows/1.1", required = true)
+    @XmlElement(name = "MimeType", required = true)
     protected String mimeType;
-    @XmlElement(name = "Encoding", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "Encoding")
     @XmlSchemaType(name = "anyURI")
     protected String encoding;
-    @XmlElement(name = "Schema", namespace = "http://www.w3.org/2001/XMLSchema")
+    @XmlElement(name = "Schema")
     @XmlSchemaType(name = "anyURI")
     protected String schema;
 

@@ -42,7 +42,7 @@ public class OutputDataType
     extends DescriptionType
 {
 
-    @XmlElement(name = "Reference")
+    @XmlElement(name = "Reference", namespace = "http://www.opengis.net/wps/1.0.0")
     protected OutputReferenceType reference;
     @XmlElement(name = "Data")
     protected DataType data;
