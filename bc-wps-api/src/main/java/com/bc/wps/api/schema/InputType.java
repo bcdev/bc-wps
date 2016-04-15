@@ -50,9 +50,9 @@ public class InputType {
     protected LanguageStringType title;
     @XmlElement(name = "Abstract", namespace = "http://www.opengis.net/ows/1.1")
     protected LanguageStringType _abstract;
-    @XmlElement(name = "Reference")
+    @XmlElement(name = "Reference", namespace = "http://www.opengis.net/wps/1.0.0")
     protected InputReferenceType reference;
-    @XmlElement(name = "Data")
+    @XmlElement(name = "Data", namespace = "http://www.opengis.net/wps/1.0.0")
     protected DataType data;
 
     /**

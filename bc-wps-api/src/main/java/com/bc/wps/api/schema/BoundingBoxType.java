@@ -54,14 +54,14 @@ import java.util.List;
 public class BoundingBoxType {
 
     @XmlList
-    @XmlElement(name = "LowerCorner", type = Double.class)
+    @XmlElement(name = "LowerCorner", namespace = "http://www.opengis.net/ows/1.1", type = Double.class)
     @XmlSchemaType(name = "anySimpleType")
     protected List<Double> lowerCorner;
     @XmlList
-    @XmlElement(name = "UpperCorner", type = Double.class)
+    @XmlElement(name = "UpperCorner", namespace = "http://www.opengis.net/ows/1.1", type = Double.class)
     @XmlSchemaType(name = "anySimpleType")
     protected List<Double> upperCorner;
-    @XmlAttribute(name = "crs")
+    @XmlAttribute(name = "crs", namespace = "http://www.w3.org/2001/XMLSchema")
     @XmlSchemaType(name = "anyURI")
     protected String crs;
     @XmlAttribute(name = "dimensions")

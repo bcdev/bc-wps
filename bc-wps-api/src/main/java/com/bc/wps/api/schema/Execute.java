@@ -45,9 +45,9 @@ public class Execute
 
     @XmlElement(name = "Identifier", namespace = "http://www.opengis.net/ows/1.1", required = true)
     protected CodeType identifier;
-    @XmlElement(name = "DataInputs")
+    @XmlElement(name = "DataInputs", namespace = "http://www.opengis.net/wps/1.0.0")
     protected DataInputsType dataInputs;
-    @XmlElement(name = "ResponseForm")
+    @XmlElement(name = "ResponseForm", namespace = "http://www.opengis.net/wps/1.0.0")
     protected ResponseFormType responseForm;
 
     /**

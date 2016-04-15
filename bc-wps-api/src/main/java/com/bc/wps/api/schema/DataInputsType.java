@@ -41,7 +41,7 @@ import java.util.List;
 })
 public class DataInputsType {
 
-    @XmlElement(name = "Input", required = true)
+    @XmlElement(name = "Input", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected List<InputType> input;
 
     /**

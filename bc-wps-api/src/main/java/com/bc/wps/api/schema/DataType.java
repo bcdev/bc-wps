@@ -43,11 +43,11 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DataType {
 
-    @XmlElement(name = "ComplexData")
+    @XmlElement(name = "ComplexData", namespace = "http://www.opengis.net/wps/1.0.0")
     protected ComplexDataType complexData;
-    @XmlElement(name = "LiteralData")
+    @XmlElement(name = "LiteralData", namespace = "http://www.opengis.net/wps/1.0.0")
     protected LiteralDataType literalData;
-    @XmlElement(name = "BoundingBoxData")
+    @XmlElement(name = "BoundingBoxData", namespace = "http://www.opengis.net/ows/1.1")
     protected BoundingBoxType boundingBoxData;
 
     /**
