@@ -41,9 +41,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ResponseFormType {
 
-    @XmlElement(name = "ResponseDocument")
+    @XmlElement(name = "ResponseDocument", namespace = "http://www.opengis.net/wps/1.0.0")
     protected ResponseDocumentType responseDocument;
-    @XmlElement(name = "RawDataOutput")
+    @XmlElement(name = "RawDataOutput", namespace = "http://www.opengis.net/wps/1.0.0")
     protected OutputDefinitionType rawDataOutput;
 
     /**

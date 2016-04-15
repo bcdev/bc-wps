@@ -41,7 +41,7 @@ import java.util.List;
 })
 public class ResponseDocumentType {
 
-    @XmlElement(name = "Output", required = true)
+    @XmlElement(name = "Output", namespace = "http://www.opengis.net/wps/1.0.0", required = true)
     protected List<DocumentOutputDefinitionType> output;
     @XmlAttribute(name = "storeExecuteResponse")
     protected Boolean storeExecuteResponse;

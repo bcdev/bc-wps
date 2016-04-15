@@ -44,7 +44,7 @@ import java.util.List;
 })
 public class ExceptionType {
 
-    @XmlElement(name = "ExceptionText")
+    @XmlElement(name = "ExceptionText", namespace = "http://www.opengis.net/ows/1.1")
     protected List<String> exceptionText;
     @XmlAttribute(name = "exceptionCode", required = true)
     protected String exceptionCode;

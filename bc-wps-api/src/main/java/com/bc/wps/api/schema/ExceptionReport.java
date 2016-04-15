@@ -50,7 +50,7 @@ import java.util.List;
 @XmlRootElement(name = "ExceptionReport")
 public class ExceptionReport {
 
-    @XmlElement(name = "Exception", required = true)
+    @XmlElement(name = "Exception", namespace = "http://www.opengis.net/ows/1.1", required = true)
     protected List<ExceptionType> exception;
     @XmlAttribute(name = "version", required = true)
     protected String version;
