@@ -1,6 +1,6 @@
 package com.bc.wps.exceptionmapper;
 
-import com.bc.wps.api.WpsRuntimeException;
+import com.bc.wps.api.exceptions.WpsRuntimeException;
 import com.bc.wps.responses.ExceptionResponse;
 import com.bc.wps.utilities.JaxbHelper;
 import com.bc.wps.utilities.WpsLogger;

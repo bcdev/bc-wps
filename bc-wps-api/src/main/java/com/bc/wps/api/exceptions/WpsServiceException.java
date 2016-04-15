@@ -1,4 +1,4 @@
-package com.bc.wps.api;
+package com.bc.wps.api.exceptions;
 
 /**
  * Use this exception for any WPS-operation-related errors.
@@ -13,6 +13,10 @@ public class WpsServiceException extends Exception {
 
     public WpsServiceException(Throwable cause) {
         super(cause);
+    }
+
+    public WpsServiceException(String message) {
+        super(message);
     }
 
 }

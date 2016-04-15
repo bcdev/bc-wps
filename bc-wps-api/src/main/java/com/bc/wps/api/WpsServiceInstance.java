@@ -1,6 +1,7 @@
 package com.bc.wps.api;
 
 
+import com.bc.wps.api.exceptions.WpsServiceException;
 import com.bc.wps.api.schema.Capabilities;
 import com.bc.wps.api.schema.Execute;
 import com.bc.wps.api.schema.ExecuteResponse;

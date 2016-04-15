@@ -27,8 +27,7 @@ public class GeneralExceptionMapper implements ExceptionMapper<Exception> {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         String exceptionString;
         try {
-            exceptionString = JaxbHelper.marshal(exceptionResponse.
-                        getGeneralExceptionWithExceptionCauseMessage(exception.getMessage(), exception));
+            exceptionString = JaxbHelper.marshal(exceptionResponse.getExceptionResponse(exception));
         } catch (JAXBException jaxbException) {
             LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
             ExceptionResponse jaxbExceptionResponse = new ExceptionResponse();

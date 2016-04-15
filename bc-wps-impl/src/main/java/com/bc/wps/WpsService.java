@@ -2,8 +2,10 @@ package com.bc.wps;
 
 import com.bc.wps.api.WpsRequestContext;
 import com.bc.wps.api.WpsServerContext;
-import com.bc.wps.api.WpsServiceException;
+import com.bc.wps.api.exceptions.WpsServiceException;
 import com.bc.wps.api.WpsServiceInstance;
+import com.bc.wps.api.exceptions.InvalidParameterValueException;
+import com.bc.wps.api.exceptions.MissingParameterValueException;
 import com.bc.wps.api.schema.Capabilities;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.ExceptionReport;
@@ -29,7 +31,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -70,12 +71,12 @@ public class WpsService {
         WpsServerContext serverContext = requestContext.getServerContext();
         WpsServiceInstance wpsServiceProvider = SpiLoader.getWpsServiceProvider(serverContext, applicationName);
 
-        String exceptionXml = performUrlParameterValidation(service, requestType);
-        if (StringUtils.isNotBlank(exceptionXml)) {
-            return exceptionXml;
-        }
 
         try {
+            String exceptionXml = performUrlParameterValidation(service, requestType);
+            if (StringUtils.isNotBlank(exceptionXml)) {
+                return exceptionXml;
+            }
             switch (requestType) {
             case "GetCapabilities":
                 Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
@@ -92,13 +93,13 @@ public class WpsService {
                                                                                  "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd");
             case "GetStatus":
                 if (StringUtils.isBlank(jobId)) {
-                    return getMissingParameterXmlWriter("JobId");
+                    throw new MissingParameterValueException("JobId");
                 }
                 ExecuteResponse executeResponse = wpsServiceProvider.getStatus(requestContext, jobId);
                 return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
                                                                              "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
             default:
-                return getInvalidParameterXmlWriter("Request");
+                throw new InvalidParameterValueException("Request");
             }
         } catch (WpsServiceException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
@@ -124,12 +125,12 @@ public class WpsService {
         WpsServiceInstance wpsServiceProvider = SpiLoader.getWpsServiceProvider(serverContext, applicationName);
         Execute execute = getExecute(request);
 
-        String exceptionXml = performXmlParameterValidation(execute);
-        if (StringUtils.isNotBlank(exceptionXml)) {
-            return exceptionXml;
-        }
 
         try {
+            String exceptionXml = performXmlParameterValidation(execute);
+            if (StringUtils.isNotBlank(exceptionXml)) {
+                return exceptionXml;
+            }
             ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
             return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
                                                                          "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
@@ -145,47 +146,47 @@ public class WpsService {
         }
     }
 
-    private String performDescribeProcessParameterValidation(String processorId, String version) {
+    private String performDescribeProcessParameterValidation(String processorId, String version) throws MissingParameterValueException {
         if (StringUtils.isBlank(version)) {
-            return getMissingParameterXmlWriter("Version");
+            throw new MissingParameterValueException("Version");
         }
         if (StringUtils.isBlank(processorId)) {
-            return getMissingParameterXmlWriter("Identifier");
+            throw new MissingParameterValueException("Identifier");
         }
         return null;
     }
 
-    private String performUrlParameterValidation(String service, String requestType) {
+    private String performUrlParameterValidation(String service, String requestType) throws MissingParameterValueException, InvalidParameterValueException {
         if (StringUtils.isBlank(service)) {
-            return getMissingParameterXmlWriter("Service");
+            throw new MissingParameterValueException("Service");
         }
         if (StringUtils.isBlank(requestType)) {
-            return getMissingParameterXmlWriter("Request");
+            throw new MissingParameterValueException("Request");
         }
         if (!service.equals("WPS")) {
-            return getInvalidParameterXmlWriter("Service");
+            throw new InvalidParameterValueException("Service");
         }
         return "";
     }
 
-    private String performXmlParameterValidation(Execute execute) {
+    private String performXmlParameterValidation(Execute execute) throws MissingParameterValueException, InvalidParameterValueException {
         String service = execute.getService();
         String version = execute.getVersion();
         CodeType identifier = execute.getIdentifier();
 
         if (StringUtils.isBlank(service)) {
-            return getMissingParameterXmlWriter("Service");
+            throw new MissingParameterValueException("Service");
         }
         if (!"WPS".equals(service)) {
-            return getInvalidParameterXmlWriter(service);
+            throw new InvalidParameterValueException("Service");
         }
 
         if (StringUtils.isBlank(version)) {
-            return getMissingParameterXmlWriter("Version");
+            throw new MissingParameterValueException("Version");
         }
 
         if (identifier == null || StringUtils.isBlank(identifier.getValue())) {
-            return getMissingParameterXmlWriter("Identifier");
+            throw new MissingParameterValueException("Identifier");
         }
         return "";
     }
@@ -206,23 +207,10 @@ public class WpsService {
         }
     }
 
-    private String getMissingParameterXmlWriter(String missingParameter) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse();
-        ExceptionReport exceptionReport = exceptionResponse.getMissingParameterExceptionResponse(
-                    "Missing parameter value", missingParameter);
-        return getExceptionString(exceptionReport);
-    }
-
-    private String getInvalidParameterXmlWriter(String invalidParameter) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse();
-        ExceptionReport exceptionReport = exceptionResponse.getInvalidParameterExceptionResponse(
-                    "Invalid value of parameter '" + invalidParameter + "'", invalidParameter);
-        return getExceptionString(exceptionReport);
-    }
-
     private String getExceptionString(ExceptionReport exceptionReport) {
         try {
-            return JaxbHelper.marshal(exceptionReport);
+            return JaxbHelper.marshalWithSchemaLocation(exceptionReport, "http://www.opengis.net/ows/1.1 " +
+                                                                         "http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd");
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshal the WPS exception.", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();

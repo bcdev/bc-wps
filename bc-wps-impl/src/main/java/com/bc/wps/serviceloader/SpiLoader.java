@@ -3,7 +3,7 @@ package com.bc.wps.serviceloader;
 import com.bc.wps.api.WpsServerContext;
 import com.bc.wps.api.WpsServiceInstance;
 import com.bc.wps.api.WpsServiceProvider;
-import com.bc.wps.api.WpsRuntimeException;
+import com.bc.wps.api.exceptions.WpsRuntimeException;
 
 import java.util.ServiceLoader;
 

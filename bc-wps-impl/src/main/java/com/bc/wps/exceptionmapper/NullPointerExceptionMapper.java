@@ -28,10 +28,7 @@ public class NullPointerExceptionMapper implements ExceptionMapper<NullPointerEx
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         String exceptionString;
         try {
-            exceptionString = JaxbHelper.marshal(exceptionResponse.
-                        getGeneralExceptionWithExceptionCauseMessage("A value is missing" +
-                                                                     (StringUtils.isNotBlank(exception.getMessage()) ? " : " + exception.getMessage() : ""),
-                                                                     exception.getCause()));
+            exceptionString = JaxbHelper.marshal(exceptionResponse.getExceptionResponse(exception));
         } catch (JAXBException jaxbException) {
             LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
             ExceptionResponse jaxbExceptionResponse = new ExceptionResponse();
