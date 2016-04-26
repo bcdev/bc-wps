@@ -68,7 +68,7 @@
                 </LiteralData>
             </Input>
             <Input minOccurs="0" maxOccurs="1">
-                <ows:Identifier>regionWkt</ows:Identifier>
+                <ows:Identifier>regionWKT</ows:Identifier>
                 <ows:Title>Region WKT</ows:Title>
                 <ows:Abstract>The spatial range in the format of text. Example: POLYGON((100 -10,100 0,110 0,110 -10,100 -10))</ows:Abstract>
                 <LiteralData>
@@ -77,7 +77,7 @@
                 </LiteralData>
             </Input>
             <Input minOccurs="0" maxOccurs="1">
-                <ows:Identifier>regionWkt</ows:Identifier>
+                <ows:Identifier>regionWKT</ows:Identifier>
                 <ows:Title>Region with bounding box</ows:Title>
                 <ows:Abstract>The spatial range in the format of bounding box. Use LowerCorner and UpperCorner (a pair of double values) to specify the box. Example: &lt;LowerCorner&gt;100.74453 -10.0000&lt;/LowerCorner&gt;&lt;UpperCorner&gt;110.25000 0.12443&lt;/UpperCorner&gt;</ows:Abstract>
                 <BoundingBoxData>
