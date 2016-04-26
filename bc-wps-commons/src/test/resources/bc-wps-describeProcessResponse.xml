@@ -15,6 +15,18 @@
                 </LiteralData>
             </Input>
             <Input minOccurs="0" maxOccurs="1">
+                <ows:Identifier>productionType</ows:Identifier>
+                <ows:Title>Production type</ows:Title>
+                <ows:Abstract>The type of the requested product. When not specified, L2Plus type is used</ows:Abstract>
+                <LiteralData>
+                    <ows:DataType>string</ows:DataType>
+                    <ows:AllowedValues>
+                        <ows:Value>L2Plus</ows:Value>
+                    </ows:AllowedValues>
+                    <DefaultValue>L2Plus</DefaultValue>
+                </LiteralData>
+            </Input>
+            <Input minOccurs="0" maxOccurs="1">
                 <ows:Identifier>inputDataSetName</ows:Identifier>
                 <ows:Title>Input data set name</ows:Title>
                 <ows:Abstract>The input dataset required for the processing</ows:Abstract>
