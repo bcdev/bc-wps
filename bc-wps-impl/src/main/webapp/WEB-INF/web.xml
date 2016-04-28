@@ -71,6 +71,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
             <url-pattern>/wps/*</url-pattern>
             <url-pattern>/staging</url-pattern>
             <url-pattern>/staging/*</url-pattern>
+            <url-pattern>/urbantep-quicklooks/*</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
