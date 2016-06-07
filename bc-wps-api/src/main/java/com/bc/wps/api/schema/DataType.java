@@ -47,7 +47,7 @@ public class DataType {
     protected ComplexDataType complexData;
     @XmlElement(name = "LiteralData", namespace = "http://www.opengis.net/wps/1.0.0")
     protected LiteralDataType literalData;
-    @XmlElement(name = "BoundingBoxData", namespace = "http://www.opengis.net/ows/1.1")
+    @XmlElement(name = "BoundingBoxData", namespace = "http://www.opengis.net/wps/1.0.0")
     protected BoundingBoxType boundingBoxData;
 
     /**
