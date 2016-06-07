@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<wps:Execute xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_request.xsd"
+             service="WPS"
+             version="1.0.0"
+             xmlns:wps="http://www.opengis.net/wps/1.0.0"
+             xmlns:ows="http://www.opengis.net/ows/1.1"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <ows:Identifier>urbantep-fmask~3.2~Fmask8</ows:Identifier>
+
+    <wps:DataInputs>
+        <wps:Input>
+            <ows:Identifier>productionType</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>L2</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>productionName</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>TEP Fmask8 test</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>inputDataSetName</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>Landsat 8 OLI and TIRS of Finland 2013</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>minDate</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>2013-04-23</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>maxDate</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>2013-04-23</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>periodLength</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>1</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>regionWKT</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>regionWKT</ows:Identifier>
+            <wps:Data>
+                <wps:BoundingBoxData dimensions="2">
+                    <ows:LowerCorner>-54.58 35.532</ows:LowerCorner>
+                    <ows:UpperCorner>-16.875 59.356</ows:UpperCorner>
+                </wps:BoundingBoxData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>calvalus.output.format</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>NetCDF4</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+
+
+    </wps:DataInputs>
+    <wps:ResponseForm>
+        <wps:ResponseDocument storeExecuteResponse="true" status="true">
+            <wps:Output>
+                <ows:Identifier>productionResults</ows:Identifier>
+            </wps:Output>
+        </wps:ResponseDocument>
+    </wps:ResponseForm>
+</wps:Execute>

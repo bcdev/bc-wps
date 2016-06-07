@@ -21,6 +21,17 @@ public class XmlValidatorTest {
 
     @Ignore
     @Test
+    public void canValidateExecuteRequest() throws Exception {
+        File xmlFile = new File("src/test/resources/bc-wps-executeRequest.xml");
+        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errStream));
+        XmlValidator.validate(xmlFile);
+
+        assertThat(errStream.toString(), equalTo(""));
+    }
+
+    @Ignore
+    @Test
     public void canValidateGetCapabilitiesResponse() throws Exception {
         File xmlFile = new File("src/test/resources/bc-wps-getCapabilitiesResponse.xml");
         ByteArrayOutputStream errStream = new ByteArrayOutputStream();
