@@ -11,6 +11,7 @@ import org.junit.rules.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.Locale;
 
 /**
  * @author hans
@@ -25,6 +26,7 @@ public class WpsServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        Locale.setDefault(Locale.ENGLISH);
         mockServletRequest = mock(HttpServletRequest.class);
         Principal mockUserPrincipal = mock(Principal.class);
         when(mockUserPrincipal.getName()).thenReturn("mockName");
