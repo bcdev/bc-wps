@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author hans
  */
-public class WpsRequestContextImpl implements WpsRequestContext {
+class WpsRequestContextImpl implements WpsRequestContext {
 
     private final HttpServletRequest servletRequest;
 
-    public WpsRequestContextImpl(HttpServletRequest servletRequest) {
+    WpsRequestContextImpl(HttpServletRequest servletRequest) {
         this.servletRequest = servletRequest;
     }
 
@@ -26,5 +26,10 @@ public class WpsRequestContextImpl implements WpsRequestContext {
     @Override
     public WpsServerContext getServerContext() {
         return new WpsServerContextImpl(servletRequest);
+    }
+
+    @Override
+    public String getHeaderField(String key){
+        return servletRequest.getHeader(key);
     }
 }

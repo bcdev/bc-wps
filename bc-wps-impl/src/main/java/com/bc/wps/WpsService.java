@@ -2,10 +2,10 @@ package com.bc.wps;
 
 import com.bc.wps.api.WpsRequestContext;
 import com.bc.wps.api.WpsServerContext;
-import com.bc.wps.api.exceptions.WpsServiceException;
 import com.bc.wps.api.WpsServiceInstance;
 import com.bc.wps.api.exceptions.InvalidParameterValueException;
 import com.bc.wps.api.exceptions.MissingParameterValueException;
+import com.bc.wps.api.exceptions.WpsServiceException;
 import com.bc.wps.api.schema.Capabilities;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.ExceptionReport;

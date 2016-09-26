@@ -6,10 +6,12 @@ package com.bc.wps.api;
  *
  * @author hans
  */
-public interface WpsRequestContext {
+interface WpsRequestContext {
 
     String getUserName();
 
     WpsServerContext getServerContext();
+
+    String getHeaderField(String key);
 
 }
