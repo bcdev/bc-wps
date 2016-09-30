@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<wps:Execute xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_request.xsd"
+             service="WPS"
+             version="1.0.0"
+             xmlns:wps="http://www.opengis.net/wps/1.0.0"
+             xmlns:ows="http://www.opengis.net/ows/1.1"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:cal="http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd">
+
+    <ows:Identifier>urbantep-timescan~1.0~Idepix.Sentinel2</ows:Identifier>
+
+    <wps:DataInputs>
+        <wps:Input>
+            <ows:Identifier>productionType</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>L3</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>productionName</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>urban timescan</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>inputDataSetName</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>S2 L1C Granules Global Urban</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>minDate</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>2015-06-01</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>maxDate</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>2016-10-31</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>regionWKT</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>POLYGON((100 -10,100 0,110 0,110 -10,100 -10))</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <ows:Identifier>outputFormat</ows:Identifier>
+            <wps:Data>
+                <wps:LiteralData>NetCDF4</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+
+        <wps:Input>
+            <ows:Identifier>calvalus.l3.parameters</ows:Identifier>
+            <wps:Data>
+                <wps:ComplexData>
+                    <cal:parameters>
+                        <cal:compositingType>MOSAICKING</cal:compositingType>
+                        <cal:planetaryGrid>org.esa.snap.binning.support.PlateCarreeGrid</cal:planetaryGrid>
+                        <cal:numRows>972000</cal:numRows>
+                        <cal:superSampling>1</cal:superSampling>
+                        <cal:maskExpr>! lc_invalid and ! lc_cloud</cal:maskExpr>
+                        <cal:variables>
+                            <cal:variable>
+                                <name>ndbi</name>
+                                <expr>(B11 - B8A) / (B11 + B8A)</expr>
+                            </cal:variable>
+                            <cal:variable>
+                                <name>ndvi</name>
+                                <expr>(B8A - B4) / (B8A + B4)</expr>
+                            </cal:variable>
+                            <cal:variable>
+                                <name>ndwi</name>
+                                <expr>(B3 - B8A) / (B3 + B8A)</expr>
+                            </cal:variable>
+                            <cal:variable>
+                                <name>mndwi</name>
+                                <expr>(B3 - B11) / (B3 + B11)</expr>
+                            </cal:variable>
+                        </cal:variables>
+                        <cal:aggregators>
+                            <cal:aggregator>
+                                <type>MIN_MAX</type>
+                                <varName>ndbi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>AVG</type>
+                                <varName>ndbi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>PERCENTILE</type>
+                                <percentage>10</percentage>
+                                <varName>ndbi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>PERCENTILE</type>
+                                <percentage>90</percentage>
+                                <varName>ndbi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>MIN_MAX</type>
+                                <varName>ndvi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>AVG</type>
+                                <varName>ndvi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>PERCENTILE</type>
+                                <percentage>10</percentage>
+                                <varName>ndvi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>PERCENTILE</type>
+                                <percentage>90</percentage>
+                                <varName>ndvi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>MIN_MAX</type>
+                                <varName>ndwi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>AVG</type>
+                                <varName>ndwi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>PERCENTILE</type>
+                                <percentage>10</percentage>
+                                <varName>ndwi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>PERCENTILE</type>
+                                <percentage>90</percentage>
+                                <varName>ndwi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>MIN_MAX</type>
+                                <varName>mndwi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>AVG</type>
+                                <varName>mndwi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>PERCENTILE</type>
+                                <percentage>10</percentage>
+                                <varName>mndwi</varName>
+                            </cal:aggregator>
+                            <cal:aggregator>
+                                <type>PERCENTILE</type>
+                                <percentage>90</percentage>
+                                <varName>mndwi</varName>
+                            </cal:aggregator>
+                        </cal:aggregators>
+                    </cal:parameters>
+                </wps:ComplexData>
+            </wps:Data>
+        </wps:Input>
+
+
+    </wps:DataInputs>
+    <wps:ResponseForm>
+        <wps:ResponseDocument storeExecuteResponse="true" status="true">
+            <wps:Output>
+                <ows:Identifier>productionResults</ows:Identifier>
+            </wps:Output>
+        </wps:ResponseDocument>
+    </wps:ResponseForm>
+</wps:Execute>
