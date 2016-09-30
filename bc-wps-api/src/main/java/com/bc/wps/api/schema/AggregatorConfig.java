@@ -11,12 +11,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AggregatorConfig", propOrder = {
             "type",
+            "percentage",
             "varName"
 })
 public class AggregatorConfig {
 
     @XmlElement(name = "type")
     protected String type;
+    @XmlElement(name = "percentage")
+    protected String percentage;
     @XmlElement(name = "varName")
     protected String varName;
 
@@ -26,6 +29,14 @@ public class AggregatorConfig {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(String percentage) {
+        this.percentage = percentage;
     }
 
     public String getVarName() {
