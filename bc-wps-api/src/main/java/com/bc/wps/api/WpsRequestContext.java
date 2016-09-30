@@ -6,7 +6,7 @@ package com.bc.wps.api;
  *
  * @author hans
  */
-interface WpsRequestContext {
+public interface WpsRequestContext {
 
     String getUserName();
 
