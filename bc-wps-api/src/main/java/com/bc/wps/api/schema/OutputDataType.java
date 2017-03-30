@@ -44,7 +44,7 @@ public class OutputDataType
 
     @XmlElement(name = "Reference", namespace = "http://www.opengis.net/wps/1.0.0")
     protected OutputReferenceType reference;
-    @XmlElement(name = "Data")
+    @XmlElement(name = "Data", namespace = "http://www.opengis.net/wps/1.0.0")
     protected DataType data;
 
     /**
