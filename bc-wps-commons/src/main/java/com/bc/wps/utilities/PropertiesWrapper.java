@@ -39,6 +39,19 @@ public class PropertiesWrapper {
         return Integer.parseInt(properties.getProperty(key));
     }
 
+    public static long getLong(String key) {
+        return Long.parseLong(properties.getProperty(key));
+    }
+
+    public static long getLong(String key, long defaultValue) {
+        String value = properties.getProperty(key);
+        if (value != null) {
+            return Long.parseLong(value);
+        } else {
+            return defaultValue;
+        }
+    }
+
     public static Double getDouble(String key) {
         return Double.parseDouble(properties.getProperty(key));
     }
