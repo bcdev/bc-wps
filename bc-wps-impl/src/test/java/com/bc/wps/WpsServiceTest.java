@@ -266,11 +266,11 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "invalidService", "GetCapabilities", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                        "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                         "    <ows:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Service\">\n" +
                                         "        <ows:ExceptionText>Parameter 'Service' has an invalid value.</ows:ExceptionText>\n" +
                                         "    </ows:Exception>\n" +
-                                        "</wps:ExceptionReport>\n"));
+                                        "</ows:ExceptionReport>\n"));
     }
 
     @Test
@@ -278,11 +278,11 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "", "", "", "1.0.0", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                        "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                         "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
                                         "        <ows:ExceptionText>The value of parameter 'Identifier' is missing.</ows:ExceptionText>\n" +
                                         "    </ows:Exception>\n" +
-                                        "</wps:ExceptionReport>\n"));
+                                        "</ows:ExceptionReport>\n"));
     }
 
     @Test
@@ -290,11 +290,11 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "", "", "bundle~name~version", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                        "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                         "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Version\">\n" +
                                         "        <ows:ExceptionText>The value of parameter 'Version' is missing.</ows:ExceptionText>\n" +
                                         "    </ows:Exception>\n" +
-                                        "</wps:ExceptionReport>\n"));
+                                        "</ows:ExceptionReport>\n"));
     }
 
     @Test
@@ -302,11 +302,11 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "GetStatus", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                        "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                         "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"JobId\">\n" +
                                         "        <ows:ExceptionText>The value of parameter 'JobId' is missing.</ows:ExceptionText>\n" +
                                         "    </ows:Exception>\n" +
-                                        "</wps:ExceptionReport>\n"));
+                                        "</ows:ExceptionReport>\n"));
     }
 
     @Test
@@ -314,11 +314,11 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "", "", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                        "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                         "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Service\">\n" +
                                         "        <ows:ExceptionText>The value of parameter 'Service' is missing.</ows:ExceptionText>\n" +
                                         "    </ows:Exception>\n" +
-                                        "</wps:ExceptionReport>\n"));
+                                        "</ows:ExceptionReport>\n"));
     }
 
     @Test
@@ -326,11 +326,11 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                        "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                         "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Request\">\n" +
                                         "        <ows:ExceptionText>The value of parameter 'Request' is missing.</ows:ExceptionText>\n" +
                                         "    </ows:Exception>\n" +
-                                        "</wps:ExceptionReport>\n"));
+                                        "</ows:ExceptionReport>\n"));
     }
 
     @Test
@@ -349,11 +349,11 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "InvalidService", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                        "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                         "    <ows:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Request\">\n" +
                                         "        <ows:ExceptionText>Parameter 'Request' has an invalid value.</ows:ExceptionText>\n" +
                                         "    </ows:Exception>\n" +
-                                        "</wps:ExceptionReport>\n"));
+                                        "</ows:ExceptionReport>\n"));
     }
 
     @Test
@@ -403,11 +403,11 @@ public class WpsServiceTest {
         String wpsResponse = wpsService.postExecuteService("mock2", getExecuteRequestWithoutIdentifier(), mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                                        "<wps:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                                        "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                                         "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
                                         "        <ows:ExceptionText>The value of parameter 'Identifier' is missing.</ows:ExceptionText>\n" +
                                         "    </ows:Exception>\n" +
-                                        "</wps:ExceptionReport>\n"));
+                                        "</ows:ExceptionReport>\n"));
     }
 
     @Test
@@ -425,7 +425,7 @@ public class WpsServiceTest {
                              "Expected elements are <{http://www.opengis.net/wps/1.0.0}AllowedValues>," +
                              "<{http://www.opengis.net/wps/1.0.0}AnyValue>," +
                              "<{http://www.opengis.net/wps/1.0.0}Capabilities>,<{http://www.opengis.net/wps/1.0.0}DCP>," +
-                             "<{http://www.opengis.net/wps/1.0.0}DescribeProcess>,<{http://www.opengis.net/wps/1.0.0}ExceptionReport>," +
+                             "<{http://www.opengis.net/wps/1.0.0}DescribeProcess>,<{http://www.opengis.net/ows/1.1}ExceptionReport>," +
                              "<{http://www.opengis.net/wps/1.0.0}Execute>,<{http://www.opengis.net/wps/1.0.0}ExecuteResponse>," +
                              "<{http://www.opengis.net/wps/1.0.0}GetCapabilities>,<{http://www.opengis.net/wps/1.0.0}HTTP>," +
                              "<{http://www.opengis.net/wps/1.0.0}Languages>,<{http://www.opengis.net/wps/1.0.0}NoValues>," +
@@ -447,7 +447,7 @@ public class WpsServiceTest {
                              "<{http://www.opengis.net/wps/1.0.0}Capabilities>," +
                              "<{http://www.opengis.net/wps/1.0.0}DCP>," +
                              "<{http://www.opengis.net/wps/1.0.0}DescribeProcess>," +
-                             "<{http://www.opengis.net/wps/1.0.0}ExceptionReport>," +
+                             "<{http://www.opengis.net/ows/1.1}ExceptionReport>," +
                              "<{http://www.opengis.net/wps/1.0.0}Execute>," +
                              "<{http://www.opengis.net/wps/1.0.0}ExecuteResponse>," +
                              "<{http://www.opengis.net/wps/1.0.0}GetCapabilities>," +

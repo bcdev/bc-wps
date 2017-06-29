@@ -87,6 +87,17 @@ public class XmlValidatorTest {
 
     @Ignore
     @Test
+    public void canValidateExecuteFailedResponse() throws Exception {
+        File xmlFile = new File("src/test/resources/bc-wps-executeFailedResponse.xml");
+        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errStream));
+        XmlValidator.validate(xmlFile);
+
+        assertThat(errStream.toString(), equalTo(""));
+    }
+
+    @Ignore
+    @Test
     public void validateString() throws Exception {
         String wpsResponseString = getExecuteAcceptedResponse();
         ByteArrayOutputStream errStream = new ByteArrayOutputStream();

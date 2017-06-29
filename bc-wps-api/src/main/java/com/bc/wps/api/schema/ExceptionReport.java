@@ -47,7 +47,7 @@ import java.util.List;
 @XmlType(name = "", propOrder = {
     "exception"
 })
-@XmlRootElement(name = "ExceptionReport")
+@XmlRootElement(name = "ExceptionReport", namespace = "http://www.opengis.net/ows/1.1")
 public class ExceptionReport {
 
     @XmlElement(name = "Exception", namespace = "http://www.opengis.net/ows/1.1", required = true)
