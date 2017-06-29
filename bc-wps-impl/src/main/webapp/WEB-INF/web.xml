@@ -110,8 +110,10 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
             <url-pattern>/wps/*</url-pattern>
             <url-pattern>/staging</url-pattern>
             <url-pattern>/staging/*</url-pattern>
+<!--
             <url-pattern>/software</url-pattern>
             <url-pattern>/software/*</url-pattern>
+-->
             <url-pattern>/eodata</url-pattern>
             <url-pattern>/eodata/*</url-pattern>
             <url-pattern>/upload</url-pattern>
