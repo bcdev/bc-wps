@@ -18,9 +18,11 @@ import com.bc.wps.exceptions.InvalidRequestException;
 import com.bc.wps.responses.ExceptionResponse;
 import com.bc.wps.serviceloader.SpiLoader;
 import com.bc.wps.utilities.JaxbHelper;
+import com.bc.wps.utilities.UrlUtils;
 import com.bc.wps.utilities.WpsLogger;
 import org.apache.commons.lang.StringUtils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -33,7 +35,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +59,7 @@ import java.util.logging.Logger;
 public class WpsService {
 
     private static final Logger LOG = WpsLogger.getLogger();
+    private static final String REQUEST_ID = "requestId";
 
     @GET
     @Path("/{application}")
@@ -66,6 +73,41 @@ public class WpsService {
                                 @QueryParam("Version") String version,
                                 @QueryParam("JobId") String jobId,
                                 @Context HttpServletRequest servletRequest) {
+
+        Cookie[] cookies = servletRequest.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (REQUEST_ID.equalsIgnoreCase(cookie.getName())) {
+                    return postExecuteService(applicationName, requestType, servletRequest);
+                }
+                if ("queryString".equalsIgnoreCase(cookie.getName())) {
+                    String value = cookie.getValue();
+                    try {
+                        if (service == null) {
+                            service = UrlUtils.parseParameter(value, "Service");
+                            System.out.println("Setting service to " + service);
+                        }
+                        if (requestType == null) {
+                            requestType = UrlUtils.parseParameter(value, "Request");
+                            System.out.println("Setting requestType to " + requestType);
+                        }
+                        if (version == null) {
+                            version = UrlUtils.parseParameter(value, "Version");
+                            System.out.println("Setting version to " + version);
+                        }
+                        if (processId == null) {
+                            processId = UrlUtils.parseParameter(value, "Identifier");
+                            System.out.println("Setting processId to " + processId);
+                        }
+                    } catch (UnsupportedEncodingException exception) {
+                        LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
+                        ExceptionResponse exceptionResponse = new ExceptionResponse();
+                        ExceptionReport exceptionReport = exceptionResponse.getExceptionResponse(exception);
+                        return getExceptionString(exceptionReport);
+                    }
+                }
+            }
+        }
 
         WpsRequestContext requestContext = new WpsRequestContextImpl(servletRequest);
         WpsServerContext serverContext = requestContext.getServerContext();
@@ -87,7 +129,8 @@ public class WpsService {
                 if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
                     return describeProcessExceptionXml;
                 }
-                List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(requestContext, processId);
+                List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(
+                            requestContext, processId);
                 ProcessDescriptions processDescriptions = constructProcessDescriptionXml(processDescriptionTypes);
                 return JaxbHelper.marshalWithSchemaLocation(processDescriptions, "http://www.opengis.net/wps/1.0.0 " +
                                                                                  "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd");
@@ -120,6 +163,25 @@ public class WpsService {
     public String postExecuteService(@PathParam("application") String applicationName,
                                      String request,
                                      @Context HttpServletRequest servletRequest) {
+        Cookie[] cookies = servletRequest.getCookies();
+        if(cookies != null){
+            for (Cookie cookie : cookies) {
+                if ("requestId".equalsIgnoreCase(cookie.getName())) {
+                    String id = cookie.getValue();
+                    String filename = "/tmp/request-" + id;
+                    System.out.println("Reading request from file " + filename);
+                    byte[] encoded;
+                    try {
+                        encoded = Files.readAllBytes(Paths.get(filename));
+                        request = new String(encoded, "UTF-8");
+                        request = cleanRequest(request);
+                    } catch (IOException e) {
+                        throw new IllegalStateException(e);
+                    }
+                }
+            }
+        }
+
         WpsRequestContext requestContext = new WpsRequestContextImpl(servletRequest);
         WpsServerContext serverContext = requestContext.getServerContext();
         WpsServiceInstance wpsServiceProvider = SpiLoader.getWpsServiceProvider(serverContext, applicationName);
@@ -146,7 +208,14 @@ public class WpsService {
         }
     }
 
-    private String performDescribeProcessParameterValidation(String processorId, String version) throws MissingParameterValueException {
+    static String cleanRequest(String request) {
+        request = "<?xml" + request.split("<\\?xml")[1];
+        request = request.split("wps:Execute>")[0] + "wps:Execute>";
+        return request;
+    }
+
+    private String performDescribeProcessParameterValidation(String processorId, String version) throws
+                                                                                                 MissingParameterValueException {
         if (StringUtils.isBlank(version)) {
             throw new MissingParameterValueException("Version");
         }
@@ -156,7 +225,9 @@ public class WpsService {
         return null;
     }
 
-    private String performUrlParameterValidation(String service, String requestType) throws MissingParameterValueException, InvalidParameterValueException {
+    private String performUrlParameterValidation(String service, String requestType) throws
+                                                                                     MissingParameterValueException,
+                                                                                     InvalidParameterValueException {
         if (StringUtils.isBlank(service)) {
             throw new MissingParameterValueException("Service");
         }
@@ -169,7 +240,9 @@ public class WpsService {
         return "";
     }
 
-    private String performXmlParameterValidation(Execute execute) throws MissingParameterValueException, InvalidParameterValueException {
+    private String performXmlParameterValidation(Execute execute) throws
+                                                                  MissingParameterValueException,
+                                                                  InvalidParameterValueException {
         String service = execute.getService();
         String version = execute.getVersion();
         CodeType identifier = execute.getIdentifier();
