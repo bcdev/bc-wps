@@ -199,20 +199,33 @@ public class WpsService {
                 return exceptionXml;
             }
             ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
-            if (tempFilePath != null && Files.exists(tempFilePath)) {
-                Files.delete(tempFilePath);
-            }
+            deleteTemporaryFile(tempFilePath);
             return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
                                                                          "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
         } catch (WpsServiceException | IOException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
             ExceptionReport exceptionReport = exceptionResponse.getExceptionResponse(exception);
+            try {
+                deleteTemporaryFile(tempFilePath);
+            } catch (IOException ignored) {
+            }
             return getExceptionString(exceptionReport);
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
+            try {
+                deleteTemporaryFile(tempFilePath);
+            } catch (IOException ignored) {
+            }
             return exceptionResponse.getJaxbExceptionResponse();
+        }
+    }
+
+    private void deleteTemporaryFile(java.nio.file.Path tempFilePath) throws IOException {
+        if (tempFilePath != null && Files.exists(tempFilePath)) {
+            LOG.log(Level.INFO, "deleting temporary file '" + tempFilePath + "'.");
+            Files.delete(tempFilePath);
         }
     }
 
