@@ -60,6 +60,9 @@ public class WpsService {
 
     private static final Logger LOG = WpsLogger.getLogger();
     private static final String REQUEST_ID = "requestId";
+    private static final String UTF_8 = "UTF-8";
+    private static final String TEMP_DIRECTORY = "/tmp";
+    private static final String REQUEST_FILE_PREFIX = "request-";
 
     @GET
     @Path("/{application}")
@@ -164,16 +167,18 @@ public class WpsService {
                                      String request,
                                      @Context HttpServletRequest servletRequest) {
         Cookie[] cookies = servletRequest.getCookies();
-        if(cookies != null){
+        java.nio.file.Path tempFilePath = null;
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("requestId".equalsIgnoreCase(cookie.getName())) {
+                if (REQUEST_ID.equalsIgnoreCase(cookie.getName())) {
                     String id = cookie.getValue();
-                    String filename = "/tmp/request-" + id;
+                    String filename = TEMP_DIRECTORY + "/" + REQUEST_FILE_PREFIX + id;
                     System.out.println("Reading request from file " + filename);
                     byte[] encoded;
                     try {
-                        encoded = Files.readAllBytes(Paths.get(filename));
-                        request = new String(encoded, "UTF-8");
+                        tempFilePath = Paths.get(filename);
+                        encoded = Files.readAllBytes(tempFilePath);
+                        request = new String(encoded, UTF_8);
                         request = cleanRequest(request);
                     } catch (IOException e) {
                         throw new IllegalStateException(e);
@@ -194,9 +199,12 @@ public class WpsService {
                 return exceptionXml;
             }
             ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
+            if (tempFilePath != null && Files.exists(tempFilePath)) {
+                Files.delete(tempFilePath);
+            }
             return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
                                                                          "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
-        } catch (WpsServiceException exception) {
+        } catch (WpsServiceException | IOException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
             ExceptionReport exceptionReport = exceptionResponse.getExceptionResponse(exception);
