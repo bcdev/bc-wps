@@ -34,10 +34,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -61,7 +58,7 @@ public class WpsService {
     private static final Logger LOG = WpsLogger.getLogger();
     private static final String REQUEST_ID = "requestId";
     private static final String UTF_8 = "UTF-8";
-    private static final String TEMP_DIRECTORY = "/tmp";
+    private static final String TEMP_DIRECTORY = "tmp";
     private static final String REQUEST_FILE_PREFIX = "request-";
 
     @GET
@@ -87,20 +84,39 @@ public class WpsService {
                     String value = cookie.getValue();
                     try {
                         if (service == null) {
-                            service = UrlUtils.parseParameter(value, "Service");
-                            System.out.println("Setting service to " + service);
+                            String parsed = UrlUtils.parseParameter(value, "Service");
+                            if (StringUtils.isNotBlank(parsed)) {
+                                service = parsed;
+                                LOG.info("Setting service to " + service);
+                            }
                         }
                         if (requestType == null) {
-                            requestType = UrlUtils.parseParameter(value, "Request");
-                            System.out.println("Setting requestType to " + requestType);
+                            String parsed = UrlUtils.parseParameter(value, "Request");
+                            if (StringUtils.isNotBlank(parsed)) {
+                                requestType = parsed;
+                                LOG.info("Setting requestType to " + requestType);
+                            }
                         }
                         if (version == null) {
-                            version = UrlUtils.parseParameter(value, "Version");
-                            System.out.println("Setting version to " + version);
+                            String parsed = UrlUtils.parseParameter(value, "Version");
+                            if (StringUtils.isNotBlank(parsed)) {
+                                version = parsed;
+                                LOG.info("Setting version to " + version);
+                            }
                         }
                         if (processId == null) {
-                            processId = UrlUtils.parseParameter(value, "Identifier");
-                            System.out.println("Setting processId to " + processId);
+                            String parsed = UrlUtils.parseParameter(value, "Identifier");
+                            if (StringUtils.isNotBlank(parsed)) {
+                                processId = parsed;
+                                LOG.info("Setting processId to " + processId);
+                            }
+                        }
+                        if (jobId == null) {
+                            String parsed = UrlUtils.parseParameter(value, "JobId");
+                            if (StringUtils.isNotBlank(parsed)) {
+                                jobId = parsed;
+                                LOG.info("Setting jobId to " + jobId);
+                            }
                         }
                     } catch (UnsupportedEncodingException exception) {
                         LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
@@ -116,36 +132,32 @@ public class WpsService {
         WpsServerContext serverContext = requestContext.getServerContext();
         WpsServiceInstance wpsServiceProvider = SpiLoader.getWpsServiceProvider(serverContext, applicationName);
 
-
         try {
-            String exceptionXml = performUrlParameterValidation(service, requestType);
-            if (StringUtils.isNotBlank(exceptionXml)) {
-                return exceptionXml;
-            }
+            performUrlParameterValidation(service, requestType);
             switch (requestType) {
-            case "GetCapabilities":
-                Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
-                return JaxbHelper.marshalWithSchemaLocation(capabilities, "http://www.opengis.net/wps/1.0.0 " +
-                                                                          "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd");
-            case "DescribeProcess":
-                String describeProcessExceptionXml = performDescribeProcessParameterValidation(processId, version);
-                if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
-                    return describeProcessExceptionXml;
-                }
-                List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(
+                case "GetCapabilities":
+                    Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
+                    return JaxbHelper.marshalWithSchemaLocation(capabilities, "http://www.opengis.net/wps/1.0.0 " +
+                            "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd");
+                case "DescribeProcess":
+                    String describeProcessExceptionXml = performDescribeProcessParameterValidation(processId, version);
+                    if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
+                        return describeProcessExceptionXml;
+                    }
+                    List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(
                             requestContext, processId);
-                ProcessDescriptions processDescriptions = constructProcessDescriptionXml(processDescriptionTypes);
-                return JaxbHelper.marshalWithSchemaLocation(processDescriptions, "http://www.opengis.net/wps/1.0.0 " +
-                                                                                 "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd");
-            case "GetStatus":
-                if (StringUtils.isBlank(jobId)) {
-                    throw new MissingParameterValueException("JobId");
-                }
-                ExecuteResponse executeResponse = wpsServiceProvider.getStatus(requestContext, jobId);
-                return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
-                                                                             "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
-            default:
-                throw new InvalidParameterValueException("Request");
+                    ProcessDescriptions processDescriptions = constructProcessDescriptionXml(processDescriptionTypes);
+                    return JaxbHelper.marshalWithSchemaLocation(processDescriptions, "http://www.opengis.net/wps/1.0.0 " +
+                            "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd");
+                case "GetStatus":
+                    if (StringUtils.isBlank(jobId)) {
+                        throw new MissingParameterValueException("JobId");
+                    }
+                    ExecuteResponse executeResponse = wpsServiceProvider.getStatus(requestContext, jobId);
+                    return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
+                            "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
+                default:
+                    throw new InvalidParameterValueException("Request");
             }
         } catch (WpsServiceException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
@@ -172,11 +184,12 @@ public class WpsService {
             for (Cookie cookie : cookies) {
                 if (REQUEST_ID.equalsIgnoreCase(cookie.getName())) {
                     String id = cookie.getValue();
-                    String filename = TEMP_DIRECTORY + "/" + REQUEST_FILE_PREFIX + id;
+                    String filename = File.separator + TEMP_DIRECTORY + File.separator + REQUEST_FILE_PREFIX + id;
                     System.out.println("Reading request from file " + filename);
                     byte[] encoded;
                     try {
                         tempFilePath = Paths.get(filename);
+                        LOG.info(tempFilePath.toAbsolutePath().toString());
                         encoded = Files.readAllBytes(tempFilePath);
                         request = new String(encoded, UTF_8);
                         request = cleanRequest(request);
@@ -201,7 +214,7 @@ public class WpsService {
             ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
             deleteTemporaryFile(tempFilePath);
             return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
-                                                                         "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
+                    "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
         } catch (WpsServiceException | IOException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
@@ -236,7 +249,7 @@ public class WpsService {
     }
 
     private String performDescribeProcessParameterValidation(String processorId, String version) throws
-                                                                                                 MissingParameterValueException {
+            MissingParameterValueException {
         if (StringUtils.isBlank(version)) {
             throw new MissingParameterValueException("Version");
         }
@@ -246,9 +259,9 @@ public class WpsService {
         return null;
     }
 
-    private String performUrlParameterValidation(String service, String requestType) throws
-                                                                                     MissingParameterValueException,
-                                                                                     InvalidParameterValueException {
+    private void performUrlParameterValidation(String service, String requestType) throws
+            MissingParameterValueException,
+            InvalidParameterValueException {
         if (StringUtils.isBlank(service)) {
             throw new MissingParameterValueException("Service");
         }
@@ -258,12 +271,11 @@ public class WpsService {
         if (!service.equals("WPS")) {
             throw new InvalidParameterValueException("Service");
         }
-        return "";
     }
 
     private String performXmlParameterValidation(Execute execute) throws
-                                                                  MissingParameterValueException,
-                                                                  InvalidParameterValueException {
+            MissingParameterValueException,
+            InvalidParameterValueException {
         String service = execute.getService();
         String version = execute.getVersion();
         CodeType identifier = execute.getIdentifier();
@@ -291,20 +303,20 @@ public class WpsService {
             return (Execute) JaxbHelper.unmarshal(requestInputStream, new ObjectFactory());
         } catch (ClassCastException exception) {
             throw new InvalidRequestException("Invalid Execute request. Please see the WPS 1.0.0 guideline " +
-                                              "for the right Execute request structure.",
-                                              exception);
+                    "for the right Execute request structure.",
+                    exception);
         } catch (JAXBException exception) {
             throw new InvalidRequestException(
-                        "Invalid Execute request. "
-                        + (exception.getMessage() != null ? exception.getMessage() : exception.getCause().getMessage()),
-                        exception);
+                    "Invalid Execute request. "
+                            + (exception.getMessage() != null ? exception.getMessage() : exception.getCause().getMessage()),
+                    exception);
         }
     }
 
     private String getExceptionString(ExceptionReport exceptionReport) {
         try {
             return JaxbHelper.marshalWithSchemaLocation(exceptionReport, "http://www.opengis.net/ows/1.1 " +
-                                                                         "http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd");
+                    "http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd");
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshal the WPS exception.", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
