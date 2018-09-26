@@ -17,9 +17,9 @@ import java.util.Locale;
 /**
  * @author hans
  */
-public class WpsServiceTest {
+public class JaxRsWpsServiceTest {
 
-    private WpsService wpsService;
+    private JaxRsWpsService wpsService;
     private HttpServletRequest mockServletRequest;
 
     @Rule
@@ -32,7 +32,7 @@ public class WpsServiceTest {
         Principal mockUserPrincipal = mock(Principal.class);
         when(mockUserPrincipal.getName()).thenReturn("mockName");
         when(mockServletRequest.getUserPrincipal()).thenReturn(mockUserPrincipal);
-        wpsService = new WpsService();
+        wpsService = new JaxRsWpsService();
     }
 
     // XML validation can take a very long time because it has to call external URLs to get the schema
@@ -572,7 +572,7 @@ public class WpsServiceTest {
                         "    </wps:Input>\n" +
                         "  </wps:DataInputs> </wps:Execute>";
 
-        assertEquals(cleanXml, WpsService.cleanRequest(xmlToCleanUp));
+        assertEquals(cleanXml, WpsFrontend.cleanRequest(xmlToCleanUp));
     }
 
     private String getInvalidExecuteRequest() {

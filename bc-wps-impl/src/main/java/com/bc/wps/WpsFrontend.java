@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2018 by Brockmann Consult (info@brockmann-consult.de)
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation. This program is distributed in the hope it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
 package com.bc.wps;
 
 import com.bc.wps.api.WpsRequestContext;
@@ -24,15 +38,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.nio.file.Files;
@@ -41,19 +47,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * This is the entry point to the WPS server. Several actions are performed here:
- * <ul>
- * <li>Mapping of service instance</li>
- * <li>Parameter validity check</li>
- * <li>Marshalling and Unmarshalling</li>
- * <li>Exception handling</li>
- * </ul>
- *
- * @author hans
- */
-@Path("/")
-public class WpsService {
+public class WpsFrontend {
 
     private static final Logger LOG = WpsLogger.getLogger();
     private static final String REQUEST_ID = "requestId";
@@ -61,19 +55,15 @@ public class WpsService {
     private static final String TEMP_DIRECTORY = "tmp";
     private static final String REQUEST_FILE_PREFIX = "request-";
 
-    @GET
-    @Path("/{application}")
-    @Produces(MediaType.APPLICATION_XML)
-    public String getWpsService(@PathParam("application") String applicationName,
-                                @QueryParam("Service") String service,
-                                @QueryParam("Request") String requestType,
-                                @QueryParam("AcceptVersions") String acceptedVersion,
-                                @QueryParam("Language") String language,
-                                @QueryParam("Identifier") String processId,
-                                @QueryParam("Version") String version,
-                                @QueryParam("JobId") String jobId,
-                                @Context HttpServletRequest servletRequest) {
-
+    public String getWpsService(String applicationName,
+                                String service,
+                                String requestType,
+                                String acceptedVersion,
+                                String language,
+                                String processId,
+                                String version,
+                                String jobId,
+                                HttpServletRequest servletRequest) {
         Cookie[] cookies = servletRequest.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -138,7 +128,7 @@ public class WpsService {
                 case "GetCapabilities":
                     Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
                     return JaxbHelper.marshalWithSchemaLocation(capabilities, "http://www.opengis.net/wps/1.0.0 " +
-                            "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd");
+                                                                              "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd");
                 case "DescribeProcess":
                     String describeProcessExceptionXml = performDescribeProcessParameterValidation(processId, version);
                     if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
@@ -171,13 +161,9 @@ public class WpsService {
         }
     }
 
-    @POST
-    @Path("/{application}")
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
-    public String postExecuteService(@PathParam("application") String applicationName,
+    public String postExecuteService(String applicationName,
                                      String request,
-                                     @Context HttpServletRequest servletRequest) {
+                                     HttpServletRequest servletRequest) {
         Cookie[] cookies = servletRequest.getCookies();
         java.nio.file.Path tempFilePath = null;
         if (cookies != null) {
@@ -234,6 +220,7 @@ public class WpsService {
             return exceptionResponse.getJaxbExceptionResponse();
         }
     }
+
 
     private void deleteTemporaryFile(java.nio.file.Path tempFilePath) throws IOException {
         if (tempFilePath != null && Files.exists(tempFilePath)) {

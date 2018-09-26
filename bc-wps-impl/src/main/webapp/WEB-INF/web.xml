@@ -107,7 +107,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Calvalus HTTP</web-resource-name>
-            <url-pattern>/wps/*</url-pattern>
+            <!--<url-pattern>/wps/*</url-pattern>-->
             <url-pattern>/staging</url-pattern>
             <url-pattern>/staging/*</url-pattern>
 <!--
