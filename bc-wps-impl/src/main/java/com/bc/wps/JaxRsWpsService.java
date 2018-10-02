@@ -55,7 +55,7 @@ import java.util.logging.Logger;
 @Path("/")
 public class JaxRsWpsService {
 
-    final WpsFrontend wpsFrontend = new WpsFrontend();
+    final WpsFrontendConnector wpsFrontendConnector = new WpsFrontendConnector();
 
     @GET
     @Path("/{application}")
@@ -65,11 +65,11 @@ public class JaxRsWpsService {
                                 @QueryParam("Request") String requestType,
                                 @QueryParam("AcceptVersions") String acceptedVersion,
                                 @QueryParam("Language") String language,
-                                @QueryParam("Identifier") String processId,
+                                @QueryParam("Identifier") String processIdentifier,
                                 @QueryParam("Version") String version,
                                 @QueryParam("JobId") String jobId,
                                 @Context HttpServletRequest servletRequest) {
-        return wpsFrontend.getWpsService(applicationName, service, requestType, acceptedVersion, language, processId, version, jobId, servletRequest);
+        return wpsFrontendConnector.getWpsService(applicationName, service, requestType, acceptedVersion, language, processIdentifier, version, jobId, servletRequest);
     }
 
     @POST
@@ -79,7 +79,7 @@ public class JaxRsWpsService {
     public String postExecuteService(@PathParam("application") String applicationName,
                                      String request,
                                      @Context HttpServletRequest servletRequest) {
-        return wpsFrontend.postExecuteService(applicationName, request, servletRequest);
+        return wpsFrontendConnector.postExecuteService(applicationName, request, servletRequest);
     }
 
 }

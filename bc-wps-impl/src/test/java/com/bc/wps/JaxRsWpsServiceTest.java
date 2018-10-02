@@ -572,7 +572,7 @@ public class JaxRsWpsServiceTest {
                         "    </wps:Input>\n" +
                         "  </wps:DataInputs> </wps:Execute>";
 
-        assertEquals(cleanXml, WpsFrontend.cleanRequest(xmlToCleanUp));
+        assertEquals(cleanXml, WpsFrontendConnector.cleanRequest(xmlToCleanUp));
     }
 
     private String getInvalidExecuteRequest() {
