@@ -16,7 +16,7 @@ import java.util.List;
 })
 public class Variables {
 
-    @XmlElement(name = "variable", namespace = "http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd", nillable = false, required = true)
+    @XmlElement(name = "variable", namespace = "http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd", nillable = false, required = true)
     protected List<VariableConfig> variable;
 
     public List<VariableConfig> getVariable() {

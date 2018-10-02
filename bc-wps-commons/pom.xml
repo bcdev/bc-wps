@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.bc.wps</groupId>
             <artifactId>bc-wps-api</artifactId>
-            <version>1.3</version>
+            <version>${bc-wps.version}</version>
             <scope>test</scope>
         </dependency>
 

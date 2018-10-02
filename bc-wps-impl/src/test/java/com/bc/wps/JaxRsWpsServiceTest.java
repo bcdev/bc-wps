@@ -46,7 +46,7 @@ public class JaxRsWpsServiceTest {
         assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:Capabilities service=\"WPS\" xml:lang=\"en\" version=\"1.0.0\" " +
                 "xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd\" " +
-                "xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" " +
+                "xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" " +
                 "xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
                 "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
                 "xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" " +
@@ -160,7 +160,7 @@ public class JaxRsWpsServiceTest {
         assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:ProcessDescriptions service=\"WPS\" version=\"1.0.0\" " +
                 "xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd\" " +
-                "xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" " +
+                "xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" " +
                 "xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
                 "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
                 "xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" " +
@@ -306,7 +306,7 @@ public class JaxRsWpsServiceTest {
                 mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Service\">\n" +
                 "        <ows:ExceptionText>Parameter 'Service' has an invalid value.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
@@ -319,7 +319,7 @@ public class JaxRsWpsServiceTest {
                 mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Identifier' is missing.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
@@ -332,7 +332,7 @@ public class JaxRsWpsServiceTest {
                 "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Version\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Version' is missing.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
@@ -345,7 +345,7 @@ public class JaxRsWpsServiceTest {
                 mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"JobId\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'JobId' is missing.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
@@ -357,7 +357,7 @@ public class JaxRsWpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "", "", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Service\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Service' is missing.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
@@ -369,7 +369,7 @@ public class JaxRsWpsServiceTest {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "", "", "", "", "", "", mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Request\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Request' is missing.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
@@ -382,7 +382,7 @@ public class JaxRsWpsServiceTest {
                 mockServletRequest);
 
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"));
+                "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"));
         assertThat(wpsResponse,
                 containsString("        <wps:ProcessStarted percentCompleted=\"65\">RUNNING</wps:ProcessStarted>\n" +
                         "    </wps:Status>\n" +
@@ -395,7 +395,7 @@ public class JaxRsWpsServiceTest {
                 mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Request\">\n" +
                 "        <ows:ExceptionText>Parameter 'Request' has an invalid value.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
@@ -411,7 +411,7 @@ public class JaxRsWpsServiceTest {
 
         XmlValidator.validateString(wpsResponse);
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" statusLocation=\"null/mockUserName\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" statusLocation=\"null/mockUserName\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <wps:Process wps:processVersion=\"1.0\">\n" +
                 "        <ows:Identifier>process1</ows:Identifier>\n" +
                 "        <ows:Title>Process 1</ows:Title>\n" +
@@ -452,7 +452,7 @@ public class JaxRsWpsServiceTest {
         assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" statusLocation=\"null/mockUserName\" service=\"WPS\" version=\"1.0.0\" " +
                 "xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" " +
-                "xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" " +
+                "xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" " +
                 "xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
                 "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
                 "xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" " +
@@ -475,7 +475,7 @@ public class JaxRsWpsServiceTest {
                 mockServletRequest);
 
         assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Identifier' is missing.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
@@ -506,7 +506,7 @@ public class JaxRsWpsServiceTest {
                         "<{http://www.opengis.net/wps/1.0.0}ProcessDescriptions>,<{http://www.opengis.net/wps/1.0.0}ProcessOfferings>," +
                         "<{http://www.opengis.net/ows/1.1}ServiceIdentification>,<{http://www.opengis.net/wps/1.0.0}ServiceProvider>," +
                         "<{http://www.opengis.net/wps/1.0.0}ValuesReference>,<{http://www.opengis.net/wps/1.0.0}WSDL>," +
-                        "<{http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd}parameters>");
+                        "<{http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd}parameters>");
 
         wpsService.postExecuteService("mock2", getUnknownXmlRequest(), mockServletRequest);
     }
@@ -535,7 +535,7 @@ public class JaxRsWpsServiceTest {
                 "<{http://www.opengis.net/wps/1.0.0}ServiceProvider>," +
                 "<{http://www.opengis.net/wps/1.0.0}ValuesReference>," +
                 "<{http://www.opengis.net/wps/1.0.0}WSDL>," +
-                "<{http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd}parameters>");
+                "<{http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd}parameters>");
 
         wpsService.postExecuteService("mock2", getInvalidExecuteRequest(), mockServletRequest);
     }
@@ -577,7 +577,7 @@ public class JaxRsWpsServiceTest {
 
     private String getInvalidExecuteRequest() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ProcessDescriptions service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xmlns:bc=\"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "<ProcessDescriptions service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "\t<ProcessDescription storeSupported=\"true\" statusSupported=\"true\" wps:processVersion=\"2.1.3-SNAPSHOT\">\n" +
                 "\t\t<ows:Identifier>beam-idepix~2.1.3-SNAPSHOT~Idepix.Land</ows:Identifier>\n" +
                 "\t\t<ows:Title>beam-idepix~2.1.3-SNAPSHOT~Idepix.Land</ows:Title>\n" +
@@ -621,7 +621,7 @@ public class JaxRsWpsServiceTest {
                 "\n" +
                 "<wps:Execute xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
                 "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\"\n" +
+                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
                 "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "</wps:Execute>";
     }
@@ -631,7 +631,7 @@ public class JaxRsWpsServiceTest {
                 "\n" +
                 "<wps:Execute xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
                 "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\"\n" +
+                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
                 "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "\n" +
                 "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
@@ -645,7 +645,7 @@ public class JaxRsWpsServiceTest {
                 "             version=\"1.0.0\"\n" +
                 "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
                 "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/calwps/calwpsL3Parameters-schema.xsd\"\n" +
+                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
                 "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "\n" +
                 "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
