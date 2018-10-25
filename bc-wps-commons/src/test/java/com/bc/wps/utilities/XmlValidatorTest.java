@@ -4,104 +4,109 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.*;
+import org.junit.runner.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.net.URL;
 
 /**
- * This is a test to the {@link XmlValidator}. All the tests are supposed to be run manually
- * because the validation process requires a connection to the schema location and may take a
- * while. Also, the test files are also supposed to be manually modified based on the latest response
- * of the actual WPS. Unit tests for a mock WPS implementation can be found in {@Link WpsServiceTest}.
+ * This is a test to the {@link XmlValidator}.
+ * Because the validation process requires a connection to the schema location and may take a
+ * while, these test use @{@link RunWith} with {@link ProfileTestRunner} to prevent
+ * unintended test execution. These time consuming tests can be executed if the VM-Parameter
+ * given by the annotation "RunIfProfileIsActivated" is set to true.
+ * E.g. -Dxml.validator.tests=true
+ * The test files are supposed to be manually modified based on the latest response
+ * of the actual WPS. Unit tests for a mock WPS implementation can be found in JaxRsWpsServiceTest
+ * in module bc-wps-impl.
  *
  * @author hans
  */
+@RunWith(ProfileTestRunner.class)
+@ProfileTestRunner.RunIfProfileIsActivated("xml.validator.test")
 public class XmlValidatorTest {
 
-    @Ignore
+    private PrintStream err;
+    ByteArrayOutputStream errStream;
+
+    @Before
+    public void setUp() throws Exception {
+        err = System.err;
+        errStream = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errStream));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        System.setErr(err);
+    }
+
     @Test
     public void canValidateExecuteRequest() throws Exception {
-        File xmlFile = new File("src/test/resources/bc-wps-executeRequest.xml");
-        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errStream));
+        final File xmlFile = getXmlResourceFile("bc-wps-executeRequest.xml");
         XmlValidator.validate(xmlFile);
 
         assertThat(errStream.toString(), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void canValidateExecuteRequestL3() throws Exception {
-        File xmlFile = new File("src/test/resources/bc-wps-executeRequestL3.xml");
-        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errStream));
+        final File xmlFile = getXmlResourceFile("bc-wps-executeRequestL3.xml");
         XmlValidator.validate(xmlFile);
 
         assertThat(errStream.toString(), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void canValidateGetCapabilitiesResponse() throws Exception {
-        File xmlFile = new File("src/test/resources/bc-wps-getCapabilitiesResponse.xml");
-        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errStream));
+        final String name = "bc-wps-getCapabilitiesResponse.xml";
+        final File xmlFile = getXmlResourceFile(name);
         XmlValidator.validate(xmlFile);
 
         assertThat(errStream.toString(), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void canValidateDescribeProcessResponse() throws Exception {
-        File xmlFile = new File("src/test/resources/bc-wps-describeProcessResponse.xml");
-        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errStream));
+        final String name = "bc-wps-describeProcessResponse.xml";
+        final File xmlFile = getXmlResourceFile(name);
         XmlValidator.validate(xmlFile);
 
         assertThat(errStream.toString(), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void canValidateExecuteAcceptedResponse() throws Exception {
-        File xmlFile = new File("src/test/resources/bc-wps-executeInProgressResponse.xml");
-        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errStream));
+        final String name = "bc-wps-executeInProgressResponse.xml";
+        final File xmlFile = getXmlResourceFile(name);
         XmlValidator.validate(xmlFile);
 
         assertThat(errStream.toString(), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void canValidateExecuteSuccessfulResponse() throws Exception {
-        File xmlFile = new File("src/test/resources/bc-wps-executeSuccessfulResponse.xml");
-        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errStream));
+        final String name = "bc-wps-executeSuccessfulResponse.xml";
+        final File xmlFile = getXmlResourceFile(name);
         XmlValidator.validate(xmlFile);
 
         assertThat(errStream.toString(), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void canValidateExecuteFailedResponse() throws Exception {
-        File xmlFile = new File("src/test/resources/bc-wps-executeFailedResponse.xml");
-        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errStream));
+        final String name = "bc-wps-executeFailedResponse.xml";
+        final File xmlFile = getXmlResourceFile(name);
         XmlValidator.validate(xmlFile);
 
         assertThat(errStream.toString(), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void validateString() throws Exception {
         String wpsResponseString = getExecuteAcceptedResponse();
-        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errStream));
         XmlValidator.validateString(wpsResponseString);
 
         assertThat(errStream.toString(), equalTo(""));
@@ -118,5 +123,10 @@ public class XmlValidatorTest {
                "\t\t<wps:ProcessStarted percentCompleted=\"0\">UNKNOWN</wps:ProcessStarted>\n" +
                "\t</wps:Status>\n" +
                "</wps:ExecuteResponse>\n";
+    }
+
+    private File getXmlResourceFile(String name) {
+        final URL resource = this.getClass().getResource("/" + name);
+        return new File(resource.getFile());
     }
 }
