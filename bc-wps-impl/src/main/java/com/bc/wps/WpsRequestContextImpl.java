@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author hans
  */
-class WpsRequestContextImpl implements WpsRequestContext {
+public class WpsRequestContextImpl implements WpsRequestContext {
 
     private final HttpServletRequest servletRequest;
 
-    WpsRequestContextImpl(HttpServletRequest servletRequest) {
+    public WpsRequestContextImpl(HttpServletRequest servletRequest) {
         this.servletRequest = servletRequest;
     }
 

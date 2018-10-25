@@ -15,7 +15,6 @@
 package com.bc.wps;
 
 import com.bc.wps.api.WpsRequestContext;
-import com.bc.wps.api.WpsServerContext;
 import com.bc.wps.api.WpsServiceInstance;
 import com.bc.wps.api.exceptions.InvalidParameterValueException;
 import com.bc.wps.api.exceptions.MissingParameterValueException;
@@ -30,7 +29,6 @@ import com.bc.wps.api.schema.ProcessDescriptionType;
 import com.bc.wps.api.schema.ProcessDescriptions;
 import com.bc.wps.exceptions.InvalidRequestException;
 import com.bc.wps.responses.ExceptionResponse;
-import com.bc.wps.serviceloader.SpiLoader;
 import com.bc.wps.utilities.JaxbHelper;
 import com.bc.wps.utilities.UrlUtils;
 import com.bc.wps.utilities.WpsLogger;
@@ -57,20 +55,20 @@ public class WpsFrontendConnector {
     private static final String REQUEST_FILE_PREFIX = "request-";
 
     // @todo discuss naming with Norman and Cosmin
-    public String getWpsService(String applicationName,
-                                String service,
+    public String getWpsService(String service,
                                 String requestType,
                                 String acceptedVersion,
                                 String language,
                                 String processIdentifier,
                                 String version,
                                 String jobId,
-                                HttpServletRequest servletRequest) {
+                                HttpServletRequest servletRequest,
+                                WpsServiceInstance wpsServiceProvider, WpsRequestContext requestContext) {
         Cookie[] cookies = servletRequest.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (REQUEST_ID.equalsIgnoreCase(cookie.getName())) {
-                    return postExecuteService(applicationName, requestType, servletRequest);
+                    return postExecuteService(requestType, servletRequest, wpsServiceProvider, requestContext);
                 }
                 if ("queryString".equalsIgnoreCase(cookie.getName())) {
                     String value = cookie.getValue();
@@ -120,10 +118,6 @@ public class WpsFrontendConnector {
             }
         }
 
-        WpsRequestContext requestContext = new WpsRequestContextImpl(servletRequest);
-        WpsServerContext serverContext = requestContext.getServerContext();
-        WpsServiceInstance wpsServiceProvider = SpiLoader.getWpsServiceProvider(serverContext, applicationName);
-
         try {
             performUrlParameterValidation(service, requestType);
             switch (requestType) {
@@ -163,9 +157,9 @@ public class WpsFrontendConnector {
         }
     }
 
-    public String postExecuteService(String applicationName,
-                                     String request,
-                                     HttpServletRequest servletRequest) {
+    public String postExecuteService(String request,
+                                     HttpServletRequest servletRequest,
+                                     WpsServiceInstance wpsServiceProvider, WpsRequestContext requestContext) {
         Cookie[] cookies = servletRequest.getCookies();
         java.nio.file.Path tempFilePath = null;
         if (cookies != null) {
@@ -188,11 +182,7 @@ public class WpsFrontendConnector {
             }
         }
 
-        WpsRequestContext requestContext = new WpsRequestContextImpl(servletRequest);
-        WpsServerContext serverContext = requestContext.getServerContext();
-        WpsServiceInstance wpsServiceProvider = SpiLoader.getWpsServiceProvider(serverContext, applicationName);
         Execute execute = getExecute(request);
-
 
         try {
             String exceptionXml = performXmlParameterValidation(execute);
