@@ -6,8 +6,10 @@ import static org.mockito.Mockito.*;
 
 import com.bc.wps.exceptions.InvalidRequestException;
 import com.bc.wps.utilities.XmlValidator;
+import com.bc.wps.utilities.ProfileTestRunner;
 import org.junit.*;
 import org.junit.rules.*;
+import org.junit.runner.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -15,15 +17,22 @@ import java.security.Principal;
 import java.util.Locale;
 
 /**
+ * In this test class some test methods are annotated with @{@link Ignore} because this test
+ * uses the {@link XmlValidator}. The validation process requires a connection to the schema
+ * location and may take a while.
+ * These tests use @{@link RunWith} with {@link ProfileTestRunner} to prevent
+ * unintended test execution. These time consuming tests can be executed if the VM-Parameter
+ * "-Dcom.bc.wps.execute.ignored.tests=true" is set.
+ *
  * @author hans
  */
+@RunWith(ProfileTestRunner.class)
 public class JaxRsWpsServiceTest {
-
-    private JaxRsWpsService wpsService;
-    private HttpServletRequest mockServletRequest;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+    private JaxRsWpsService wpsService;
+    private HttpServletRequest mockServletRequest;
 
     @Before
     public void setUp() {
@@ -36,14 +45,17 @@ public class JaxRsWpsServiceTest {
     }
 
     // XML validation can take a very long time because it has to call external URLs to get the schema
-    @Ignore
+//    @Ignore
+    @ProfileTestRunner.RunIfProfileIsActivated("xml.validator.test")
     @Test
     public void canGetCapabilitiesFromMockInstanceWithValidRequest() {
-        String response = wpsService.getWpsService("mock2", "WPS", "GetCapabilities", "", "", "", "", "",
+        String response = wpsService.getWpsService(
+                "mock2", "WPS", "GetCapabilities", "", "", "", "", "",
                 mockServletRequest);
 
         XmlValidator.validateString(response);
-        assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(response, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:Capabilities service=\"WPS\" xml:lang=\"en\" version=\"1.0.0\" " +
                 "xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd\" " +
                 "xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" " +
@@ -136,10 +148,12 @@ public class JaxRsWpsServiceTest {
         Cookie mockCookie = new Cookie("queryString", "Service=WPS&Request=GetCapabilities");
         when(mockServletRequest.getCookies()).thenReturn(new Cookie[]{mockCookie});
 
-        String response = wpsService.getWpsService("mock2", null, null, "", "", "", "", "",
+        String response = wpsService.getWpsService(
+                "mock2", null, null, "", "", "", "", "",
                 mockServletRequest);
 
-        assertThat(response, containsString("<ows:ServiceIdentification>\n" +
+        assertThat(response, containsString(
+                "<ows:ServiceIdentification>\n" +
                 "        <ows:Title>A mock WPS server</ows:Title>\n" +
                 "        <ows:Abstract>A mock WPS server to be used as a reference for any WPS implementations.</ows:Abstract>\n" +
                 "        <ows:ServiceType>WPS</ows:ServiceType>\n" +
@@ -150,14 +164,17 @@ public class JaxRsWpsServiceTest {
     }
 
     // XML validation can take a very long time because it has to call external URLs to get the schema
-    @Ignore
+//    @Ignore
+    @ProfileTestRunner.RunIfProfileIsActivated("xml.validator.test")
     @Test
     public void canDescribeProcessWithValidRequest() {
-        String response = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "1.0.0", "en", "all", "1.0.0", "",
+        String response = wpsService.getWpsService(
+                "mock2", "WPS", "DescribeProcess", "1.0.0", "en", "all", "1.0.0", "",
                 mockServletRequest);
 
         XmlValidator.validateString(response);
-        assertThat(response, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(response, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:ProcessDescriptions service=\"WPS\" version=\"1.0.0\" " +
                 "xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd\" " +
                 "xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" " +
@@ -291,10 +308,12 @@ public class JaxRsWpsServiceTest {
         Cookie mockCookie = new Cookie("queryString", "Service=WPS&Request=DescribeProcess&Version=1.0.0&Identifier=all");
         when(mockServletRequest.getCookies()).thenReturn(new Cookie[]{mockCookie});
 
-        String response = wpsService.getWpsService("mock2", null, null, "1.0.0", "en", null, null, "",
+        String response = wpsService.getWpsService(
+                "mock2", null, null, "1.0.0", "en", null, null, "",
                 mockServletRequest);
 
-        assertThat(response, containsString("    <ProcessDescription wps:processVersion=\"1.0\">\n" +
+        assertThat(response, containsString(
+                "    <ProcessDescription wps:processVersion=\"1.0\">\n" +
                 "        <ows:Identifier>Process1</ows:Identifier>\n" +
                 "        <ows:Title>Process1</ows:Title>\n" +
                 "        <ows:Abstract>Description</ows:Abstract>\n"));
@@ -302,10 +321,12 @@ public class JaxRsWpsServiceTest {
 
     @Test
     public void canReturnExceptionGetCapabilitiesWithInvalidService() {
-        String wpsResponse = wpsService.getWpsService("mock2", "invalidService", "GetCapabilities", "", "", "", "", "",
+        String wpsResponse = wpsService.getWpsService(
+                "mock2", "invalidService", "GetCapabilities", "", "", "", "", "",
                 mockServletRequest);
 
-        assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Service\">\n" +
                 "        <ows:ExceptionText>Parameter 'Service' has an invalid value.</ows:ExceptionText>\n" +
@@ -315,10 +336,12 @@ public class JaxRsWpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenDescribeProcessWithNoProcessId() {
-        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "", "", "", "1.0.0", "",
+        String wpsResponse = wpsService.getWpsService(
+                "mock2", "WPS", "DescribeProcess", "", "", "", "1.0.0", "",
                 mockServletRequest);
 
-        assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Identifier' is missing.</ows:ExceptionText>\n" +
@@ -328,10 +351,12 @@ public class JaxRsWpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenDescribeProcessWithNoVersionNumber() {
-        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "DescribeProcess", "", "", "bundle~name~version",
+        String wpsResponse = wpsService.getWpsService(
+                "mock2", "WPS", "DescribeProcess", "", "", "bundle~name~version",
                 "", "", mockServletRequest);
 
-        assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Version\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Version' is missing.</ows:ExceptionText>\n" +
@@ -341,10 +366,12 @@ public class JaxRsWpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenGetStatusWithoutJobId() {
-        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "GetStatus", "", "", "", "", "",
+        String wpsResponse = wpsService.getWpsService(
+                "mock2", "WPS", "GetStatus", "", "", "", "", "",
                 mockServletRequest);
 
-        assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"JobId\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'JobId' is missing.</ows:ExceptionText>\n" +
@@ -354,9 +381,11 @@ public class JaxRsWpsServiceTest {
 
     @Test
     public void canReturnExceptionWhenNoServiceParameter() {
-        String wpsResponse = wpsService.getWpsService("mock2", "", "", "", "", "", "", "", mockServletRequest);
+        String wpsResponse = wpsService.getWpsService(
+                "mock2", "", "", "", "", "", "", "", mockServletRequest);
 
-        assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Service\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Service' is missing.</ows:ExceptionText>\n" +
@@ -368,7 +397,8 @@ public class JaxRsWpsServiceTest {
     public void canReturnExceptionWhenNoRequestTypeParameter() {
         String wpsResponse = wpsService.getWpsService("mock2", "WPS", "", "", "", "", "", "", mockServletRequest);
 
-        assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Request\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Request' is missing.</ows:ExceptionText>\n" +
@@ -378,23 +408,27 @@ public class JaxRsWpsServiceTest {
 
     @Test
     public void canGetStatusFromMockWps() {
-        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "GetStatus", "", "", "", "", "dummyJobId",
+        String wpsResponse = wpsService.getWpsService(
+                "mock2", "WPS", "GetStatus", "", "", "", "", "dummyJobId",
                 mockServletRequest);
 
-        assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, containsString(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"));
-        assertThat(wpsResponse,
-                containsString("        <wps:ProcessStarted percentCompleted=\"65\">RUNNING</wps:ProcessStarted>\n" +
-                        "    </wps:Status>\n" +
-                        "</wps:ExecuteResponse>\n"));
+        assertThat(wpsResponse, containsString(
+                "        <wps:ProcessStarted percentCompleted=\"65\">RUNNING</wps:ProcessStarted>\n" +
+                "    </wps:Status>\n" +
+                "</wps:ExecuteResponse>\n"));
     }
 
     @Test
     public void canReturnExceptionWhenRequestIsUnknown() {
-        String wpsResponse = wpsService.getWpsService("mock2", "WPS", "InvalidService", "", "", "", "", "",
+        String wpsResponse = wpsService.getWpsService(
+                "mock2", "WPS", "InvalidService", "", "", "", "", "",
                 mockServletRequest);
 
-        assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Request\">\n" +
                 "        <ows:ExceptionText>Parameter 'Request' has an invalid value.</ows:ExceptionText>\n" +
@@ -403,14 +437,16 @@ public class JaxRsWpsServiceTest {
     }
 
     // XML validation can take a very long time because it has to call external URLs to get the schema
-    @Ignore
+//    @Ignore
+    @ProfileTestRunner.RunIfProfileIsActivated("xml.validator.test")
     @Test
-    public void canExecuteWithValidXmlRequestInMockWps() {
+    public void testThat_postExecuteService_ExecuteWithValidXmlRequestInMockWps() {
         configureMockUser();
         String wpsResponse = wpsService.postExecuteService("mock2", getValidExecuteRequest(), mockServletRequest);
 
         XmlValidator.validateString(wpsResponse);
-        assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, containsString(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" statusLocation=\"null/mockUserName\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <wps:Process wps:processVersion=\"1.0\">\n" +
                 "        <ows:Identifier>process1</ows:Identifier>\n" +
@@ -419,8 +455,8 @@ public class JaxRsWpsServiceTest {
                 "    </wps:Process>"));
         assertThat(wpsResponse, containsString(
                 "        <wps:ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</wps:ProcessAccepted>\n" +
-                        "    </wps:Status>\n" +
-                        "</wps:ExecuteResponse>\n"));
+                "    </wps:Status>\n" +
+                "</wps:ExecuteResponse>\n"));
     }
 
     // not yet work. Storing in temp file must first be improved.
@@ -431,6 +467,7 @@ public class JaxRsWpsServiceTest {
         Cookie mockCookie = new Cookie("requestId", "aa-bb-cc");
         when(mockServletRequest.getCookies()).thenReturn(new Cookie[]{mockCookie});
 
+/*
         String wpsResponse = wpsService.getWpsService(
                 null,
                 null,
@@ -441,15 +478,18 @@ public class JaxRsWpsServiceTest {
                 null,
                 null,
                 mockServletRequest);
+*/
     }
 
     @Test
-    public void canGetDefaultServiceAndVersionInRequestXml() {
+    public void testThat_postExecuteService_GetDefaultServiceAndVersionInRequestXml() {
         configureMockUser();
-        String wpsResponse = wpsService.postExecuteService("mock2", getExecuteRequestWithoutServiceAndVersion(),
+        String wpsResponse = wpsService.postExecuteService(
+                "mock2", getExecuteRequestWithoutServiceAndVersion(),
                 mockServletRequest);
 
-        assertThat(wpsResponse, containsString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, containsString(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" statusLocation=\"null/mockUserName\" service=\"WPS\" version=\"1.0.0\" " +
                 "xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" " +
                 "xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" " +
@@ -465,16 +505,18 @@ public class JaxRsWpsServiceTest {
                 "    </wps:Process>"));
         assertThat(wpsResponse, containsString(
                 "        <wps:ProcessAccepted>The request has been accepted. The job is being handled by processor 'beam-idepix~2.0.9~Idepix.Water'.</wps:ProcessAccepted>\n" +
-                        "    </wps:Status>\n" +
-                        "</wps:ExecuteResponse>\n"));
+                "    </wps:Status>\n" +
+                "</wps:ExecuteResponse>\n"));
     }
 
     @Test
-    public void canReturnExceptionWhenNoProcessorId() {
-        String wpsResponse = wpsService.postExecuteService("mock2", getExecuteRequestWithoutIdentifier(),
+    public void testThat_postExecuteService_ReturnException_WhenNoProcessorId() {
+        String wpsResponse = wpsService.postExecuteService(
+                "mock2", getExecuteRequestWithoutIdentifier(),
                 mockServletRequest);
 
-        assertThat(wpsResponse, equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        assertThat(wpsResponse, equalTo(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
                 "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
                 "        <ows:ExceptionText>The value of parameter 'Identifier' is missing.</ows:ExceptionText>\n" +
@@ -483,7 +525,7 @@ public class JaxRsWpsServiceTest {
     }
 
     @Test
-    public void canThrowExceptionWhenExecuteWithMalformedXmlRequest() {
+    public void testThat_postExecuteService_ThrowsException_WhenExecuteWithMalformedXmlRequest() {
         thrown.expect(InvalidRequestException.class);
         thrown.expectMessage("Invalid Execute request. Content is not allowed in prolog.");
 
@@ -491,30 +533,31 @@ public class JaxRsWpsServiceTest {
     }
 
     @Test
-    public void canThrowExceptionWhenExecuteWithUnknownXmlRequest() {
+    public void testThat_postExecuteService_ThrowsException_WhenExecuteWithUnknownXmlRequest() {
         thrown.expect(InvalidRequestException.class);
         thrown.expectMessage(
                 "Invalid Execute request. unexpected element (uri:\"http://java.sun.com/xml/ns/j2ee\", local:\"web-app\"). " +
-                        "Expected elements are <{http://www.opengis.net/wps/1.0.0}AllowedValues>," +
-                        "<{http://www.opengis.net/wps/1.0.0}AnyValue>," +
-                        "<{http://www.opengis.net/wps/1.0.0}Capabilities>,<{http://www.opengis.net/wps/1.0.0}DCP>," +
-                        "<{http://www.opengis.net/wps/1.0.0}DescribeProcess>,<{http://www.opengis.net/ows/1.1}ExceptionReport>," +
-                        "<{http://www.opengis.net/wps/1.0.0}Execute>,<{http://www.opengis.net/wps/1.0.0}ExecuteResponse>," +
-                        "<{http://www.opengis.net/wps/1.0.0}GetCapabilities>,<{http://www.opengis.net/wps/1.0.0}HTTP>," +
-                        "<{http://www.opengis.net/wps/1.0.0}Languages>,<{http://www.opengis.net/wps/1.0.0}NoValues>," +
-                        "<{http://www.opengis.net/wps/1.0.0}Operation>,<{http://www.opengis.net/wps/1.0.0}OperationsMetadata>," +
-                        "<{http://www.opengis.net/wps/1.0.0}ProcessDescriptions>,<{http://www.opengis.net/wps/1.0.0}ProcessOfferings>," +
-                        "<{http://www.opengis.net/ows/1.1}ServiceIdentification>,<{http://www.opengis.net/wps/1.0.0}ServiceProvider>," +
-                        "<{http://www.opengis.net/wps/1.0.0}ValuesReference>,<{http://www.opengis.net/wps/1.0.0}WSDL>," +
-                        "<{http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd}parameters>");
+                "Expected elements are <{http://www.opengis.net/wps/1.0.0}AllowedValues>," +
+                "<{http://www.opengis.net/wps/1.0.0}AnyValue>," +
+                "<{http://www.opengis.net/wps/1.0.0}Capabilities>,<{http://www.opengis.net/wps/1.0.0}DCP>," +
+                "<{http://www.opengis.net/wps/1.0.0}DescribeProcess>,<{http://www.opengis.net/ows/1.1}ExceptionReport>," +
+                "<{http://www.opengis.net/wps/1.0.0}Execute>,<{http://www.opengis.net/wps/1.0.0}ExecuteResponse>," +
+                "<{http://www.opengis.net/wps/1.0.0}GetCapabilities>,<{http://www.opengis.net/wps/1.0.0}HTTP>," +
+                "<{http://www.opengis.net/wps/1.0.0}Languages>,<{http://www.opengis.net/wps/1.0.0}NoValues>," +
+                "<{http://www.opengis.net/wps/1.0.0}Operation>,<{http://www.opengis.net/wps/1.0.0}OperationsMetadata>," +
+                "<{http://www.opengis.net/wps/1.0.0}ProcessDescriptions>,<{http://www.opengis.net/wps/1.0.0}ProcessOfferings>," +
+                "<{http://www.opengis.net/ows/1.1}ServiceIdentification>,<{http://www.opengis.net/wps/1.0.0}ServiceProvider>," +
+                "<{http://www.opengis.net/wps/1.0.0}ValuesReference>,<{http://www.opengis.net/wps/1.0.0}WSDL>," +
+                "<{http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd}parameters>");
 
         wpsService.postExecuteService("mock2", getUnknownXmlRequest(), mockServletRequest);
     }
 
     @Test
-    public void canThrowExceptionWhenExecuteWithMissingElement() {
+    public void testThat_postExecuteService_ThrowsException_WhenExecuteWithMissingElement() {
         thrown.expect(InvalidRequestException.class);
-        thrown.expectMessage("Invalid Execute request. unexpected element (uri:\"\", local:\"ProcessDescriptions\"). " +
+        thrown.expectMessage(
+                "Invalid Execute request. unexpected element (uri:\"\", local:\"ProcessDescriptions\"). " +
                 "Expected elements are <{http://www.opengis.net/wps/1.0.0}AllowedValues>," +
                 "<{http://www.opengis.net/wps/1.0.0}AnyValue>," +
                 "<{http://www.opengis.net/wps/1.0.0}Capabilities>," +
@@ -544,112 +587,112 @@ public class JaxRsWpsServiceTest {
     public void testCleanRequest() {
         String xmlToCleanUp =
                 "--------------------------e43de47a79e47e3d\n" +
-                        "Content-Disposition: form-data; name=\"request\"; filename=\"test-request.xml\"\n" +
-                        "Content-Type: application/xml\n" +
-                        "\n" +
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?> <wps:Execute service=\"WPS\"\n" +
-                        "             version=\"1.0.0\"\n" +
-                        "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
-                        "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-                        "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                        "  <ows:Identifier>fub-wew~6.1~FUB.Water</ows:Identifier>" +
-                        "..................." +
-                        "     </wps:Data>\n" +
-                        "    </wps:Input>\n" +
-                        "  </wps:DataInputs> </wps:Execute>\n" +
-                        "\n" +
-                        "--------------------------e43de47a79e47e3d--";
+                "Content-Disposition: form-data; name=\"request\"; filename=\"test-request.xml\"\n" +
+                "Content-Type: application/xml\n" +
+                "\n" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?> <wps:Execute service=\"WPS\"\n" +
+                "             version=\"1.0.0\"\n" +
+                "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+                "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
+                "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "  <ows:Identifier>fub-wew~6.1~FUB.Water</ows:Identifier>" +
+                "..................." +
+                "     </wps:Data>\n" +
+                "    </wps:Input>\n" +
+                "  </wps:DataInputs> </wps:Execute>\n" +
+                "\n" +
+                "--------------------------e43de47a79e47e3d--";
 
         String cleanXml =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?> <wps:Execute service=\"WPS\"\n" +
-                        "             version=\"1.0.0\"\n" +
-                        "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
-                        "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-                        "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                        "  <ows:Identifier>fub-wew~6.1~FUB.Water</ows:Identifier>" +
-                        "..................." +
-                        "     </wps:Data>\n" +
-                        "    </wps:Input>\n" +
-                        "  </wps:DataInputs> </wps:Execute>";
+                "             version=\"1.0.0\"\n" +
+                "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+                "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
+                "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "  <ows:Identifier>fub-wew~6.1~FUB.Water</ows:Identifier>" +
+                "..................." +
+                "     </wps:Data>\n" +
+                "    </wps:Input>\n" +
+                "  </wps:DataInputs> </wps:Execute>";
 
         assertEquals(cleanXml, WpsFrontendConnector.cleanRequest(xmlToCleanUp));
     }
 
     private String getInvalidExecuteRequest() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ProcessDescriptions service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                "\t<ProcessDescription storeSupported=\"true\" statusSupported=\"true\" wps:processVersion=\"2.1.3-SNAPSHOT\">\n" +
-                "\t\t<ows:Identifier>beam-idepix~2.1.3-SNAPSHOT~Idepix.Land</ows:Identifier>\n" +
-                "\t\t<ows:Title>beam-idepix~2.1.3-SNAPSHOT~Idepix.Land</ows:Title>\n" +
-                "\t\t<ows:Abstract>\n" +
-                "\t\t</ows:Abstract>\n" +
-                "\t\t<DataInputs>\n" +
-                "\t\t\t<Input>\n" +
-                "\t\t\t\t<ows:Identifier>productionName</ows:Identifier>\n" +
-                "\t\t\t\t<ows:Title>Production name</ows:Title>\n" +
-                "\t\t\t\t<LiteralData>\n" +
-                "\t\t\t\t\t<ows:DataType>string</ows:DataType>\n" +
-                "\t\t\t\t</LiteralData>\n" +
-                "\t\t\t</Input>\n" +
-                "\t\t</DataInputs>\n" +
-                "\t\t<ProcessOutputs>\n" +
-                "\t\t\t<Output>\n" +
-                "\t\t\t\t<ows:Identifier>productionResults</ows:Identifier>\n" +
-                "\t\t\t\t<ows:Title>URL to the production result(s)</ows:Title>\n" +
-                "\t\t\t\t<ComplexOutput>\n" +
-                "\t\t\t\t</ComplexOutput>\n" +
-                "\t\t\t</Output>\n" +
-                "\t\t</ProcessOutputs>\n" +
-                "\t</ProcessDescription>\n" +
-                "</ProcessDescriptions>";
+               "<ProcessDescriptions service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+               "\t<ProcessDescription storeSupported=\"true\" statusSupported=\"true\" wps:processVersion=\"2.1.3-SNAPSHOT\">\n" +
+               "\t\t<ows:Identifier>beam-idepix~2.1.3-SNAPSHOT~Idepix.Land</ows:Identifier>\n" +
+               "\t\t<ows:Title>beam-idepix~2.1.3-SNAPSHOT~Idepix.Land</ows:Title>\n" +
+               "\t\t<ows:Abstract>\n" +
+               "\t\t</ows:Abstract>\n" +
+               "\t\t<DataInputs>\n" +
+               "\t\t\t<Input>\n" +
+               "\t\t\t\t<ows:Identifier>productionName</ows:Identifier>\n" +
+               "\t\t\t\t<ows:Title>Production name</ows:Title>\n" +
+               "\t\t\t\t<LiteralData>\n" +
+               "\t\t\t\t\t<ows:DataType>string</ows:DataType>\n" +
+               "\t\t\t\t</LiteralData>\n" +
+               "\t\t\t</Input>\n" +
+               "\t\t</DataInputs>\n" +
+               "\t\t<ProcessOutputs>\n" +
+               "\t\t\t<Output>\n" +
+               "\t\t\t\t<ows:Identifier>productionResults</ows:Identifier>\n" +
+               "\t\t\t\t<ows:Title>URL to the production result(s)</ows:Title>\n" +
+               "\t\t\t\t<ComplexOutput>\n" +
+               "\t\t\t\t</ComplexOutput>\n" +
+               "\t\t\t</Output>\n" +
+               "\t\t</ProcessOutputs>\n" +
+               "\t</ProcessDescription>\n" +
+               "</ProcessDescriptions>";
     }
 
     private String getUnknownXmlRequest() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<web-app version=\"2.4\" xmlns=\"http://java.sun.com/xml/ns/j2ee\"\n" +
-                "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "         xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee\n" +
-                "http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd\">\n" +
-                "\n" +
-                "    <display-name>Calvalus WPS</display-name>\n" +
-                "    <description>Calvalus WPS</description>\n" +
-                "</web-app>";
+               "<web-app version=\"2.4\" xmlns=\"http://java.sun.com/xml/ns/j2ee\"\n" +
+               "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+               "         xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee\n" +
+               "http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd\">\n" +
+               "\n" +
+               "    <display-name>Calvalus WPS</display-name>\n" +
+               "    <description>Calvalus WPS</description>\n" +
+               "</web-app>";
     }
 
     private String getExecuteRequestWithoutIdentifier() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n" +
-                "\n" +
-                "<wps:Execute xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
-                "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
-                "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                "</wps:Execute>";
+               "\n" +
+               "<wps:Execute xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+               "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
+               "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
+               "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+               "</wps:Execute>";
     }
 
     private String getExecuteRequestWithoutServiceAndVersion() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n" +
-                "\n" +
-                "<wps:Execute xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
-                "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
-                "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                "\n" +
-                "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
-                "</wps:Execute>";
+               "\n" +
+               "<wps:Execute xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+               "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
+               "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
+               "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+               "\n" +
+               "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
+               "</wps:Execute>";
     }
 
     private String getValidExecuteRequest() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n" +
-                "\n" +
-                "<wps:Execute service=\"WPS\"\n" +
-                "             version=\"1.0.0\"\n" +
-                "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
-                "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
-                "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                "\n" +
-                "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
-                "</wps:Execute>";
+               "\n" +
+               "<wps:Execute service=\"WPS\"\n" +
+               "             version=\"1.0.0\"\n" +
+               "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+               "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
+               "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
+               "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+               "\n" +
+               "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
+               "</wps:Execute>";
     }
 
     private void configureMockUser() {
