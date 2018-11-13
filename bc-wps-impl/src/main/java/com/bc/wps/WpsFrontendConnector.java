@@ -18,10 +18,12 @@ import com.bc.wps.api.WpsRequestContext;
 import com.bc.wps.api.WpsServiceInstance;
 import com.bc.wps.api.exceptions.InvalidParameterValueException;
 import com.bc.wps.api.exceptions.MissingParameterValueException;
+import com.bc.wps.api.exceptions.NoApplicableCodeException;
 import com.bc.wps.api.exceptions.WpsServiceException;
 import com.bc.wps.api.schema.Capabilities;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.ExceptionReport;
+import com.bc.wps.api.schema.ExceptionType;
 import com.bc.wps.api.schema.Execute;
 import com.bc.wps.api.schema.ExecuteResponse;
 import com.bc.wps.api.schema.ObjectFactory;
@@ -53,6 +55,15 @@ public class WpsFrontendConnector {
     private static final String UTF_8 = "UTF-8";
     private static final String TEMP_DIRECTORY = "tmp";
     private static final String REQUEST_FILE_PREFIX = "request-";
+    private final boolean removeBcNamespace;
+
+    public WpsFrontendConnector() {
+        this(false);
+    }
+
+    public WpsFrontendConnector(boolean removeBcNamespace) {
+        this.removeBcNamespace = removeBcNamespace;
+    }
 
     // @todo discuss naming with Norman and Cosmin
     public String getWpsService(String service,
@@ -123,8 +134,10 @@ public class WpsFrontendConnector {
             switch (requestType) {
                 case "GetCapabilities":
                     Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
-                    return JaxbHelper.marshalWithSchemaLocation(capabilities, "http://www.opengis.net/wps/1.0.0 " +
-                                                                              "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd");
+                    return removeBcNamespace(
+                            JaxbHelper.marshalWithSchemaLocation(
+                                    capabilities, "http://www.opengis.net/wps/1.0.0 " +
+                                                  "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd"));
                 case "DescribeProcess":
                     String describeProcessExceptionXml = performDescribeProcessParameterValidation(processIdentifier, version);
                     if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
@@ -133,15 +146,22 @@ public class WpsFrontendConnector {
                     List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(
                             requestContext, processIdentifier);
                     ProcessDescriptions processDescriptions = constructProcessDescriptionXml(processDescriptionTypes);
-                    return JaxbHelper.marshalWithSchemaLocation(processDescriptions, "http://www.opengis.net/wps/1.0.0 " +
-                                                                                     "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd");
+                    return removeBcNamespace(
+                            JaxbHelper.marshalWithSchemaLocation(
+                                    processDescriptions, "http://www.opengis.net/wps/1.0.0 " +
+                                                         "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd"));
                 case "GetStatus":
                     if (StringUtils.isBlank(jobId)) {
                         throw new MissingParameterValueException("JobId");
                     }
-                    ExecuteResponse executeResponse = wpsServiceProvider.getStatus(requestContext, jobId);
-                    return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
-                                                                                 "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
+                    final ExecuteResponse executeResponse = wpsServiceProvider.getStatus(requestContext, jobId);
+                    if (executeResponse == null) {
+                        throw new NoApplicableCodeException("Unknown jobId: '" + jobId + "'", null);
+                    }
+                    return removeBcNamespace(
+                            JaxbHelper.marshalWithSchemaLocation(
+                                    executeResponse, "http://www.opengis.net/wps/1.0.0 " +
+                                                     "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd"));
                 default:
                     throw new InvalidParameterValueException("Request");
             }
@@ -191,8 +211,10 @@ public class WpsFrontendConnector {
             }
             ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
             deleteTemporaryFile(tempFilePath);
-            return JaxbHelper.marshalWithSchemaLocation(executeResponse, "http://www.opengis.net/wps/1.0.0 " +
-                                                                         "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
+            return removeBcNamespace(
+                    JaxbHelper.marshalWithSchemaLocation(
+                            executeResponse, "http://www.opengis.net/wps/1.0.0 " +
+                                             "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd"));
         } catch (WpsServiceException | IOException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
@@ -217,6 +239,13 @@ public class WpsFrontendConnector {
         request = "<?xml" + request.split("<\\?xml")[1];
         request = request.split("wps:Execute>")[0] + "wps:Execute>";
         return request;
+    }
+
+    private String removeBcNamespace(String xml) {
+        if (removeBcNamespace) {
+            return xml.replace("xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" ", "");
+        }
+        return xml;
     }
 
     private void deleteTemporaryFile(java.nio.file.Path tempFilePath) throws IOException {
@@ -290,14 +319,16 @@ public class WpsFrontendConnector {
     }
 
     private String getExceptionString(ExceptionReport exceptionReport) {
+        String retVal;
         try {
-            return JaxbHelper.marshalWithSchemaLocation(exceptionReport, "http://www.opengis.net/ows/1.1 " +
-                                                                         "http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd");
+            retVal = JaxbHelper.marshalWithSchemaLocation(exceptionReport, "http://www.opengis.net/ows/1.1 " +
+                                                                           "http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd");
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshal the WPS exception.", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
-            return exceptionResponse.getJaxbExceptionResponse();
+            retVal = exceptionResponse.getJaxbExceptionResponse();
         }
+        return removeBcNamespace(retVal);
     }
 
     private ProcessDescriptions constructProcessDescriptionXml(List<ProcessDescriptionType> processes) {

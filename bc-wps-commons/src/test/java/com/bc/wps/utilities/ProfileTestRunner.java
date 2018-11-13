@@ -55,7 +55,7 @@ public class ProfileTestRunner extends BlockJUnit4ClassRunner {
             System.out.println("!!  Disabled Test \"" + methName + "\"");
             System.out.println("!!  of test class \"" + getTestClass().getName());
             System.out.println("!!  To run this test set VM option:");
-            System.out.println("!!   -D" + vmOption + "=true.");
+            System.out.println("!!   -D" + vmOption + "=true");
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             notifier.fireTestIgnored(description);
         } else if (ignoreAllTestsInClass) {

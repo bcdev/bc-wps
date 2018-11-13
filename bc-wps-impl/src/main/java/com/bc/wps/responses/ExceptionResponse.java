@@ -1,10 +1,10 @@
 package com.bc.wps.responses;
 
-
 import com.bc.wps.api.exceptions.InvalidParameterValueException;
 import com.bc.wps.api.exceptions.MissingParameterValueException;
 import com.bc.wps.api.exceptions.NoApplicableCodeException;
 import com.bc.wps.api.exceptions.NotEnoughStorageException;
+import com.bc.wps.api.exceptions.OptionNotSupportedException;
 import com.bc.wps.api.schema.ExceptionReport;
 import com.bc.wps.api.schema.ExceptionType;
 import com.bc.wps.api.schema.ProcessFailedType;
@@ -36,6 +36,8 @@ public class ExceptionResponse {
             return getNotEnoughStorageExceptionResponse((NotEnoughStorageException) exception);
         } else if (exception instanceof NoApplicableCodeException) {
             return getNoApplicableCodeExceptionResponse((NoApplicableCodeException) exception);
+        } else if (exception instanceof OptionNotSupportedException) {
+            return getOptionNotSupportedExceptionResponse((OptionNotSupportedException) exception);
         } else {
             return getGeneralExceptionReport(exception);
         }
@@ -51,51 +53,51 @@ public class ExceptionResponse {
     }
 
     private ExceptionReport getInvalidParameterExceptionResponse(InvalidParameterValueException invalidParameterException) {
-        ExceptionType exceptionResponse = new ExceptionType();
-        exceptionResponse.getExceptionText().add(invalidParameterException.getMessage());
-        exceptionResponse.setExceptionCode("InvalidParameterValue");
-        exceptionResponse.setLocator(invalidParameterException.getInvalidParameter());
-        exceptionReport.getException().add(exceptionResponse);
-        return exceptionReport;
+        final String message = invalidParameterException.getMessage();
+        final String locator = invalidParameterException.getInvalidParameter();
+        return createReport(message, "InvalidParameterValue", locator);
     }
 
     private ExceptionReport getMissingParameterExceptionResponse(MissingParameterValueException missingParameterValueException) {
-        ExceptionType exceptionResponse = new ExceptionType();
-        exceptionResponse.getExceptionText().add(missingParameterValueException.getMessage());
-        exceptionResponse.setExceptionCode("MissingParameterValue");
-        exceptionResponse.setLocator(missingParameterValueException.getMissingParameter());
-        exceptionReport.getException().add(exceptionResponse);
-        return exceptionReport;
+        final String message = missingParameterValueException.getMessage();
+        final String locator = missingParameterValueException.getMissingParameter();
+        return createReport(message, "MissingParameterValue", locator);
     }
 
     private ExceptionReport getNoApplicableCodeExceptionResponse(NoApplicableCodeException noApplicableCodeException) {
-        ExceptionType exceptionResponse = new ExceptionType();
-        exceptionResponse.getExceptionText().add(noApplicableCodeException.getMessage());
-        exceptionResponse.setExceptionCode("NoApplicableCode");
-        exceptionReport.getException().add(exceptionResponse);
-        return exceptionReport;
+        final String message = noApplicableCodeException.getMessage();
+        return createReport(message, "NoApplicableCode", null);
     }
 
     private ExceptionReport getNotEnoughStorageExceptionResponse(NotEnoughStorageException notEnoughStorageException) {
-        ExceptionType exceptionResponse = new ExceptionType();
-        exceptionResponse.getExceptionText().add(notEnoughStorageException.getMessage());
-        exceptionResponse.setExceptionCode("NotEnoughStorage");
-        exceptionReport.getException().add(exceptionResponse);
-        return exceptionReport;
+        final String message = notEnoughStorageException.getMessage();
+        return createReport(message, "NotEnoughStorage", null);
+    }
+
+    private ExceptionReport getOptionNotSupportedExceptionResponse(OptionNotSupportedException optionNotSupportedException) {
+        final String message = optionNotSupportedException.getMessage();
+        return createReport(message, "OptionNotSupported", null);
     }
 
     private ExceptionReport getGeneralExceptionReport(Exception exception) {
-        ExceptionType exceptionResponse = new ExceptionType();
         Throwable cause = exception.getCause();
-        String exceptionMessage = exception.getMessage();
+        String message = exception.getMessage();
         if (cause != null) {
-            exceptionResponse.getExceptionText().add(exceptionMessage + " : " + cause.getMessage());
+            message = message + " : " + cause.getMessage();
         } else {
-            exceptionResponse.getExceptionText().add(exception.getClass() + " : " + exceptionMessage);
+            message = exception.getClass() + " : " + message;
         }
-        exceptionResponse.setExceptionCode("NoApplicableCode");
+        return createReport(message, "NoApplicableCode", null);
+    }
+
+    private ExceptionReport createReport(String message, String exceptionCode, String locator) {
+        ExceptionType exceptionResponse = new ExceptionType();
+        exceptionResponse.getExceptionText().add(message);
+        exceptionResponse.setExceptionCode(exceptionCode);
+        if (locator != null) {
+            exceptionResponse.setLocator(locator);
+        }
         exceptionReport.getException().add(exceptionResponse);
         return exceptionReport;
     }
-
 }

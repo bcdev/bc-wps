@@ -23,18 +23,16 @@ public class JaxbHelper {
      * @throws JAXBException
      */
     public static String marshal(Object object) throws JAXBException {
-        StringWriter stringWriter = new StringWriter();
-        Marshaller jaxbMarshaller = getMarshaller(object);
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(object, stringWriter);
-        return stringWriter.toString();
+        return marshalWithSchemaLocation(object, null);
     }
 
     public static String marshalWithSchemaLocation(Object object, String schemaLocation) throws JAXBException {
         StringWriter stringWriter = new StringWriter();
         Marshaller jaxbMarshaller = getMarshaller(object);
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, schemaLocation);
+        if (schemaLocation != null) {
+            jaxbMarshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, schemaLocation);
+        }
         jaxbMarshaller.marshal(object, stringWriter);
         return stringWriter.toString();
     }
