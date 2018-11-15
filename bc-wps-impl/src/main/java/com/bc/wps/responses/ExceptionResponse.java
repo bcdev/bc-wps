@@ -5,9 +5,11 @@ import com.bc.wps.api.exceptions.MissingParameterValueException;
 import com.bc.wps.api.exceptions.NoApplicableCodeException;
 import com.bc.wps.api.exceptions.NotEnoughStorageException;
 import com.bc.wps.api.exceptions.OptionNotSupportedException;
+import com.bc.wps.api.exceptions.XmlSchemaFaultException;
 import com.bc.wps.api.schema.ExceptionReport;
 import com.bc.wps.api.schema.ExceptionType;
 import com.bc.wps.api.schema.ProcessFailedType;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author hans
@@ -38,6 +40,8 @@ public class ExceptionResponse {
             return getNoApplicableCodeExceptionResponse((NoApplicableCodeException) exception);
         } else if (exception instanceof OptionNotSupportedException) {
             return getOptionNotSupportedExceptionResponse((OptionNotSupportedException) exception);
+        } else if (exception instanceof XmlSchemaFaultException) {
+            return getXmlSchemaFaultExceptionResponse((XmlSchemaFaultException) exception);
         } else {
             return getGeneralExceptionReport(exception);
         }
@@ -76,7 +80,14 @@ public class ExceptionResponse {
 
     private ExceptionReport getOptionNotSupportedExceptionResponse(OptionNotSupportedException optionNotSupportedException) {
         final String message = optionNotSupportedException.getMessage();
-        return createReport(message, "OptionNotSupported", null);
+        final String identifier = optionNotSupportedException.getIdentifierOfOptionNotSupported();
+        return createReport(message, "OptionNotSupported", identifier);
+    }
+
+    private ExceptionReport getXmlSchemaFaultExceptionResponse(XmlSchemaFaultException exception) {
+        final String message = exception.getMessage();
+        final String parentElement = exception.getParentElement();
+        return createReport(message, "InvalidParameterValue", parentElement );
     }
 
     private ExceptionReport getGeneralExceptionReport(Exception exception) {
@@ -94,7 +105,7 @@ public class ExceptionResponse {
         ExceptionType exceptionResponse = new ExceptionType();
         exceptionResponse.getExceptionText().add(message);
         exceptionResponse.setExceptionCode(exceptionCode);
-        if (locator != null) {
+        if (StringUtils.isNotBlank(locator)) {
             exceptionResponse.setLocator(locator);
         }
         exceptionReport.getException().add(exceptionResponse);

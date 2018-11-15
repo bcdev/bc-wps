@@ -1,16 +1,13 @@
 package com.bc.wps;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-//import static org.junit.matchers.JUnitMatchers.*;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import com.bc.wps.api.WpsRequestContext;
 import com.bc.wps.api.WpsServiceInstance;
+import com.bc.wps.api.exceptions.OptionNotSupportedException;
 import com.bc.wps.api.exceptions.WpsServiceException;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.Execute;
@@ -18,23 +15,28 @@ import com.bc.wps.api.schema.ExecuteResponse;
 import com.bc.wps.api.schema.LanguageStringType;
 import com.bc.wps.api.schema.ProcessBriefType;
 import com.bc.wps.api.schema.StatusType;
-import com.bc.wps.utilities.XmlValidator;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.hamcrest.CoreMatchers;
 import org.junit.*;
 import org.mockito.ArgumentCaptor;
-import org.mockito.internal.verification.Times;
 import org.mockito.internal.verification.VerificationModeFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+
+//import static org.junit.matchers.JUnitMatchers.*;
 
 public class WpsFrontendConnectorTest {
 
     private HttpServletRequest mockServletRequest;
-    private WpsFrontendConnector classUnderTest;
+    private WpsFrontendConnector wpsFrontendConnector;
 
     @Before
     public void setUp() throws Exception {
@@ -46,22 +48,21 @@ public class WpsFrontendConnectorTest {
         mockServletRequest = mock(HttpServletRequest.class);
         when(mockServletRequest.getUserPrincipal()).thenReturn(mockUserPrincipal);
 
-        classUnderTest = new WpsFrontendConnector();
+        wpsFrontendConnector = new WpsFrontendConnector();
     }
 
     @Test
     public void testThat_postExecuteService_ExecuteWithValidXmlRequest_InMockWps() throws WpsServiceException {
         //preparation
-        final WpsServiceInstance mockServiceProvider = mock(WpsServiceInstance.class);
+        final WpsServiceInstance mockWpsServiceInstance = mock(WpsServiceInstance.class);
         final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(mockServletRequest);
-        when(mockServiceProvider.doExecute(same(requestContext), any(Execute.class))).thenReturn(getExecuteResponse());
+        when(mockWpsServiceInstance.doExecute(same(requestContext), any(Execute.class))).thenReturn(getExecuteResponse());
 
         //execution
-        String wpsResponse = classUnderTest.postExecuteService(getValidExecuteRequest(), mockServletRequest, mockServiceProvider, requestContext);
+        String wpsResponse = wpsFrontendConnector.postExecuteService(getValidExecuteRequest(), mockServletRequest, mockWpsServiceInstance, requestContext);
 
         //verification
-
-        XmlValidator.validateString(wpsResponse);
+//        XmlValidator.validateString(wpsResponse);
         assertThat(wpsResponse, containsString(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<wps:ExecuteResponse serviceInstance=\"http://companyUrl/serviceName?\" statusLocation=\"test location\" service=\"WPS\" version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
@@ -70,14 +71,96 @@ public class WpsFrontendConnectorTest {
                 "        <ows:Title>Process 1</ows:Title>\n" +
                 "        <ows:Abstract>Process 1 description</ows:Abstract>\n" +
                 "    </wps:Process>\n" +
-                "    <wps:Status creationTime=\"2018-10-22T03:04:05.007\">\n" +
+                "    <wps:Status creationTime=\"2018-11-22T03:04:05.007+01:00\">\n" +
                 "        <wps:ProcessAccepted>test accepted message</wps:ProcessAccepted>\n" +
                 "    </wps:Status>\n" +
                 "</wps:ExecuteResponse>\n"));
         final ArgumentCaptor<Execute> captor = ArgumentCaptor.forClass(Execute.class);
-        verify(mockServiceProvider, VerificationModeFactory.times(1)).doExecute(same(requestContext), captor.capture());
+        verify(mockWpsServiceInstance, VerificationModeFactory.times(1)).doExecute(same(requestContext), captor.capture());
         final List<Execute> allValues = captor.getAllValues();
         assertThat(allValues.size(), is(equalTo(1)));
+        final Execute execute = allValues.get(0);
+        assertMarshalledValidExecute(execute);
+    }
+
+    @Test
+    public void testThat_postExecuteService_serviceInstanceReturnsOptionNotSupportedException() throws WpsServiceException {
+        //preparation
+        final WpsServiceInstance mockWpsServiceInstance = mock(WpsServiceInstance.class);
+        final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(mockServletRequest);
+        when(mockWpsServiceInstance.doExecute(same(requestContext), any(Execute.class))).thenThrow(new OptionNotSupportedException("MESSAGE", "NOT_SUPPORTED"));
+
+        //execution
+        String wpsResponse = wpsFrontendConnector.postExecuteService(getValidExecuteRequest(), mockServletRequest, mockWpsServiceInstance, requestContext);
+
+        //verification
+        assertThat(wpsResponse, is(equalToIgnoringWhiteSpace(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<ows:ExceptionReport version=\"1.0.0\"\n" +
+                "                     xml:lang=\"en\"\n" +
+                "                     xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\"\n" +
+                "                     xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
+                "                     xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
+                "                     xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                "                     xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+                "                     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "                     xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "    <ows:Exception exceptionCode=\"OptionNotSupported\" locator=\"NOT_SUPPORTED\">\n" +
+                "        <ows:ExceptionText>MESSAGE</ows:ExceptionText>\n" +
+                "    </ows:Exception>\n" +
+                "</ows:ExceptionReport>")));
+    }
+
+    @Test
+    public void testThat_postExecuteService_withMissingIdentifier_returnsAnInvalidParameterValueReport() throws WpsServiceException {
+        //preparation
+        final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(mockServletRequest);
+
+        //execution
+        String wpsResponse = wpsFrontendConnector.postExecuteService(getExecuteRequestWithoutIdentifer(), mockServletRequest, mock(WpsServiceInstance.class), requestContext);
+
+        //verification
+        assertThat(wpsResponse, is(equalToIgnoringWhiteSpace(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<ows:ExceptionReport version=\"1.0.0\"\n" +
+                "                     xml:lang=\"en\"\n" +
+                "                     xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\"\n" +
+                "                     xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
+                "                     xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
+                "                     xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                "                     xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+                "                     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "                     xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "    <ows:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Execute\">\n" +
+                "        <ows:ExceptionText>XML schema fault: Element 'Identifier' missed in element 'Execute'.</ows:ExceptionText>\n" +
+                "    </ows:Exception>\n" +
+                "</ows:ExceptionReport>")));
+    }
+
+    @Test
+    public void testThat_postExecuteService_withMissingIdentifierValue_returnsAnInvalidParameterValueReport() throws WpsServiceException {
+        //preparation
+        final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(mockServletRequest);
+
+        //execution
+        String wpsResponse = wpsFrontendConnector.postExecuteService(getExecuteRequestWithEmptyIdentifer(), mockServletRequest, mock(WpsServiceInstance.class), requestContext);
+
+        //verification
+        assertThat(wpsResponse, is(equalToIgnoringWhiteSpace(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<ows:ExceptionReport version=\"1.0.0\"\n" +
+                "                     xml:lang=\"en\"\n" +
+                "                     xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\"\n" +
+                "                     xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
+                "                     xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
+                "                     xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                "                     xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+                "                     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "                     xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+                "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
+                "        <ows:ExceptionText>The value of parameter 'Identifier' is missing.</ows:ExceptionText>\n" +
+                "    </ows:Exception>\n" +
+                "</ows:ExceptionReport>")));
     }
 
     protected ExecuteResponse getExecuteResponse() {
@@ -94,11 +177,11 @@ public class WpsFrontendConnectorTest {
         processBriefType.setAbstract(theAbstract);
 
         final StatusType status = new StatusType();
-        final XMLGregorianCalendarImpl creationTime = new XMLGregorianCalendarImpl();
-        creationTime.setTime(3,4,5,7);
-        creationTime.setYear(2018);
-        creationTime.setMonth(10);
-        creationTime.setDay(22);
+        final LocalDateTime ldt = LocalDateTime.of(2018, 11, 22, 3, 4, 5);
+        final ZonedDateTime zdt = ldt.atZone(ZoneId.systemDefault());
+        final GregorianCalendar gc = GregorianCalendar.from(zdt);
+        gc.set(Calendar.MILLISECOND, 7);
+        final XMLGregorianCalendarImpl creationTime = new XMLGregorianCalendarImpl(gc);
         status.setCreationTime(creationTime);
         status.setProcessAccepted("test accepted message");
 
@@ -114,33 +197,42 @@ public class WpsFrontendConnectorTest {
     }
 
     private String getValidExecuteRequest() {
-//        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n" +
-//                "\n" +
-//                "<wps:Execute service=\"WPS\"\n" +
-//                "             version=\"1.0.0\"\n" +
-//                "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
-//                "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-//                "\t\t\t xmlns:cal= \"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
-//                "             xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-//                "\n" +
-//                "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
-//                "</wps:Execute>";
-
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n" +
-               "\n" +
                "<wps:Execute service=\"WPS\"\n" +
                "             version=\"1.0.0\"\n" +
                "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
-               "             xmlns:ows=\"http://www.opengis.net/ows/1.1\"\n" +
-               "             xmlns:cal=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\"\n" +
-               "             xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n" +
-               "             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-               "             xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_request.xsd\">\n" +
-               "\n" +
+               "             xmlns:ows=\"http://www.opengis.net/ows/1.1\">\n" +
                "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
                "</wps:Execute>";
     }
 
-    private static class CM extends CoreMatchers{
+    private void assertMarshalledValidExecute(Execute execute) {
+        assertNotNull(execute);
+        assertThat(execute.getService(), is(equalTo("WPS")));
+        assertThat(execute.getVersion(), is(equalTo("1.0.0")));
+        assertThat(execute.getIdentifier(), is(instanceOf(CodeType.class)));
+        assertThat(execute.getIdentifier().getValue(), is(equalTo("beam-idepix~2.0.9~Idepix.Water")));
+    }
+    private String getExecuteRequestWithoutIdentifer() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n" +
+               "<wps:Execute service=\"WPS\"\n" +
+               "             version=\"1.0.0\"\n" +
+               "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+               "             xmlns:ows=\"http://www.opengis.net/ows/1.1\">\n" +
+//               "        <ows:Identifier>beam-idepix~2.0.9~Idepix.Water</ows:Identifier>\n" +
+               "</wps:Execute>";
+    }
+    private String getExecuteRequestWithEmptyIdentifer() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n" +
+               "<wps:Execute service=\"WPS\"\n" +
+               "             version=\"1.0.0\"\n" +
+               "             xmlns:wps=\"http://www.opengis.net/wps/1.0.0\"\n" +
+               "             xmlns:ows=\"http://www.opengis.net/ows/1.1\">\n" +
+               "        <ows:Identifier></ows:Identifier>\n" +
+               "</wps:Execute>";
+    }
+
+    private static class CM extends CoreMatchers {
+
     }
 }

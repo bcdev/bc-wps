@@ -518,8 +518,8 @@ public class JaxRsWpsServiceTest {
         assertThat(wpsResponse, equalTo(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ows:ExceptionReport version=\"1.0.0\" xml:lang=\"en\" xsi:schemaLocation=\"http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd\" xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
-                "    <ows:Exception exceptionCode=\"MissingParameterValue\" locator=\"Identifier\">\n" +
-                "        <ows:ExceptionText>The value of parameter 'Identifier' is missing.</ows:ExceptionText>\n" +
+                "    <ows:Exception exceptionCode=\"InvalidParameterValue\" locator=\"Execute\">\n" +
+                "        <ows:ExceptionText>XML schema fault: Element 'Identifier' missed in element 'Execute'.</ows:ExceptionText>\n" +
                 "    </ows:Exception>\n" +
                 "</ows:ExceptionReport>\n"));
     }

@@ -11,7 +11,14 @@
 
     <artifactId>bc-wps-impl</artifactId>
 
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
+
+    <!--
+    //@todo 1 se/se - Norman zeigen!
+    Use jar packaging to deploy the framework and make it useable to others.
+    e.g. in case of mvn deploy
+    -->
+    <!--<packaging>jar</packaging>-->
 
     <properties>
         <jersey.version>1.9</jersey.version>

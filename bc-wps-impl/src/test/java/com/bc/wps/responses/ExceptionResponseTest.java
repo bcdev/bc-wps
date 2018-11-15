@@ -145,7 +145,7 @@ public class ExceptionResponseTest {
         assertThat(count, is(1));
         assertThat(marshal, stringContainsInOrder(Arrays.asList(
                 "<ows:ExceptionReport version=\"1.0.0\"",
-                "    <ows:Exception exceptionCode=\"NoApplicableCode\">",
+                "    <ows:Exception exceptionCode=\"NotEnoughStorage\">",
                 "        <ows:ExceptionText>Not enough storage</ows:ExceptionText>",
                 "    </ows:Exception>",
                 "</ows:ExceptionReport>")));
@@ -163,7 +163,7 @@ public class ExceptionResponseTest {
         assertThat(count, is(1));
         assertThat(marshal, stringContainsInOrder(Arrays.asList(
                 "<ows:ExceptionReport version=\"1.0.0\"",
-                "    <ows:Exception exceptionCode=\"NoApplicableCode\">",
+                "    <ows:Exception exceptionCode=\"NotEnoughStorage\">",
                 "        <ows:ExceptionText>java.lang.Throwable: AAAAAA</ows:ExceptionText>",
                 "    </ows:Exception>",
                 "</ows:ExceptionReport>")));
@@ -208,7 +208,7 @@ public class ExceptionResponseTest {
 
     @Test
     public void testOptionNotSupportedException() throws JAXBException {
-        final OptionNotSupportedException exception = new OptionNotSupportedException("Exception Message.");
+        final OptionNotSupportedException exception = new OptionNotSupportedException("Exception Message.", null);
 
         final ExceptionReport response = exceptionResponse.getExceptionResponse(exception);
 
@@ -216,6 +216,23 @@ public class ExceptionResponseTest {
         assertThat(marshal, stringContainsInOrder(Arrays.asList(
                 "<ows:ExceptionReport version=\"1.0.0\"",
                 "    <ows:Exception exceptionCode=\"OptionNotSupported\">",
+                "        <ows:ExceptionText>Exception Message.</ows:ExceptionText>",
+                "    </ows:Exception>",
+                "</ows:ExceptionReport>")));
+        int count = countPattern(marshal, "<ows:ExceptionText>");
+        assertThat(count, is(1));
+    }
+
+    @Test
+    public void testOptionNotSupportedException_withIdentifier() throws JAXBException {
+        final OptionNotSupportedException exception = new OptionNotSupportedException("Exception Message.", "OptionNameOrElement");
+
+        final ExceptionReport response = exceptionResponse.getExceptionResponse(exception);
+
+        final String marshal = JaxbHelper.marshal(response);
+        assertThat(marshal, stringContainsInOrder(Arrays.asList(
+                "<ows:ExceptionReport version=\"1.0.0\"",
+                "    <ows:Exception exceptionCode=\"OptionNotSupported\" locator=\"OptionNameOrElement\">",
                 "        <ows:ExceptionText>Exception Message.</ows:ExceptionText>",
                 "    </ows:Exception>",
                 "</ows:ExceptionReport>")));

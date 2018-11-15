@@ -7,16 +7,13 @@ package com.bc.wps.api.exceptions;
  */
 public class InvalidParameterValueException extends WpsServiceException {
 
-    private final String invalidParameter;
-
     /**
      * @param message          The new exception message
      * @param cause            The exception
      * @param invalidParameter The name of parameter with invalid value
      */
     public InvalidParameterValueException(String message, Throwable cause, String invalidParameter) {
-        super(message + " : parameter '" + invalidParameter + "' has an invalid value.", cause);
-        this.invalidParameter = invalidParameter;
+        super(message + " : parameter '" + invalidParameter + "' has an invalid value.", invalidParameter ,cause );
     }
 
     /**
@@ -24,20 +21,18 @@ public class InvalidParameterValueException extends WpsServiceException {
      * @param invalidParameter The name of parameter with invalid value
      */
     public InvalidParameterValueException(Throwable cause, String invalidParameter) {
-        super("Parameter '" + invalidParameter + "' has an invalid value.", cause);
-        this.invalidParameter = invalidParameter;
+        super("Parameter '" + invalidParameter + "' has an invalid value.", invalidParameter,cause);
     }
 
     /**
      * @param invalidParameter The name of parameter with invalid value
      */
     public InvalidParameterValueException(String invalidParameter) {
-        super("Parameter '" + invalidParameter + "' has an invalid value.");
-        this.invalidParameter = invalidParameter;
+        super("Parameter '" + invalidParameter + "' has an invalid value.", invalidParameter);
     }
 
     public String getInvalidParameter() {
-        return invalidParameter;
+        return super.getLocator();
     }
 
 }

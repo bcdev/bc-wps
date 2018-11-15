@@ -20,10 +20,10 @@ import com.bc.wps.api.exceptions.InvalidParameterValueException;
 import com.bc.wps.api.exceptions.MissingParameterValueException;
 import com.bc.wps.api.exceptions.NoApplicableCodeException;
 import com.bc.wps.api.exceptions.WpsServiceException;
+import com.bc.wps.api.exceptions.XmlSchemaFaultException;
 import com.bc.wps.api.schema.Capabilities;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.ExceptionReport;
-import com.bc.wps.api.schema.ExceptionType;
 import com.bc.wps.api.schema.Execute;
 import com.bc.wps.api.schema.ExecuteResponse;
 import com.bc.wps.api.schema.ObjectFactory;
@@ -280,7 +280,7 @@ public class WpsFrontendConnector {
     }
 
     private String performXmlParameterValidation(Execute execute)
-            throws MissingParameterValueException, InvalidParameterValueException {
+            throws WpsServiceException {
         String service = execute.getService();
         String version = execute.getVersion();
         CodeType identifier = execute.getIdentifier();
@@ -295,7 +295,13 @@ public class WpsFrontendConnector {
         if (StringUtils.isBlank(version)) {
             throw new MissingParameterValueException("Version");
         }
+        if (!"1.0.0".equals(version)) {
+            throw new InvalidParameterValueException("Version");
+        }
 
+        if (identifier == null) {
+            throw new XmlSchemaFaultException("Identifier", "Execute");
+        }
         if (identifier == null || StringUtils.isBlank(identifier.getValue())) {
             throw new MissingParameterValueException("Identifier");
         }
