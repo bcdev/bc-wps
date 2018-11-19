@@ -14,7 +14,6 @@
  */
 package com.bc.wps;
 
-import com.bc.wps.api.WpsRequestContext;
 import com.bc.wps.api.WpsServiceInstance;
 import com.bc.wps.api.exceptions.InvalidParameterValueException;
 import com.bc.wps.api.exceptions.MissingParameterValueException;
@@ -74,12 +73,12 @@ public class WpsFrontendConnector {
                                 String version,
                                 String jobId,
                                 HttpServletRequest servletRequest,
-                                WpsServiceInstance wpsServiceProvider, WpsRequestContext requestContext) {
+                                WpsServiceInstance wpsServiceProvider ) {
         Cookie[] cookies = servletRequest.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (REQUEST_ID.equalsIgnoreCase(cookie.getName())) {
-                    return postExecuteService(requestType, servletRequest, wpsServiceProvider, requestContext);
+                    return postExecuteService(requestType, servletRequest, wpsServiceProvider);
                 }
                 if ("queryString".equalsIgnoreCase(cookie.getName())) {
                     String value = cookie.getValue();
@@ -131,6 +130,7 @@ public class WpsFrontendConnector {
 
         try {
             performUrlParameterValidation(service, requestType);
+            final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(servletRequest);
             switch (requestType) {
                 case "GetCapabilities":
                     Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
@@ -179,7 +179,7 @@ public class WpsFrontendConnector {
 
     public String postExecuteService(String request,
                                      HttpServletRequest servletRequest,
-                                     WpsServiceInstance wpsServiceProvider, WpsRequestContext requestContext) {
+                                     WpsServiceInstance wpsServiceProvider) {
         Cookie[] cookies = servletRequest.getCookies();
         java.nio.file.Path tempFilePath = null;
         if (cookies != null) {
@@ -205,10 +205,8 @@ public class WpsFrontendConnector {
         Execute execute = getExecute(request);
 
         try {
-            String exceptionXml = performXmlParameterValidation(execute);
-            if (StringUtils.isNotBlank(exceptionXml)) {
-                return exceptionXml;
-            }
+            performXmlParameterValidation(execute);
+            final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(servletRequest);
             ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
             deleteTemporaryFile(tempFilePath);
             return removeBcNamespace(
@@ -279,7 +277,7 @@ public class WpsFrontendConnector {
         }
     }
 
-    private String performXmlParameterValidation(Execute execute)
+    private void performXmlParameterValidation(Execute execute)
             throws WpsServiceException {
         String service = execute.getService();
         String version = execute.getVersion();
@@ -302,16 +300,15 @@ public class WpsFrontendConnector {
         if (identifier == null) {
             throw new XmlSchemaFaultException("Identifier", "Execute");
         }
-        if (identifier == null || StringUtils.isBlank(identifier.getValue())) {
+        if (StringUtils.isBlank(identifier.getValue())) {
             throw new MissingParameterValueException("Identifier");
         }
-        return "";
     }
 
     private Execute getExecute(String request) {
         InputStream requestInputStream = new ByteArrayInputStream(request.getBytes());
         try {
-            return (Execute) JaxbHelper.unmarshal(requestInputStream, new ObjectFactory());
+            return (Execute) JaxbHelper.unmarshal(requestInputStream, new Execute());
         } catch (ClassCastException exception) {
             throw new InvalidRequestException("Invalid Execute request. Please see the WPS 1.0.0 guideline " +
                                               "for the right Execute request structure.",

@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
+import com.bc.wps.api.WpsRequestContext;
 import com.bc.wps.api.WpsServiceInstance;
 import com.bc.wps.api.exceptions.OptionNotSupportedException;
 import com.bc.wps.api.exceptions.WpsServiceException;
@@ -55,11 +56,10 @@ public class WpsFrontendConnectorTest {
     public void testThat_postExecuteService_ExecuteWithValidXmlRequest_InMockWps() throws WpsServiceException {
         //preparation
         final WpsServiceInstance mockWpsServiceInstance = mock(WpsServiceInstance.class);
-        final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(mockServletRequest);
-        when(mockWpsServiceInstance.doExecute(same(requestContext), any(Execute.class))).thenReturn(getExecuteResponse());
+        when(mockWpsServiceInstance.doExecute(any(WpsRequestContext.class), any(Execute.class))).thenReturn(getExecuteResponse());
 
         //execution
-        String wpsResponse = wpsFrontendConnector.postExecuteService(getValidExecuteRequest(), mockServletRequest, mockWpsServiceInstance, requestContext);
+        String wpsResponse = wpsFrontendConnector.postExecuteService(getValidExecuteRequest(), mockServletRequest, mockWpsServiceInstance);
 
         //verification
 //        XmlValidator.validateString(wpsResponse);
@@ -76,7 +76,7 @@ public class WpsFrontendConnectorTest {
                 "    </wps:Status>\n" +
                 "</wps:ExecuteResponse>\n"));
         final ArgumentCaptor<Execute> captor = ArgumentCaptor.forClass(Execute.class);
-        verify(mockWpsServiceInstance, VerificationModeFactory.times(1)).doExecute(same(requestContext), captor.capture());
+        verify(mockWpsServiceInstance, VerificationModeFactory.times(1)).doExecute(any(WpsRequestContext.class), captor.capture());
         final List<Execute> allValues = captor.getAllValues();
         assertThat(allValues.size(), is(equalTo(1)));
         final Execute execute = allValues.get(0);
@@ -87,11 +87,10 @@ public class WpsFrontendConnectorTest {
     public void testThat_postExecuteService_serviceInstanceReturnsOptionNotSupportedException() throws WpsServiceException {
         //preparation
         final WpsServiceInstance mockWpsServiceInstance = mock(WpsServiceInstance.class);
-        final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(mockServletRequest);
-        when(mockWpsServiceInstance.doExecute(same(requestContext), any(Execute.class))).thenThrow(new OptionNotSupportedException("MESSAGE", "NOT_SUPPORTED"));
+        when(mockWpsServiceInstance.doExecute(any(WpsRequestContext.class), any(Execute.class))).thenThrow(new OptionNotSupportedException("MESSAGE", "NOT_SUPPORTED"));
 
         //execution
-        String wpsResponse = wpsFrontendConnector.postExecuteService(getValidExecuteRequest(), mockServletRequest, mockWpsServiceInstance, requestContext);
+        String wpsResponse = wpsFrontendConnector.postExecuteService(getValidExecuteRequest(), mockServletRequest, mockWpsServiceInstance);
 
         //verification
         assertThat(wpsResponse, is(equalToIgnoringWhiteSpace(
@@ -114,10 +113,9 @@ public class WpsFrontendConnectorTest {
     @Test
     public void testThat_postExecuteService_withMissingIdentifier_returnsAnInvalidParameterValueReport() throws WpsServiceException {
         //preparation
-        final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(mockServletRequest);
 
         //execution
-        String wpsResponse = wpsFrontendConnector.postExecuteService(getExecuteRequestWithoutIdentifer(), mockServletRequest, mock(WpsServiceInstance.class), requestContext);
+        String wpsResponse = wpsFrontendConnector.postExecuteService(getExecuteRequestWithoutIdentifer(), mockServletRequest, mock(WpsServiceInstance.class));
 
         //verification
         assertThat(wpsResponse, is(equalToIgnoringWhiteSpace(
@@ -140,10 +138,9 @@ public class WpsFrontendConnectorTest {
     @Test
     public void testThat_postExecuteService_withMissingIdentifierValue_returnsAnInvalidParameterValueReport() throws WpsServiceException {
         //preparation
-        final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(mockServletRequest);
 
         //execution
-        String wpsResponse = wpsFrontendConnector.postExecuteService(getExecuteRequestWithEmptyIdentifer(), mockServletRequest, mock(WpsServiceInstance.class), requestContext);
+        String wpsResponse = wpsFrontendConnector.postExecuteService(getExecuteRequestWithEmptyIdentifer(), mockServletRequest, mock(WpsServiceInstance.class));
 
         //verification
         assertThat(wpsResponse, is(equalToIgnoringWhiteSpace(

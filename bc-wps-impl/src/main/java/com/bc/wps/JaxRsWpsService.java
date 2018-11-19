@@ -48,7 +48,7 @@ public class JaxRsWpsService {
         WpsRequestContext requestContext = new WpsRequestContextImpl(servletRequest);
         WpsServiceInstance wpsServiceProvider = getServiceProvider(applicationName, requestContext);
         return wpsFrontendConnector.getWpsService(service, requestType, acceptedVersion, language, processIdentifier,
-                                                  version, jobId, servletRequest, wpsServiceProvider, requestContext);
+                                                  version, jobId, servletRequest, wpsServiceProvider);
     }
 
     @POST
@@ -61,7 +61,7 @@ public class JaxRsWpsService {
 
         WpsRequestContext requestContext = new WpsRequestContextImpl(servletRequest);
         WpsServiceInstance wpsServiceProvider = getServiceProvider(applicationName, requestContext);
-        return wpsFrontendConnector.postExecuteService(request, servletRequest, wpsServiceProvider, requestContext);
+        return wpsFrontendConnector.postExecuteService(request, servletRequest, wpsServiceProvider);
     }
 
     private WpsServiceInstance getServiceProvider(String applicationName, WpsRequestContext requestContext) {
