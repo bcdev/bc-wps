@@ -20,12 +20,10 @@ import com.bc.wps.api.exceptions.MissingParameterValueException;
 import com.bc.wps.api.exceptions.NoApplicableCodeException;
 import com.bc.wps.api.exceptions.WpsServiceException;
 import com.bc.wps.api.exceptions.XmlSchemaFaultException;
-import com.bc.wps.api.schema.Capabilities;
 import com.bc.wps.api.schema.CodeType;
 import com.bc.wps.api.schema.ExceptionReport;
 import com.bc.wps.api.schema.Execute;
 import com.bc.wps.api.schema.ExecuteResponse;
-import com.bc.wps.api.schema.ObjectFactory;
 import com.bc.wps.api.schema.ProcessDescriptionType;
 import com.bc.wps.api.schema.ProcessDescriptions;
 import com.bc.wps.exceptions.InvalidRequestException;
@@ -54,15 +52,6 @@ public class WpsFrontendConnector {
     private static final String UTF_8 = "UTF-8";
     private static final String TEMP_DIRECTORY = "tmp";
     private static final String REQUEST_FILE_PREFIX = "request-";
-    private final boolean removeBcNamespace;
-
-    public WpsFrontendConnector() {
-        this(false);
-    }
-
-    public WpsFrontendConnector(boolean removeBcNamespace) {
-        this.removeBcNamespace = removeBcNamespace;
-    }
 
     // @todo discuss naming with Norman and Cosmin
     public String getWpsService(String service,
@@ -73,7 +62,7 @@ public class WpsFrontendConnector {
                                 String version,
                                 String jobId,
                                 HttpServletRequest servletRequest,
-                                WpsServiceInstance wpsServiceProvider ) {
+                                WpsServiceInstance wpsServiceProvider) {
         Cookie[] cookies = servletRequest.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -131,49 +120,47 @@ public class WpsFrontendConnector {
         try {
             performUrlParameterValidation(service, requestType);
             final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(servletRequest);
+            final Object wpsObject;
+            final String schemaLocation;
             switch (requestType) {
                 case "GetCapabilities":
-                    Capabilities capabilities = wpsServiceProvider.getCapabilities(requestContext);
-                    return removeBcNamespace(
-                            JaxbHelper.marshalWithSchemaLocation(
-                                    capabilities, "http://www.opengis.net/wps/1.0.0 " +
-                                                  "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd"));
+                    wpsObject = wpsServiceProvider.getCapabilities(requestContext);
+                    schemaLocation = "http://www.opengis.net/wps/1.0.0 " +
+                                     "http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd";
+
+                    break;
                 case "DescribeProcess":
-                    String describeProcessExceptionXml = performDescribeProcessParameterValidation(processIdentifier, version);
-                    if (StringUtils.isNotBlank(describeProcessExceptionXml)) {
-                        return describeProcessExceptionXml;
-                    }
-                    List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(
-                            requestContext, processIdentifier);
-                    ProcessDescriptions processDescriptions = constructProcessDescriptionXml(processDescriptionTypes);
-                    return removeBcNamespace(
-                            JaxbHelper.marshalWithSchemaLocation(
-                                    processDescriptions, "http://www.opengis.net/wps/1.0.0 " +
-                                                         "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd"));
+                    performDescribeProcessParameterValidation(processIdentifier, version);
+                    wpsObject = createProcessDescription(processIdentifier, wpsServiceProvider, requestContext);
+                    schemaLocation = "http://www.opengis.net/wps/1.0.0 " +
+                                     "http://schemas.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd";
+
+                    break;
                 case "GetStatus":
                     if (StringUtils.isBlank(jobId)) {
                         throw new MissingParameterValueException("JobId");
                     }
-                    final ExecuteResponse executeResponse = wpsServiceProvider.getStatus(requestContext, jobId);
-                    if (executeResponse == null) {
+                    wpsObject = wpsServiceProvider.getStatus(requestContext, jobId);
+                    if (wpsObject == null) {
                         throw new NoApplicableCodeException("Unknown jobId: '" + jobId + "'", null);
                     }
-                    return removeBcNamespace(
-                            JaxbHelper.marshalWithSchemaLocation(
-                                    executeResponse, "http://www.opengis.net/wps/1.0.0 " +
-                                                     "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd"));
+                    schemaLocation = "http://www.opengis.net/wps/1.0.0 " +
+                                     "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd";
+
+                    break;
                 default:
                     throw new InvalidParameterValueException("Request");
             }
-        } catch (WpsServiceException exception) {
-            LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
-            ExceptionResponse exceptionResponse = new ExceptionResponse();
-            ExceptionReport exceptionReport = exceptionResponse.getExceptionResponse(exception);
-            return getExceptionString(exceptionReport);
+            return toString(wpsObject, schemaLocation);
         } catch (JAXBException exception) {
             LOG.log(Level.SEVERE, "Unable to marshall the WPS response", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
             return exceptionResponse.getJaxbExceptionResponse();
+        } catch (Exception exception) {
+            LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            ExceptionReport exceptionReport = exceptionResponse.getExceptionResponse(exception);
+            return getExceptionString(exceptionReport);
         }
     }
 
@@ -209,10 +196,8 @@ public class WpsFrontendConnector {
             final WpsRequestContextImpl requestContext = new WpsRequestContextImpl(servletRequest);
             ExecuteResponse executeResponse = wpsServiceProvider.doExecute(requestContext, execute);
             deleteTemporaryFile(tempFilePath);
-            return removeBcNamespace(
-                    JaxbHelper.marshalWithSchemaLocation(
-                            executeResponse, "http://www.opengis.net/wps/1.0.0 " +
-                                             "http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd"));
+            return JaxbHelper.marshalWithSchemaLocation(
+                    executeResponse, "http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd");
         } catch (WpsServiceException | IOException exception) {
             LOG.log(Level.SEVERE, "Unable to process the WPS request", exception);
             ExceptionResponse exceptionResponse = new ExceptionResponse();
@@ -239,11 +224,22 @@ public class WpsFrontendConnector {
         return request;
     }
 
-    private String removeBcNamespace(String xml) {
-        if (removeBcNamespace) {
-            return xml.replace("xmlns:bc=\"http://www.brockmann-consult.de/bc-wps/calwpsL3Parameters-schema.xsd\" ", "");
+    private ProcessDescriptions createProcessDescription(String processIdentifier, WpsServiceInstance wpsServiceProvider, WpsRequestContextImpl requestContext) throws WpsServiceException {
+        List<ProcessDescriptionType> processDescriptionTypes = wpsServiceProvider.describeProcess(
+                requestContext, processIdentifier);
+        ProcessDescriptions processDescriptions = new ProcessDescriptions();
+        processDescriptions.setService("WPS");
+        processDescriptions.setVersion("1.0.0");
+        processDescriptions.setLang("en");
+
+        for (ProcessDescriptionType process : processDescriptionTypes) {
+            processDescriptions.getProcessDescription().add(process);
         }
-        return xml;
+        return processDescriptions;
+    }
+
+    private String toString(Object capabilities, String schemaLocation) throws JAXBException {
+        return JaxbHelper.marshalWithSchemaLocation(capabilities, schemaLocation);
     }
 
     private void deleteTemporaryFile(java.nio.file.Path tempFilePath) throws IOException {
@@ -253,8 +249,7 @@ public class WpsFrontendConnector {
         }
     }
 
-    private String performDescribeProcessParameterValidation(String processorId, String version)
-            throws MissingParameterValueException {
+    private String performDescribeProcessParameterValidation(String processorId, String version) throws MissingParameterValueException {
         if (StringUtils.isBlank(version)) {
             throw new MissingParameterValueException("Version");
         }
@@ -331,22 +326,7 @@ public class WpsFrontendConnector {
             ExceptionResponse exceptionResponse = new ExceptionResponse();
             retVal = exceptionResponse.getJaxbExceptionResponse();
         }
-        return removeBcNamespace(retVal);
+        return retVal;
     }
 
-    private ProcessDescriptions constructProcessDescriptionXml(List<ProcessDescriptionType> processes) {
-        ProcessDescriptions processDescriptions = createBasicProcessDescriptions();
-        for (ProcessDescriptionType process : processes) {
-            processDescriptions.getProcessDescription().add(process);
-        }
-        return processDescriptions;
-    }
-
-    private ProcessDescriptions createBasicProcessDescriptions() {
-        ProcessDescriptions processDescriptions = new ProcessDescriptions();
-        processDescriptions.setService("WPS");
-        processDescriptions.setVersion("1.0.0");
-        processDescriptions.setLang("en");
-        return processDescriptions;
-    }
 }
